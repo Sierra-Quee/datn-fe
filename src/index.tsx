@@ -1,19 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import path from "path";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RoutePath } from "./routes";
+import { UserRole } from "./feature/Auth/model";
+import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import { store } from "./feature/redux/store";
+import LogIn from "./feature/Login/LogIn";
+import SignUp from "./feature/Signup/SignUp";
+import { Home } from "./feature/Home/home";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const router = createBrowserRouter([
+    {
+        path: RoutePath.Login,
+        element: <LogIn />
+    },
+    {
+        path: RoutePath.Signup,
+        element: <SignUp />
+    },
+    {
+        path: RoutePath.Home,
+        element: <Home />
+    },
+]);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+    <React.StrictMode>
+        <Provider store={store}>
+            <RouterProvider router={router} />
+        </Provider>
+        <ToastContainer position="top-right" autoClose={3000} />
+    </React.StrictMode>
+);

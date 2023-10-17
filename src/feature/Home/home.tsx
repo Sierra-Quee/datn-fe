@@ -1,3 +1,7 @@
+import { HeaderWeb } from "../Component/Header/Header"
+
 export const Home = () => {
-    return <div>Home</div>
+    return (
+        <HeaderWeb></HeaderWeb>
+    )
 }

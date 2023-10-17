@@ -41,21 +41,22 @@ const SignUp = () => {
             form={form}
             initialValues={{ layout: formLayout }}
             onValuesChange={onFormLayoutChange}
-            style={{ maxWidth: formLayout === "inline" ? "none" : 600 }}
+            style={{ maxWidth: formLayout === "inline" ? "none" : 600, width:"50%", margin:"auto"}}
         >
-            <>
-                <FontAwesomeIcon icon={faUser} />
+            <div style={{display:"flex", justifyContent:"center"}} >
+                <FontAwesomeIcon icon={faUser} style={{margin:"40px 20px 15px"}}/>
                 <Title level={2}> ĐĂNG KÍ </Title>
-            </>
-            <Input placeholder="input placeholder" />
-            <Input placeholder="input placeholder" />
-            <Input placeholder="input placeholder" />
-            <Input placeholder="input placeholder" />
-            <Input placeholder="input placeholder" />
-            <Input placeholder="input placeholder" />
+            </div>
+            <Input style ={{marginBottom:"15px"}} placeholder="Tên đăng kí" />
+            <Input style ={{marginBottom:"15px"}} placeholder="Email" />
+            <Input style ={{marginBottom:"15px"}} placeholder="Số điện thoại" />
+            <Input style ={{marginBottom:"15px"}} placeholder="Địa chỉ" />
+            <Input style ={{marginBottom:"15px"}} placeholder="Mật khẩu" />
+            <Input style ={{marginBottom:"15px"}} placeholder="Nhập lại mật khẩu" />
             <Select
                 placeholder="Bạn đăng kí với tài khoản"
                 onChange={onGetAccount}
+                style={{width:"100%", marginBottom:"15px"}}
                 allowClear
                 options={[
                     {
@@ -69,7 +70,7 @@ const SignUp = () => {
                 ]}
             />
 
-            <Form.Item {...buttonItemLayout}>
+            <Form.Item {...buttonItemLayout} style={{width:"100%", display:"flex", justifyContent:"center"}}>
                 <Button type="primary">Submit</Button>
             </Form.Item>
         </Form>

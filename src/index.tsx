@@ -9,7 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { store } from "./feature/redux/store";
 import LogIn from "./feature/Login/LogIn";
 import SignUp from "./feature/Signup/SignUp";
-import { Home } from "./feature/Home/home";
+import { Home } from "./feature/Home/Home";
 
 const router = createBrowserRouter([
     {

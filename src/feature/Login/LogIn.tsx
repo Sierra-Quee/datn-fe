@@ -32,9 +32,9 @@ const dispatch = useAppDispatch();
     };
 
     return (
-        <div>
-            <div>
-                <FontAwesomeIcon icon={faUser} />
+        <div style={{width:"50%", margin:"auto"}}>
+            <div style={{display:"flex", margin:"auto", width:"50%"}} >
+                <FontAwesomeIcon icon={faUser} style={{margin:"40px 60px 0px"}}/>
                 <Title level={2}> ĐĂNG NHẬP </Title>
             </div>
             <Form
@@ -81,7 +81,7 @@ const dispatch = useAppDispatch();
                     <Checkbox>Lưu đăng nhập</Checkbox>
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{width:"75%", display:"flex", justifyContent:"flex-end"}}>
                     <Button type="primary" htmlType="submit">
                         Đăng nhập
                     </Button>

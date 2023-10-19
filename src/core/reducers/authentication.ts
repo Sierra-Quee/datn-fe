@@ -1,4 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { logInApi } from "../../api/api";
+import { setCookie } from "../../utils/cookies";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../utils/constants";
 
 export const initialState = {
     loading: false,
@@ -11,14 +14,27 @@ export const initialState = {
     logoutUrl: null as unknown as string,
 };
 
-interface IAccountParams {
+export interface IAccountParams {
     phone: string;
     password: string;
 }
 
+export interface IResponseToken {
+    accessToken: string;
+    refreshToken: string;
+}
+
+export interface IResponseError {
+    message: string;
+    error: string;
+    statusCode: number;
+}
+
 export const login = createAsyncThunk(
     "authenticate/login",
-    async (auth: IAccountParams) => {}
+    async (auth: IAccountParams) => {
+        return (await logInApi(auth)).data;
+    }
 );
 
 export const logout = createAsyncThunk(
@@ -32,8 +48,30 @@ export const authenticationSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(login.fulfilled, (state, action) => {})
-            .addCase(login.rejected, (state, action) => {})
+            .addCase(login.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(
+                login.fulfilled,
+                (state, action: PayloadAction<IResponseToken>) => {
+                    state = {
+                        ...state,
+                        loginError: false,
+                        loginSuccess: true,
+                        isAuthenticated: true,
+                    };
+                    setCookie(ACCESS_TOKEN, action.payload.accessToken);
+                    setCookie(REFRESH_TOKEN, action.payload.refreshToken);
+                }
+            )
+            .addCase(login.rejected, (state, action) => {
+                state = {
+                    ...state,
+                    loginSuccess: false,
+                    loginError: true,
+                    errorMessage: action.error.message as string,
+                };
+            })
             .addCase(logout.fulfilled, (state, action) => {})
             .addCase(logout.rejected, (state, action) => {});
     },

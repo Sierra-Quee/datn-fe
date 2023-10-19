@@ -1,5 +1,3 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form, FormInstance, Input, Radio, Select } from "antd";
 import Title from "antd/es/typography/Title";
 import React, { useState } from "react";
@@ -44,7 +42,6 @@ const SignUp = () => {
             style={{ maxWidth: formLayout === "inline" ? "none" : 600 }}
         >
             <>
-                <FontAwesomeIcon icon={faUser} />
                 <Title level={2}> ĐĂNG KÍ </Title>
             </>
             <Input placeholder="input placeholder" />

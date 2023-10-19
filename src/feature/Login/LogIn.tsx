@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import Title from "antd/es/typography/Title";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { Button, Checkbox, Form, Input } from "antd";
 import { logInAsync } from "../Auth/AuthSlice";
 import { useAppDispatch } from "../redux/hook";
@@ -15,15 +13,21 @@ type FieldType = {
 const LogIn = () => {
     const [inputPhone, setInputPhone] = useState<string>("");
     const [inputPassword, setInputPassword] = useState<string>("");
-const dispatch = useAppDispatch();
-    const handleInputPhone=(newValue: React.ChangeEventHandler<HTMLInputElement> | undefined)=>{
-    setInputPhone(newValue as unknown  as string|| "");
-    }
-    const handleInputPassword=(newValue: React.ChangeEventHandler<HTMLInputElement> | undefined)=>{
-        setInputPhone(newValue as unknown  as string|| "");
-        }
+    const dispatch = useAppDispatch();
+    const handleInputPhone = (
+        newValue: React.ChangeEventHandler<HTMLInputElement> | undefined
+    ) => {
+        setInputPhone((newValue as unknown as string) || "");
+    };
+    const handleInputPassword = (
+        newValue: React.ChangeEventHandler<HTMLInputElement> | undefined
+    ) => {
+        setInputPhone((newValue as unknown as string) || "");
+    };
     const onFinish = async (values: any) => {
-        await dispatch(logInAsync({phone: values.username, password: values.password}));
+        await dispatch(
+            logInAsync({ phone: values.username, password: values.password })
+        );
         console.log("Success:", values);
     };
 
@@ -34,7 +38,6 @@ const dispatch = useAppDispatch();
     return (
         <div>
             <div>
-                <FontAwesomeIcon icon={faUser} />
                 <Title level={2}> ĐĂNG NHẬP </Title>
             </div>
             <Form
@@ -57,7 +60,10 @@ const dispatch = useAppDispatch();
                         },
                     ]}
                 >
-                    <Input value={inputPassword} onChange={() => handleInputPhone}/>
+                    <Input
+                        value={inputPhone}
+                        onChange={() => handleInputPhone}
+                    />
                 </Form.Item>
 
                 <Form.Item<FieldType>
@@ -70,7 +76,10 @@ const dispatch = useAppDispatch();
                         },
                     ]}
                 >
-                    <Input.Password  value={inputPassword} onChange = {() => handleInputPassword}/>
+                    <Input.Password
+                        value={inputPassword}
+                        onChange={() => handleInputPassword}
+                    />
                 </Form.Item>
 
                 <Form.Item<FieldType>

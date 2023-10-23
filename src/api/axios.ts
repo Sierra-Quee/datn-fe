@@ -9,6 +9,7 @@ const fetchHandler = axios.create({
     timeout: 30000,
     headers: {
         Authorization: getAuthorizationHeader(),
+        "Cache-Control": "no-cache",
     },
 });
 

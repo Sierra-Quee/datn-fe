@@ -7,3 +7,5 @@ export const setCookie = (key: string, value: string): void => {
 export const getCookie = (key: string): string | undefined => {
     return Cookies.get(key);
 };
+
+export const clearCookie = (): void => {};

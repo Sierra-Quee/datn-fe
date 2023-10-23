@@ -2,6 +2,7 @@ import { Navigate, PathRouteProps, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../feature/redux/hook";
 import ErrorBoundary from "../errors/error-boundary";
 import { Role } from "./roles";
+import { isNullOrEmptyOrUndefined } from "../../utils/utils";
 
 interface IPrivateRouteProp extends PathRouteProps {
     children: React.ReactNode;
@@ -36,12 +37,12 @@ export const PrivateRoute = ({
     return <Navigate to="/login" replace state={{ from: location }} />;
 };
 
-export const hasAnyAuthorized = (role: Role[], roles: Role[]): boolean => {
-    if (role && role.length) {
+export const hasAnyAuthorized = (role: Role, roles: Role[]): boolean => {
+    if (!isNullOrEmptyOrUndefined(role)) {
         if (roles.length === 0) {
             return true;
         }
-        return roles.some((rol) => role.includes(rol));
+        return roles.includes(role);
     }
     return false;
 };

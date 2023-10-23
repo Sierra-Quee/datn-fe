@@ -1,5 +1,5 @@
 export enum RoutePath {
-    Home="/",
+    Home = "/",
     Introduce = "/gioithieu",
     Service = "/dichvu",
     HomeServices = "/dichvu/homeservices",
@@ -13,8 +13,8 @@ export enum RoutePath {
     Cart = "/giohang",
     Library = "/thuvien",
     Contact = "/lienhe",
-    Login = "/dangnhap",
-    Signup = "/dangki",
+    Login = "/login",
+    SignUp = "/sign-up",
 }
 
 // Dont need sign in
@@ -32,7 +32,7 @@ export const PublicRoutes = [
     RoutePath.OperationServices,
     RoutePath.SaleNew,
     RoutePath.Service,
-    RoutePath.Signup,
+    RoutePath.SignUp,
     RoutePath.SolarServices,
 ];
 
@@ -51,6 +51,6 @@ export const PrivateRoutes = [
     RoutePath.OperationServices,
     RoutePath.SaleNew,
     RoutePath.Service,
-    RoutePath.Signup,
+    RoutePath.SignUp,
     RoutePath.SolarServices,
 ];

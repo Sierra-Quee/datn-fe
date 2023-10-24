@@ -3,17 +3,18 @@ import { ToastContainer } from "react-toastify";
 
 import { PrivateRoute } from "./core/auth/private-route";
 import { Role } from "./core/auth/roles";
-import LogIn from "./feature/Login/LogIn";
-import SignUp from "./feature/Signup/SignUp";
+import LogIn from "./components/Login/LogIn";
+import SignUp from "./components/Signup/SignUp";
 import { RoutePath } from "./routes";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";
-import { Home } from "./feature/Home/home";
-import { useAppDispatch, useAppSelector } from "./feature/redux/hook";
+import { Home } from "./components/Home/home";
+import { useAppDispatch, useAppSelector } from "./components/redux/hook";
 import { useEffect } from "react";
 import { getAccount } from "./core/reducers/authentication";
 import "react-toastify/dist/ReactToastify.css";
 import { getCookie } from "./utils/cookies";
 import { ACCESS_TOKEN } from "./utils/constants";
+import NotFound from "./layouts/NotFound/NotFound";
 
 function App() {
     const { isAuthenticated } = useAppSelector((state) => state.authentication);
@@ -45,6 +46,7 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
+                        <Route path="*" element={<NotFound />} />
                     </ErrorBoundaryRoutes>
                 </BrowserRouter>
             )}

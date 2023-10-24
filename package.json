@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@ant-design/icons": "^5.2.6",
         "@reduxjs/toolkit": "^1.9.7",
         "@testing-library/jest-dom": "^5.17.0",
         "@testing-library/react": "^13.4.0",
@@ -57,6 +58,7 @@
     "devDependencies": {
         "@babel/preset-env": "^7.22.20",
         "@types/js-cookie": "^3.0.5",
+        "react-i18next": "^13.3.1",
         "sass": "^1.69.4"
     }
 }

@@ -1,0 +1,23 @@
+.main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    ._sidebar {
+        height: 100%;
+    }
+
+    ._main {
+        flex: 1;
+
+        ._navbar {
+            width: 100%;
+            height: 70px;
+        }
+
+        ._main_child {
+            width: 100%;
+            height: calc(100vh - 70px);
+        }
+    }
+}

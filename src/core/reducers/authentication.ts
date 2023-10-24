@@ -8,7 +8,7 @@ export interface AuthenticationState {
     isAuthenticated: boolean;
     loginSuccess: boolean;
     loginError: boolean; // Errors returned from server side
-    account: any;
+    account: IAccount;
     errorMessage: string[] | string; // Errors returned from server side
 }
 
@@ -39,7 +39,7 @@ export interface IAccount {
     dob: string;
     phone: string;
     email: string;
-    imageUrl: string;
+    imageUrl?: string;
     role: number;
     gender: boolean;
     status: number;

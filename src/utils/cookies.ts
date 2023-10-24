@@ -8,4 +8,8 @@ export const getCookie = (key: string): string | undefined => {
     return Cookies.get(key);
 };
 
-export const clearCookie = (): void => {};
+export const clearCookie = (): void => {
+    Object.keys(Cookies.get()).forEach((cookieName: string) => {
+        Cookies.remove(cookieName);
+    });
+};

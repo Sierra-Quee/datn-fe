@@ -3,15 +3,22 @@ import { getAccountAPI, logInApi } from "../../api/auth/auth";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../utils/constants";
 import { setCookie } from "../../utils/cookies";
 
-export const initialState = {
+export interface AuthenticationState {
+    loading: boolean;
+    isAuthenticated: boolean;
+    loginSuccess: boolean;
+    loginError: boolean; // Errors returned from server side
+    account: any;
+    errorMessage: string[] | string; // Errors returned from server side
+}
+
+export const initialState: AuthenticationState = {
     loading: false,
     isAuthenticated: false,
     loginSuccess: false,
     loginError: false, // Errors returned from server side
     account: {} as any,
-    errorMessage: null as unknown as string, // Errors returned from server side
-    redirectMessage: null as unknown as string,
-    logoutUrl: null as unknown as string,
+    errorMessage: [], // Errors returned from server side
 };
 
 export interface ILoginParams {
@@ -42,8 +49,16 @@ export interface IAccount {
 
 export const login = createAsyncThunk(
     "authenticate/login",
-    async (auth: ILoginParams) => {
-        return (await logInApi(auth)).data;
+    async (auth: ILoginParams, { rejectWithValue }) => {
+        try {
+            var response = await logInApi(auth);
+            return response.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data);
+        }
     }
 );
 
@@ -59,11 +74,7 @@ export const getAccount = createAsyncThunk(
 export const authenticationSlice = createSlice({
     name: "authentication",
     initialState: initialState,
-    reducers: {
-        reset: () => {
-            return initialState;
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(login.pending, (state, action) => {
@@ -83,13 +94,13 @@ export const authenticationSlice = createSlice({
                     };
                 }
             )
-            .addCase(login.rejected, (state, action) => {
+            .addCase(login.rejected, (state, action: PayloadAction<any>) => {
                 return {
                     ...state,
                     loading: false,
                     loginSuccess: false,
                     loginError: true,
-                    errorMessage: action.error.message as string,
+                    errorMessage: action.payload.message,
                 };
             })
             .addCase(logout.pending, (state, action) => {})
@@ -106,6 +117,7 @@ export const authenticationSlice = createSlice({
                         loading: false,
                         isAuthenticated: true,
                         account: action.payload,
+                        errorMessage: [],
                     };
                 }
             )
@@ -121,5 +133,3 @@ export const authenticationSlice = createSlice({
 });
 
 export default authenticationSlice.reducer;
-
-export const { reset } = authenticationSlice.actions;

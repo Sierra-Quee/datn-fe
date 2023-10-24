@@ -1,8 +1,10 @@
 import { Navigate, PathRouteProps, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../feature/redux/hook";
+import { useAppSelector } from "../../components/redux/hook";
+
 import ErrorBoundary from "../errors/error-boundary";
 import { Role } from "./roles";
 import { isNullOrEmptyOrUndefined } from "../../utils/utils";
+import Main from "../../layouts/Main/Main";
 
 interface IPrivateRouteProp extends PathRouteProps {
     children: React.ReactNode;
@@ -28,10 +30,28 @@ export const PrivateRoute = ({
 
     if (isAuthenticated) {
         if (isAuthorized) {
-            return <ErrorBoundary>{children}</ErrorBoundary>;
+            return (
+                <ErrorBoundary>
+                    <Main>{children}</Main>
+                </ErrorBoundary>
+            );
         }
 
-        return <div>You are not authorized to access this page</div>;
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    fontSize: "20px",
+                    fontStyle: "italic",
+                }}
+            >
+                You are not authorized to access this page
+            </div>
+        );
     }
 
     return <Navigate to="/login" replace state={{ from: location }} />;

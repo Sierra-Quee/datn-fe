@@ -24,12 +24,21 @@ class ErrorBoundary extends React.Component<
 
     render(): React.ReactNode {
         if (this.state.errorInfo) {
-            const errorDetails = <div>{this.state.error.toString()}</div>;
+            const errorDetails = <span>{this.state.error.toString()}</span>;
 
             return (
-                <div>
-                    <h2>An unexpected error has occurred.</h2>
-                    {errorDetails}
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                        height: "100%",
+                    }}
+                >
+                    <span style={{ fontSize: "20px", fontStyle: "italic" }}>
+                        An unexpected error has occurred. {errorDetails}
+                    </span>
                 </div>
             );
         }

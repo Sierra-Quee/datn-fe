@@ -1,5 +1,6 @@
 import { Menu, MenuProps } from "antd";
 import {
+    GlobalOutlined,
     HomeOutlined,
     UnorderedListOutlined,
     VerticalLeftOutlined,
@@ -11,7 +12,7 @@ import "./Sidebar.scss";
 import Images from "../../assets/Images";
 import { Link } from "react-router-dom";
 
-type MenuItem = Required<MenuProps>["items"][number];
+export type MenuItem = Required<MenuProps>["items"][number];
 
 const Sidebar = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -36,7 +37,12 @@ const Sidebar = () => {
         getItem(<Link to="/">Trang chủ</Link>, "1", <HomeOutlined />),
         getItem("Quản lý đơn hàng", "2", <UnorderedListOutlined />, [
             getItem(<Link to="lis-order">Danh sách đơn hàng</Link>, "3"),
+            getItem(
+                <Link to="lis-order-comment">Các nhận xét về đơn hàng</Link>,
+                "4"
+            ),
         ]),
+        getItem("Quản lý dịch vụ", "5", <GlobalOutlined />),
     ];
 
     return (

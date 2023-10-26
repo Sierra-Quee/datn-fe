@@ -1,0 +1,41 @@
+.modal-custom-cropper-wrap {
+    .ant-modal-body {
+        padding-top: 30px;
+    }
+
+    .cropper-crop-box {
+        border-radius: 50%;
+
+        .cropper-view-box {
+            border-radius: 50%;
+        }
+
+        .cropper-face {
+            border-radius: 50%;
+        }
+    }
+
+    button.ant-btn.ant-btn-default {
+        width: unset;
+        background-color: #ffffff;
+        border: 1px solid #d9d9d9;
+        padding: 5px 11px;
+
+        &:hover,
+        &:focus {
+            background-color: #ffffff !important;
+        }
+    }
+
+    button.ant-btn.ant-btn-primary {
+        width: unset;
+        background-color: var(--primary);
+        border: 1px solid transparent;
+        padding: 5px 11px;
+
+        &:hover,
+        &:focus {
+            background-color: var(--primary) !important;
+        }
+    }
+}

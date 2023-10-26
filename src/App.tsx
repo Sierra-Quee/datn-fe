@@ -8,13 +8,14 @@ import SignUp from "./components/Signup/SignUp";
 import { RoutePath } from "./routes";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";
 import { Home } from "./components/Home/home";
-import { useAppDispatch, useAppSelector } from "./components/redux/hook";
+import { useAppDispatch, useAppSelector } from "./redux/hook";
 import { useEffect } from "react";
 import { getAccount } from "./core/reducers/authentication";
 import "react-toastify/dist/ReactToastify.css";
-import { getCookie } from "./utils/cookies";
+import { getCookie } from "./utils/functions/cookies";
 import { ACCESS_TOKEN } from "./utils/constants";
 import NotFound from "./layouts/NotFound/NotFound";
+import Account from "./components/Account/Account";
 
 function App() {
     const { isAuthenticated } = useAppSelector((state) => state.authentication);
@@ -43,6 +44,20 @@ function App() {
                                     ]}
                                 >
                                     <Home />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path={RoutePath.Account}
+                            element={
+                                <PrivateRoute
+                                    roles={[
+                                        Role.ROLE_USER,
+                                        Role.ROLE_ADMIN,
+                                        Role.ROLE_REPAIRMAN,
+                                    ]}
+                                >
+                                    <Account />
                                 </PrivateRoute>
                             }
                         />

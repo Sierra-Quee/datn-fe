@@ -15,6 +15,7 @@ export enum RoutePath {
     Contact = "/lienhe",
     Login = "/login",
     SignUp = "/sign-up",
+    Account = "/account",
 }
 
 // Dont need sign in

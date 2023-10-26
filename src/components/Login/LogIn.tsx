@@ -1,5 +1,4 @@
 import { Button, Col, Form, Input, Row, Spin } from "antd";
-import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -11,9 +10,11 @@ import {
 import "./Login.scss";
 import Images from "../../assets/Images";
 import { RoutePath } from "../../routes";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { checkNullObj } from "../../utils/functions/utils";
 
 const LogIn = () => {
-    const { isAuthenticated, loginError, loginSuccess, loading } =
+    const { isAuthenticated, loginError, loginSuccess, loading, account } =
         useAppSelector((state) => state.authentication);
     const dispatch = useAppDispatch();
     const location = useLocation();
@@ -21,7 +22,10 @@ const LogIn = () => {
 
     useEffect(() => {
         if (isAuthenticated && loginSuccess) {
-            dispatch(getAccount());
+            getAccountInfo();
+        }
+        async function getAccountInfo() {
+            await dispatch(getAccount());
         }
     }, [isAuthenticated, loginSuccess, dispatch]);
 
@@ -33,7 +37,7 @@ const LogIn = () => {
 
     return (
         <div className="login-wrap">
-            {isAuthenticated ? (
+            {isAuthenticated && !checkNullObj(account) ? (
                 <Navigate replace to={from} />
             ) : (
                 <Spin spinning={loading}>
@@ -41,7 +45,7 @@ const LogIn = () => {
                         <Col span={14} className="wrap-logo">
                             <img
                                 style={{ width: "400px", height: "400px" }}
-                                src={Images.logo}
+                                src={Images.ismart}
                                 alt="icon"
                             />
                             <h2>Hệ thống sửa chữa điện lạnh ISmart</h2>

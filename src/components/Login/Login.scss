@@ -35,65 +35,10 @@
                     text-align: center;
                 }
 
-                .ant-form-item-required {
-                    font-size: 16px;
-
-                    font-weight: 600;
-                }
-
-                label.ant-form-item-required {
-                    display: flex;
-                    flex-direction: row-reverse;
-                    justify-content: flex-end;
-
-                    &::after {
-                        display: none;
-                    }
-
-                    &::before {
-                        padding-left: 5px;
-                    }
-                }
-
-                .ant-form-item-control-input-content > input.ant-input {
-                    padding: 9px 11px;
-                    &:hover,
-                    &:focus {
-                        border-color: var(--primary);
-                    }
-                }
-
-                .ant-input-affix-wrapper {
-                    padding: 9px 11px;
-                    &:hover,
-                    &:focus,
-                    &:focus-within {
-                        border-color: var(--primary);
-                    }
-                }
-
                 .error-message {
                     color: red;
                     font-size: 14px;
                     text-align: center;
-                }
-
-                button.ant-btn {
-                    padding: 9px 11px;
-                    width: 100%;
-                    background-color: var(--primary);
-                    border: none;
-                    outline: none;
-                    font-size: 16px;
-                    height: unset;
-                    font-weight: 600;
-                    margin-top: 20px;
-
-                    &:hover,
-                    &:focus {
-                        background-color: var(--primary);
-                        opacity: 0.8;
-                    }
                 }
 
                 a {

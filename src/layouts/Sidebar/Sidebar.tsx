@@ -2,9 +2,12 @@ import { Menu, MenuProps } from "antd";
 import {
     GlobalOutlined,
     HomeOutlined,
+    SettingOutlined,
     UnorderedListOutlined,
+    UserOutlined,
     VerticalLeftOutlined,
     VerticalRightOutlined,
+    WalletOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 
@@ -43,6 +46,12 @@ const Sidebar = () => {
             ),
         ]),
         getItem("Quản lý dịch vụ", "5", <GlobalOutlined />),
+        getItem("Quản lý người dùng", "6", <UserOutlined />, [
+            getItem(<Link to="list-employee">Danh sách thợ</Link>, "7"),
+            getItem(<Link to="lis-customer">Danh sách khách hàng</Link>, "8"),
+        ]),
+        getItem("Lịch sử thanh toán", "9", <WalletOutlined />),
+        getItem("Cấu hình hệ thống", "10", <SettingOutlined />),
     ];
 
     return (
@@ -52,9 +61,9 @@ const Sidebar = () => {
         >
             <div className="sidebar-logo">
                 <img
-                    src={Images.logo}
+                    src={Images.ismart}
                     className="sidebar-logo-image"
-                    style={{ width: collapsed ? "0px" : "120px" }}
+                    style={{ width: collapsed ? "0px" : "150px" }}
                     alt="logo"
                 />
 

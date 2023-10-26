@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 
 import "./style.scss";
 import App from "./App";
-import { store } from "./components/redux/store";
+import { store } from "./redux/store";
 import ErrorBoundary from "./core/errors/error-boundary";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

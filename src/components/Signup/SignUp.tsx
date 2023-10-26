@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { getAccount } from "../../core/reducers/authentication";
 import Images from "../../assets/Images";
 import { RoutePath } from "../../routes";
 import "./SignUp.scss";
 import { reset, signUp } from "../../core/reducers/register";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { FORMAT_DATE } from "../../utils/constants";
+import { formatDate } from "../../utils/functions/utils";
 
 type ValidateStatus =
     | ""
@@ -70,7 +72,7 @@ const SignUp = () => {
             setHelpValidate("Mật khẩu nhập lại không đúng");
             return;
         }
-        await dispatch(signUp({ ...values }));
+        await dispatch(signUp({ ...values, dob: formatDate(values.dob) }));
     };
 
     const handleRePassChange = (e: any) => {
@@ -90,7 +92,7 @@ const SignUp = () => {
                         <Col span={14} className="wrap-logo">
                             <img
                                 style={{ width: "400px", height: "400px" }}
-                                src={Images.logo}
+                                src={Images.ismart}
                                 alt="icon"
                             />
                             <h2>Hệ thống sửa chữa điện lạnh ISmart</h2>
@@ -203,7 +205,7 @@ const SignUp = () => {
                                             ]}
                                         >
                                             <DatePicker
-                                                format={"DD/MM/YYYY"}
+                                                format={FORMAT_DATE}
                                                 placeholder="Chọn ngày tháng năm sinh"
                                             />
                                         </Form.Item>

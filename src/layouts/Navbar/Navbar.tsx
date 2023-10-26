@@ -1,23 +1,32 @@
 import { Avatar, Dropdown, MenuProps } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useAppSelector } from "../../components/redux/hook";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import "./Navbar.scss";
-import { clearCookie } from "../../utils/cookies";
+import { clearCookie } from "../../utils/functions/cookies";
+import { resetAuth } from "../../core/reducers/authentication";
+import { useEffect } from "react";
 
 const Navbar = () => {
     const { account } = useAppSelector((state) => state.authentication);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const logout = () => {
         clearCookie();
-        navigate("/login", { replace: true });
+        dispatch(resetAuth());
     };
+
+    useEffect(() => {
+        if (!Object.keys(account).length) {
+            navigate("/login");
+        }
+    }, [account, navigate]);
 
     const itemDrops: MenuProps["items"] = [
         {
             key: "1",
-            label: <Link to="/account">Thông tin tài khoản</Link>,
+            label: <Link to="/account">Thiết lập tài khoản</Link>,
         },
         {
             key: "2",
@@ -27,7 +36,9 @@ const Navbar = () => {
 
     return (
         <div className="navbar">
-            <span className="navbar-account-name">{account.accountName}</span>
+            <span className="navbar-account-name">
+                {account.accountName || account.lastName + account.firstName}
+            </span>
             <Dropdown placement="bottomRight" menu={{ items: itemDrops }}>
                 <div style={{ cursor: "pointer" }}>
                     {account.imageUrl ? (
@@ -40,7 +51,9 @@ const Navbar = () => {
                             <span
                                 style={{ fontSize: "20px", fontWeight: "600" }}
                             >
-                                {account.accountName.charAt(0).toUpperCase()}
+                                {(
+                                    account.accountName[0] || account.firstName
+                                ).toUpperCase()}
                             </span>
                         </Avatar>
                     )}

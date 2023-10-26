@@ -1,9 +1,12 @@
 import { Navigate, PathRouteProps, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../components/redux/hook";
+import { useAppSelector } from "../../redux/hook";
 
 import ErrorBoundary from "../errors/error-boundary";
 import { Role } from "./roles";
-import { isNullOrEmptyOrUndefined } from "../../utils/utils";
+import {
+    checkNullObj,
+    isNullOrEmptyOrUndefined,
+} from "../../utils/functions/utils";
 import Main from "../../layouts/Main/Main";
 
 interface IPrivateRouteProp extends PathRouteProps {
@@ -28,7 +31,7 @@ export const PrivateRoute = ({
         );
     }
 
-    if (isAuthenticated) {
+    if (isAuthenticated && !checkNullObj(account)) {
         if (isAuthorized) {
             return (
                 <ErrorBoundary>
@@ -38,6 +41,7 @@ export const PrivateRoute = ({
         }
 
         return (
+            // <Main>
             <div
                 style={{
                     display: "flex",
@@ -51,6 +55,7 @@ export const PrivateRoute = ({
             >
                 You are not authorized to access this page
             </div>
+            // </Main>
         );
     }
 

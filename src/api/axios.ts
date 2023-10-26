@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "../utils/cookies";
+import { getCookie } from "../utils/functions/cookies";
 import { ACCESS_TOKEN } from "../utils/constants";
 
 export const getAuthorizationHeader = () => `Bearer ${getCookie(ACCESS_TOKEN)}`;

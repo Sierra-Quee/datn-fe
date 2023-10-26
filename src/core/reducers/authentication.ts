@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAccountAPI, logInApi } from "../../api/auth/auth";
+import { getAccountAPI, logInApi, updateProfileAPI } from "../../api/auth/auth";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../utils/constants";
-import { setCookie } from "../../utils/cookies";
+import { setCookie } from "../../utils/functions/cookies";
 
 export interface AuthenticationState {
     loading: boolean;
@@ -39,7 +39,7 @@ export interface IAccount {
     dob: string;
     phone: string;
     email: string;
-    imageUrl?: string;
+    imageUrl?: string | null;
     role: number;
     gender: boolean;
     status: number;
@@ -71,10 +71,24 @@ export const getAccount = createAsyncThunk(
     }
 );
 
+export const updateProfile = createAsyncThunk(
+    "authentication/updateProfile",
+    async () => {
+        return (await updateProfileAPI()).data;
+    }
+);
+
 export const authenticationSlice = createSlice({
     name: "authentication",
     initialState: initialState,
-    reducers: {},
+    reducers: {
+        resetAuth: (state) => {
+            return initialState;
+        },
+        deleteAvatar: (state) => {
+            state.account.imageUrl = null;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(login.pending, (state, action) => {
@@ -133,3 +147,5 @@ export const authenticationSlice = createSlice({
 });
 
 export default authenticationSlice.reducer;
+
+export const { resetAuth, deleteAvatar } = authenticationSlice.actions;

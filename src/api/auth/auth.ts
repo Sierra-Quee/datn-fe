@@ -16,3 +16,7 @@ export const updateToken = () => {
 export const getAccountAPI = () => {
     return fetchHandler.get("/auth/getProfile");
 };
+
+export const updateProfileAPI = () => {
+    return fetchHandler.post("/user/updateProfile");
+};

@@ -1,0 +1,21 @@
+.navbar {
+    background-color: var(--sidebar-color);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: 10px;
+    padding-right: 30px;
+
+    .navbar-account-name {
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .ant-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

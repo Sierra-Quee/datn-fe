@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "../utils/cookies";
+import { getCookie } from "../utils/functions/cookies";
 import { ACCESS_TOKEN } from "../utils/constants";
 
 export const getAuthorizationHeader = () => `Bearer ${getCookie(ACCESS_TOKEN)}`;
@@ -9,6 +9,7 @@ const fetchHandler = axios.create({
     timeout: 30000,
     headers: {
         Authorization: getAuthorizationHeader(),
+        "Cache-Control": "no-cache",
     },
 });
 

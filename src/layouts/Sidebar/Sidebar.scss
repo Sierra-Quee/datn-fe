@@ -1,0 +1,19 @@
+.sidebar {
+    height: 100%;
+    background-color: var(--sidebar-color);
+    transition: width 0.3s ease-out;
+
+    .sidebar-logo {
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 40px;
+        padding-right: 20px;
+
+        .sidebar-logo-image {
+            height: 150px;
+            transition: width 0.3s ease-out;
+        }
+    }
+}

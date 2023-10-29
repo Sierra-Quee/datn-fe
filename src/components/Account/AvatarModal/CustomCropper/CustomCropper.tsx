@@ -1,7 +1,7 @@
-import "./CustomCropper.scss";
 import "cropperjs/dist/cropper.css";
+import "./CustomCropper.scss";
 
-import { Button, Modal, Spin } from "antd";
+import { Button, Modal } from "antd";
 import { createRef, useEffect } from "react";
 import { Cropper, ReactCropperElement } from "react-cropper";
 import { toast } from "react-toastify";
@@ -58,7 +58,7 @@ const CustomCropper = ({
 
     const buttonCancel = () => {
         return (
-            <Button key={1} disabled={loading}>
+            <Button key={1} disabled={loading} onClick={closeCropper}>
                 Hủy bỏ
             </Button>
         );

@@ -48,7 +48,9 @@ const LogIn = () => {
                                 src={Images.ismart}
                                 alt="icon"
                             />
-                            <h2>Hệ thống sửa chữa điện lạnh ISmart</h2>
+                            <h2 style={{ textAlign: "center" }}>
+                                Hệ thống sửa chữa điện lạnh ISmart
+                            </h2>
                         </Col>
                         <Col span={10} className="form-login-wrap">
                             <Form onFinish={onFinish} layout="vertical">

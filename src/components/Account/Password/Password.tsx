@@ -1,10 +1,10 @@
 import "./Password.scss";
 
-import { Button, Form, Input, Spin } from "antd";
+import { Button, Form, Input } from "antd";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { toast } from "react-toastify";
 import { changePassword } from "../../../core/reducers/authentication";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 
 type ValidateStatus =
     | ""
@@ -21,7 +21,6 @@ const Password = () => {
     const [helpValidate, setHelpValidate] = useState<string | null>();
     const { updatePassSuccess, updatePassFailed, errorMessageUpdatePass } =
         useAppSelector((state) => state.authentication.updatePassword);
-    const { loading } = useAppSelector((state) => state.authentication);
     const dispatch = useAppDispatch();
 
     useEffect(() => {

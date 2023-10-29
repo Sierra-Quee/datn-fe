@@ -1,7 +1,7 @@
 import "./Profile.scss";
 
 import { CameraOutlined } from "@ant-design/icons";
-import { Button, Col, DatePicker, Form, Input, Row, Select, Spin } from "antd";
+import { Button, Col, DatePicker, Form, Input, Row, Select } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";

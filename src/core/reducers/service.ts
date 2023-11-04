@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IService } from "../../utils/model";
-import { getAllServiceApi } from "../../api/otherApi/otherApi";
+import { getAllServiceApi } from "../../api/service/serviceAPI";
 
 interface IServiceSlice {
     service: IService;
@@ -23,10 +23,13 @@ const initialState = {
     isLoadingService: false,
 };
 
-export const getAllServiceAsync = createAsyncThunk("Service", async () => {
-    var response = await getAllServiceApi();
-    return response.data;
-});
+export const getAllServiceAsync = createAsyncThunk(
+    "Service",
+    async (id: number) => {
+        var response = await getAllServiceApi(id);
+        return response.data;
+    }
+);
 
 export const ServiceSlice = createSlice({
     name: "serviceAll",

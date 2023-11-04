@@ -1,12 +1,10 @@
 import { ICreateService } from "../../utils/model";
 import fetchHandler from "../axios";
 
-export const getAllServiceApi = () => {
-    return fetchHandler.get("/service/getAll");
+export const getAllServiceApi = (id: number) => {
+    return fetchHandler.get("/service/getServiceBySkill/${id}");
 };
-export const getAllSkillApi = () => {
-    return fetchHandler.get("/skill/getAll");
-};
+
 export const getItemServiceApi = (id: number) => {
     return fetchHandler.get("/service/getAll/${id}");
 };

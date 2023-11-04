@@ -1,9 +1,9 @@
 export interface ISkill {
-    skillId: number;
+    skillId?: number;
     name: string;
-    createdAt: string;
-    updatedAt: string;
-    image?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    imageUrl: string;
 }
 export interface IService {
     serviceId: number;

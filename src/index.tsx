@@ -8,11 +8,11 @@ import { store } from "./redux/store";
 import ErrorBoundary from "./core/errors/error-boundary";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <ErrorBoundary>
-                <App />
-            </ErrorBoundary>
-        </Provider>
-    </React.StrictMode>
+    // <React.StrictMode>
+    <Provider store={store}>
+        <ErrorBoundary>
+            <App />
+        </ErrorBoundary>
+    </Provider>
+    // </React.StrictMode>
 );

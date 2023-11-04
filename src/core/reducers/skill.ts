@@ -1,32 +1,46 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllSkillApi } from "../../api/otherApi/otherApi";
 import { ISkill } from "../../utils/model";
+import {
+    createSkillAPI,
+    getAllSkillAPI,
+    updateSkillAPI,
+} from "../../api/skill/skillAPI";
 
 interface ISkillSlice {
-    skill: ISkill;
-    isLoadingSkill: boolean;
+    listSkill: ISkill[];
+    loadingSkill: boolean;
+    updateSkill: {
+        loadingUpdateSkill: boolean;
+        updateSkillStatus: "success" | "failed" | "none";
+    };
 }
-const initialState = {
-    skill: {
-        serviceId: -1,
-        name: "",
-        type: -1,
-        price: 0,
-        rate: -1,
-        desc: "",
-        createdAt: "",
-        updatedAt: "",
-        skillId: -1,
-        skill: {},
-        image: "",
+const initialState: ISkillSlice = {
+    listSkill: [],
+    loadingSkill: false,
+    updateSkill: {
+        loadingUpdateSkill: false,
+        updateSkillStatus: "none",
     },
-    isLoadingSkill: false,
 };
 
-export const getAllSkillAsync = createAsyncThunk("skill", async () => {
-    var response = await getAllSkillApi();
+export const getAllSkillAsync = createAsyncThunk("getSkill", async () => {
+    var response = await getAllSkillAPI();
     return response.data;
 });
+
+export const createSkillAsync = createAsyncThunk(
+    "createSkill",
+    async (skill: ISkill) => {
+        return (await createSkillAPI(skill)).data;
+    }
+);
+
+export const updateSkillAsync = createAsyncThunk(
+    "updateSkill",
+    async (skill: ISkill) => {
+        return (await updateSkillAPI(skill)).data;
+    }
+);
 
 export const skillSlice = createSlice({
     name: "skillAll",
@@ -36,27 +50,57 @@ export const skillSlice = createSlice({
             return initialState;
         },
         setAllSkill: (state, action) => {
-            state.skill = action.payload;
+            state.listSkill = action.payload;
+        },
+        clearUpdateSkill: (state) => {
+            return { ...state, updateSkill: initialState.updateSkill };
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(getAllSkillAsync.pending, (state, action) => {
-                state.isLoadingSkill = true;
+                state.loadingSkill = true;
             })
             .addCase(getAllSkillAsync.fulfilled, (state, action) => {
-                const { data } = action.payload;
-                state.skill = data;
-                state.isLoadingSkill = false;
+                state.listSkill = action.payload;
+                state.loadingSkill = false;
             })
             .addCase(
                 getAllSkillAsync.rejected,
                 (state, action: PayloadAction<any>) => {
-                    state.isLoadingSkill = false;
+                    state.loadingSkill = false;
+                }
+            )
+            .addCase(createSkillAsync.pending, (state, action) => {
+                state.updateSkill.loadingUpdateSkill = true;
+            })
+            .addCase(createSkillAsync.fulfilled, (state, action) => {
+                state.updateSkill.loadingUpdateSkill = false;
+                state.updateSkill.updateSkillStatus = "success";
+            })
+            .addCase(
+                createSkillAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateSkill.loadingUpdateSkill = false;
+                    state.updateSkill.updateSkillStatus = "failed";
+                }
+            )
+            .addCase(updateSkillAsync.pending, (state, action) => {
+                state.updateSkill.loadingUpdateSkill = true;
+            })
+            .addCase(updateSkillAsync.fulfilled, (state, action) => {
+                state.updateSkill.loadingUpdateSkill = false;
+                state.updateSkill.updateSkillStatus = "success";
+            })
+            .addCase(
+                updateSkillAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateSkill.loadingUpdateSkill = false;
+                    state.updateSkill.updateSkillStatus = "failed";
                 }
             );
     },
 });
 
 export default skillSlice.reducer;
-export const { setAllSkill } = skillSlice.actions;
+export const { setAllSkill, clearUpdateSkill } = skillSlice.actions;

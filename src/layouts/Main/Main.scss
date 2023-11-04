@@ -18,6 +18,8 @@
         ._main_child {
             width: 100%;
             height: calc(100vh - 70px);
+            padding: 10px 20px;
+            box-sizing: border-box;
         }
     }
 

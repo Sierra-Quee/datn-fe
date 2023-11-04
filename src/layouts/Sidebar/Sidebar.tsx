@@ -13,12 +13,16 @@ import { useState } from "react";
 
 import "./Sidebar.scss";
 import Images from "../../assets/Images";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { RoutePath } from "../../routes";
+import { SIDEBAR } from "../../utils/constants";
 
 export type MenuItem = Required<MenuProps>["items"][number];
 
 const Sidebar = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
+
+    const location = useLocation();
 
     const getItem = (
         label: React.ReactNode,
@@ -37,22 +41,44 @@ const Sidebar = () => {
     };
 
     const items: MenuItem[] = [
-        getItem(<Link to="/">Trang chủ</Link>, "1", <HomeOutlined />),
+        getItem(
+            <Link to={RoutePath.Home}>Trang chủ</Link>,
+            "1",
+            <HomeOutlined />
+        ),
         getItem("Quản lý đơn hàng", "2", <UnorderedListOutlined />, [
-            getItem(<Link to="lis-order">Danh sách đơn hàng</Link>, "3"),
+            getItem(<Link to={RoutePath.Order}>Danh sách đơn hàng</Link>, "3"),
             getItem(
-                <Link to="lis-order-comment">Các nhận xét về đơn hàng</Link>,
+                <Link to={RoutePath.Comment}>Các nhận xét về đơn hàng</Link>,
                 "4"
             ),
         ]),
-        getItem("Quản lý dịch vụ", "5", <GlobalOutlined />),
-        getItem("Quản lý người dùng", "6", <UserOutlined />, [
-            getItem(<Link to="list-employee">Danh sách thợ</Link>, "7"),
-            getItem(<Link to="lis-customer">Danh sách khách hàng</Link>, "8"),
+        getItem("Quản lý dịch vụ", "5", <GlobalOutlined />, [
+            getItem(
+                <Link to={RoutePath.Skill}>Danh sách loại dịch vụ</Link>,
+                "6"
+            ),
+            getItem(<Link to={RoutePath.Service}>Danh sách dịch vụ</Link>, "7"),
         ]),
-        getItem("Lịch sử thanh toán", "9", <WalletOutlined />),
-        getItem("Cấu hình hệ thống", "10", <SettingOutlined />),
+        getItem("Quản lý người dùng", "8", <UserOutlined />, [
+            getItem(<Link to={RoutePath.Employee}>Danh sách thợ</Link>, "9"),
+            getItem(
+                <Link to={RoutePath.Customer}>Danh sách khách hàng</Link>,
+                "10"
+            ),
+        ]),
+        getItem("Lịch sử thanh toán", "11", <WalletOutlined />),
+        getItem("Cấu hình hệ thống", "12", <SettingOutlined />),
     ];
+
+    const getSelectedKey = (): string => {
+        return SIDEBAR.filter((item) => item.path === location.pathname)[0].key;
+    };
+
+    const getSelectedOpenKey = (): string => {
+        const item = SIDEBAR.filter((item) => item.path === location.pathname);
+        return item.length > 0 ? (item[0].openKey as string) : "";
+    };
 
     return (
         <div

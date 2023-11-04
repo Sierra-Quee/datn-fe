@@ -13,8 +13,8 @@ export const deepClone = <T>(value: T): T => {
     return JSON.parse(JSON.stringify(value));
 };
 
-export const formatDate = (value: any): string => {
-    return moment(value).format(FORMAT_DATE);
+export const formatDate = (value: any, format?: string): string => {
+    return moment(value).format(format || FORMAT_DATE);
 };
 
 export const compareObj = <T>(value1: T, value2: T) => {

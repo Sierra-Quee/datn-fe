@@ -1,21 +1,23 @@
 import { BrowserRouter, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { PrivateRoute } from "./core/auth/private-route";
-import { Role } from "./core/auth/roles";
+import { useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import Account from "./components/Account/Account";
+import { Home } from "./components/Home/home";
 import LogIn from "./components/Login/LogIn";
 import SignUp from "./components/Signup/SignUp";
-import { RoutePath } from "./routes";
+import { PrivateRoute } from "./core/auth/private-route";
+import { Role } from "./core/auth/roles";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";
-import { Home } from "./components/Home/home";
-import { useAppDispatch, useAppSelector } from "./redux/hook";
-import { useEffect } from "react";
 import { getAccount } from "./core/reducers/authentication";
-import "react-toastify/dist/ReactToastify.css";
-import { getCookie } from "./utils/functions/cookies";
-import { ACCESS_TOKEN } from "./utils/constants";
 import NotFound from "./layouts/NotFound/NotFound";
-import Account from "./components/Account/Account";
+import { useAppDispatch, useAppSelector } from "./redux/hook";
+import { RoutePath } from "./routes";
+import { ACCESS_TOKEN } from "./utils/constants";
+import { getCookie } from "./utils/functions/cookies";
+import { Skill } from "./components/Skill/Skill";
+import SystemService from "./components/SystemService/SystemService";
 
 function App() {
     const { isAuthenticated } = useAppSelector((state) => state.authentication);
@@ -58,6 +60,22 @@ function App() {
                                     ]}
                                 >
                                     <Account />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path={RoutePath.Skill}
+                            element={
+                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
+                                    <Skill />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path={RoutePath.Service}
+                            element={
+                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
+                                    <SystemService />
                                 </PrivateRoute>
                             }
                         />

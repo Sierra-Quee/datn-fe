@@ -1,0 +1,53 @@
+.update-skill-modal {
+    button.ant-btn.ant-btn-default {
+        width: unset;
+        background-color: #ffffff;
+        border: 1px solid #d9d9d9;
+        padding: 5px 11px;
+
+        &:hover,
+        &:focus {
+            background-color: #ffffff !important;
+        }
+    }
+
+    button.ant-btn.ant-btn-primary {
+        width: unset;
+        background-color: var(--primary);
+        border: 1px solid transparent;
+        padding: 5px 11px;
+
+        &:hover,
+        &:focus {
+            background-color: var(--primary) !important;
+        }
+    }
+
+    .modal-update-skill-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .btn-upload-image {
+            padding: 8px 11px;
+            background-color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            color: white;
+            display: block;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+
+        .image-skill {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #ccc;
+        }
+    }
+}

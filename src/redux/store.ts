@@ -7,7 +7,7 @@ export const store = configureStore({
     reducer: {
         authentication: authenticationReducer,
         register: registerReducer,
-        skillAll: skillReducer,
+        skill: skillReducer,
     },
 });
 

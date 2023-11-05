@@ -16,6 +16,10 @@ interface ISkillSlice {
         loadingUpdateSkill: boolean;
         updateSkillStatus: "success" | "failed" | "none";
     };
+    updateStatusSkill: {
+        loadingUpdateStatusSkill: boolean;
+        updateStatusSkillStatus: "success" | "failed" | "none";
+    };
 }
 const initialState: ISkillSlice = {
     listSkill: [],
@@ -24,6 +28,10 @@ const initialState: ISkillSlice = {
     updateSkill: {
         loadingUpdateSkill: false,
         updateSkillStatus: "none",
+    },
+    updateStatusSkill: {
+        loadingUpdateStatusSkill: false,
+        updateStatusSkillStatus: "none",
     },
 };
 
@@ -75,6 +83,12 @@ export const skillSlice = createSlice({
         },
         clearSkill: (state) => {
             return { ...state, skill: initialState.skill };
+        },
+        clearUpdateStatusSkill: (state) => {
+            return {
+                ...state,
+                updateStatusSkill: initialState.updateStatusSkill,
+            };
         },
     },
     extraReducers: (builder) => {
@@ -134,21 +148,26 @@ export const skillSlice = createSlice({
                 }
             )
             .addCase(updateStatusSkillAsync.pending, (state, action) => {
-                state.updateSkill.loadingUpdateSkill = true;
+                state.updateStatusSkill.loadingUpdateStatusSkill = true;
             })
             .addCase(updateStatusSkillAsync.fulfilled, (state, action) => {
-                state.updateSkill.loadingUpdateSkill = false;
-                state.updateSkill.updateSkillStatus = "success";
+                state.updateStatusSkill.loadingUpdateStatusSkill = false;
+                state.updateStatusSkill.updateStatusSkillStatus = "success";
             })
             .addCase(
                 updateStatusSkillAsync.rejected,
                 (state, action: PayloadAction<any>) => {
-                    state.updateSkill.loadingUpdateSkill = false;
-                    state.updateSkill.updateSkillStatus = "failed";
+                    state.updateStatusSkill.loadingUpdateStatusSkill = false;
+                    state.updateStatusSkill.updateStatusSkillStatus = "failed";
                 }
             );
     },
 });
 
 export default skillSlice.reducer;
-export const { setAllSkill, clearUpdateSkill, clearSkill } = skillSlice.actions;
+export const {
+    setAllSkill,
+    clearUpdateSkill,
+    clearSkill,
+    clearUpdateStatusSkill,
+} = skillSlice.actions;

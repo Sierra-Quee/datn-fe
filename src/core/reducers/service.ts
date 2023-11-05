@@ -15,6 +15,10 @@ interface IServiceSlice {
         loadingUpdateService: boolean;
         updateServiceStatus: "success" | "failed" | "none";
     };
+    updateStatusService: {
+        loadingUpdateStatusService: boolean;
+        updateStatusServiceStatus: "success" | "failed" | "none";
+    };
 }
 const initialState: IServiceSlice = {
     listService: [],
@@ -22,6 +26,10 @@ const initialState: IServiceSlice = {
     updateService: {
         loadingUpdateService: false,
         updateServiceStatus: "none",
+    },
+    updateStatusService: {
+        loadingUpdateStatusService: false,
+        updateStatusServiceStatus: "none",
     },
 };
 
@@ -76,6 +84,12 @@ export const ServiceSlice = createSlice({
         },
         clearUpdateService: (state) => {
             return { ...state, updateService: initialState.updateService };
+        },
+        clearUpdateStatusService: (state) => {
+            return {
+                ...state,
+                updateStatusService: initialState.updateStatusService,
+            };
         },
     },
     extraReducers: (builder) => {
@@ -135,17 +149,19 @@ export const ServiceSlice = createSlice({
                 }
             )
             .addCase(deleteServiceAsync.pending, (state, action) => {
-                state.updateService.loadingUpdateService = true;
+                state.updateStatusService.loadingUpdateStatusService = true;
             })
             .addCase(deleteServiceAsync.fulfilled, (state, action) => {
-                state.updateService.updateServiceStatus = "success";
-                state.updateService.loadingUpdateService = false;
+                state.updateStatusService.updateStatusServiceStatus = "success";
+                state.updateStatusService.loadingUpdateStatusService = false;
             })
             .addCase(
                 deleteServiceAsync.rejected,
                 (state, action: PayloadAction<any>) => {
-                    state.updateService.updateServiceStatus = "failed";
-                    state.updateService.loadingUpdateService = false;
+                    state.updateStatusService.updateStatusServiceStatus =
+                        "failed";
+                    state.updateStatusService.loadingUpdateStatusService =
+                        false;
                 }
             );
     },
@@ -153,5 +169,9 @@ export const ServiceSlice = createSlice({
 
 export default ServiceSlice.reducer;
 
-export const { setAllService, clearListService, clearUpdateService } =
-    ServiceSlice.actions;
+export const {
+    setAllService,
+    clearListService,
+    clearUpdateService,
+    clearUpdateStatusService,
+} = ServiceSlice.actions;

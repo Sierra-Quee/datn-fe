@@ -4,6 +4,7 @@ export interface ISkill {
     createdAt?: string;
     updatedAt?: string;
     imageUrl: string;
+    isActive?: boolean;
 }
 export interface IService {
     serviceId: string;

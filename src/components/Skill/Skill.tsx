@@ -1,18 +1,22 @@
 import { ISkill } from "../../utils/model";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { useEffect, useState } from "react";
-import { getAllSkillAsync } from "../../core/reducers/skill";
+import {
+    clearUpdateStatusSkill,
+    getAllSkillAsync,
+    updateStatusSkillAsync,
+} from "../../core/reducers/skill";
 import Table, { ColumnsType } from "antd/es/table";
-import { Button, Input, Spin } from "antd";
+import { Button, Input, Spin, Switch } from "antd";
 import "./Skill.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import UpdateSkill from "./UpdateSkill/UpdateSkill";
 import { formatDate } from "../../utils/functions/utils";
 import { FORMAT_DATETIME } from "../../utils/constants";
 import useDebounce from "../../hooks/useDebounce";
+import { toast } from "react-toastify";
 
 export const Skill = () => {
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [skillUpdate, setSkillUpdate] = useState<ISkill | null | undefined>();
     const [searchInput, setSearchInput] = useState<string>("");
@@ -22,11 +26,22 @@ export const Skill = () => {
 
     const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
 
+    const { loadingUpdateStatusSkill, updateStatusSkillStatus } =
+        useAppSelector((state) => state.skill.updateStatusSkill);
+
     const debounce = useDebounce(searchInput);
 
     useEffect(() => {
         handleGetAllSkillAsync();
     }, []);
+
+    useEffect(() => {
+        if (updateStatusSkillStatus === "success") {
+            toast.success("Cập nhật trang thái thành công");
+            dispatch(clearUpdateStatusSkill());
+            handleGetAllSkillAsync();
+        }
+    }, [updateStatusSkillStatus]);
 
     useEffect(() => {
         setSkills(listSkill);
@@ -44,15 +59,6 @@ export const Skill = () => {
         setSearchInput(e.target.value);
     };
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: onSelectChange,
-    };
-
     const handleGetAllSkillAsync = async () => {
         await dispatch(getAllSkillAsync());
     };
@@ -60,6 +66,10 @@ export const Skill = () => {
     const openUpdateModal = (data: ISkill) => {
         setIsOpenModal(!isOpenModal);
         setSkillUpdate(data);
+    };
+
+    const changeStatus = async (checked: boolean, skillId: number) => {
+        await dispatch(updateStatusSkillAsync(skillId));
     };
 
     const columns: ColumnsType<ISkill> = [
@@ -84,6 +94,21 @@ export const Skill = () => {
             dataIndex: "updatedAt",
         },
         {
+            title: "Trạng thái",
+            key: "isActive",
+            dataIndex: "",
+            render: (_: any, record: ISkill) => {
+                return (
+                    <Switch
+                        onChange={(checked) => {
+                            changeStatus(checked, record.skillId as number);
+                        }}
+                        checked={record.isActive}
+                    />
+                );
+            },
+        },
+        {
             title: "",
             key: "action",
             dataIndex: "",
@@ -103,7 +128,7 @@ export const Skill = () => {
     ];
 
     return (
-        <Spin spinning={loadingSkill}>
+        <Spin spinning={loadingSkill || loadingUpdateStatusSkill}>
             <div className="skill">
                 <h2>Danh sách loại dịch vụ</h2>
                 <div className="header-table-skill">
@@ -131,7 +156,6 @@ export const Skill = () => {
                             updatedAt: formatDate(d.updatedAt, FORMAT_DATETIME),
                         };
                     })}
-                    rowSelection={rowSelection}
                     pagination={{ pageSize: 7 }}
                 />
                 {isOpenModal && (

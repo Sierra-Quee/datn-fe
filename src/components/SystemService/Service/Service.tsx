@@ -1,5 +1,5 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Table } from "antd";
+import { Button, Input, Spin, Switch, Table } from "antd";
 import { convertServiceType, formatDate } from "../../../utils/functions/utils";
 import { FORMAT_DATETIME } from "../../../utils/constants";
 import { useEffect, useState } from "react";
@@ -10,14 +10,16 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import useDebounce from "../../../hooks/useDebounce";
 import {
     clearListService,
+    clearUpdateStatusService,
+    deleteServiceAsync,
     getServiceBySkillIdAsync,
 } from "../../../core/reducers/service";
 import "./Service.scss";
 import { clearSkill, getSkillByIdAsync } from "../../../core/reducers/skill";
 import UpdateService from "./UpdateService/UpdateService";
+import { toast } from "react-toastify";
 
 const Service = () => {
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [serviceUpdate, setServiceUpdate] = useState<
         IService | null | undefined
@@ -30,7 +32,10 @@ const Service = () => {
     const { listService, isLoadingService } = useAppSelector(
         (state) => state.service
     );
+    const { loadingUpdateStatusService, updateStatusServiceStatus } =
+        useAppSelector((state) => state.service.updateStatusService);
     const { skill, loadingSkill } = useAppSelector((state) => state.skill);
+
     const debounce = useDebounce(searchInput);
 
     useEffect(() => {
@@ -42,6 +47,14 @@ const Service = () => {
             dispatch(clearListService());
         };
     }, []);
+
+    useEffect(() => {
+        if (updateStatusServiceStatus === "success") {
+            toast.success("Cập nhật trang thái thành công");
+            dispatch(clearUpdateStatusService());
+            handleGetAllServiceAsync();
+        }
+    }, [updateStatusServiceStatus]);
 
     useEffect(() => {
         setServices(listService);
@@ -72,13 +85,8 @@ const Service = () => {
         setSearchInput(e.target.value);
     };
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: onSelectChange,
+    const onChangeStatus = async (checked: boolean, serviceId: string) => {
+        await dispatch(deleteServiceAsync(serviceId));
     };
 
     const columns: ColumnsType<IService> = [
@@ -128,11 +136,26 @@ const Service = () => {
             dataIndex: "createdAt",
         },
         {
+            title: "Trạng thái",
+            key: "isActive",
+            dataIndex: "isActive",
+            fixed: "right",
+            width: 100,
+            render: (_: any, record: IService) => (
+                <Switch
+                    checked={record.isActive}
+                    onChange={(checked) =>
+                        onChangeStatus(checked, record.serviceId)
+                    }
+                />
+            ),
+        },
+        {
             title: "",
             key: "action",
             dataIndex: "",
             fixed: "right",
-            width: 150,
+            width: 100,
             render: (_: any, record: IService) => (
                 <div>
                     <a
@@ -149,7 +172,11 @@ const Service = () => {
     ];
 
     return (
-        <Spin spinning={loadingSkill || isLoadingService}>
+        <Spin
+            spinning={
+                loadingSkill || isLoadingService || loadingUpdateStatusService
+            }
+        >
             <div className="service">
                 <h2>Danh sách các dịch vụ của {skill?.name}</h2>
                 <div className="header-table-service">
@@ -178,7 +205,6 @@ const Service = () => {
                             type: convertServiceType(d.type as ITypeService),
                         };
                     })}
-                    rowSelection={rowSelection}
                     pagination={{ pageSize: 7 }}
                     scroll={{ x: 1300 }}
                 />

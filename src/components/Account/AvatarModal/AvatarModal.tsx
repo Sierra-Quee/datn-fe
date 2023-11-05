@@ -9,11 +9,11 @@ import ErrorBoundary from "../../../core/errors/error-boundary";
 import {
     IAccount,
     resetUpdateProfile,
-    resetUploadImage,
     updateProfile,
 } from "../../../core/reducers/authentication";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import CustomCropper from "./CustomCropper/CustomCropper";
+import { resetUploadImage } from "../../../core/reducers/image_cloud";
 
 interface AvatarModalProps {
     isOpen: boolean;
@@ -31,12 +31,10 @@ const AvatarModal = ({ isOpen, close, account }: AvatarModalProps) => {
     );
 
     useEffect(() => {
-        if (updateProfileSuccess && !isOpenCrop) {
+        if (updateProfileSuccess) {
             close();
-            dispatch(resetUpdateProfile());
-            dispatch(resetUploadImage());
         }
-    }, [updateProfileSuccess, isOpenCrop, close, dispatch]);
+    }, [updateProfileSuccess, close, dispatch]);
 
     const deleteAvatarAction = async () => {
         await dispatch(updateProfile({ ...account, imageUrl: "" }));

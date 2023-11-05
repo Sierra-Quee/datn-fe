@@ -1,85 +1,90 @@
-import { Button, Space, Table, Tag } from "antd";
+import { Button, Card, Input, Space, Spin, Table, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import useDebounce from "../../hooks/useDebounce";
+import { getAllSkillAsync } from "../../core/reducers/skill";
+import { ISkill } from "../../utils/model";
+import { Link } from "react-router-dom";
+import Images from "../../assets/Images";
+import "./SystemService.scss";
+import { SearchOutlined } from "@ant-design/icons";
 
-interface DataType {
-    key: string;
-    name: string;
-    services: string[];
-}
 const SystemService = () => {
-    const data: DataType[] = [
-        {
-            key: "1",
-            name: "Điện ",
-            services: ["a", "b"],
-        },
-        {
-            key: "2",
-            name: "Điện tử",
-            services: ["a", "b"],
-        },
-        {
-            key: "3",
-            name: "Điện lạnh",
-            services: ["a", "b"],
-        },
-        {
-            key: "4",
-            name: "Điện nước",
-            services: ["a", "b"],
-        },
-    ];
+    const [searchInput, setSearchInput] = useState<string>("");
+    const [skills, setSkills] = useState<ISkill[]>([]);
 
-    const columnsServices: ColumnsType<DataType> = [
-        {
-            title: "Name",
-            dataIndex: "name",
-            key: "name",
-            render: (text: string) => <a>{text}</a>,
-        },
-        {
-            title: "Created By",
-            dataIndex: "age",
-            key: "age",
-        },
-        {
-            title: "Services",
-            key: "services",
-            dataIndex: "services",
-            render: (services: any[]) => (
-                <>
-                    {services.map((service: any) => {
-                        let color = service.length > 5 ? "geekblue" : "green";
-                        if (service === "loser") {
-                            color = "volcano";
-                        }
-                        return (
-                            <Tag color={color} key={service}>
-                                {service.toUpperCase()}
-                            </Tag>
-                        );
-                    })}
-                </>
-            ),
-        },
-        {
-            title: "Action",
-            key: "action",
-            render: (e: any, record: any) => (
-                <Space size="middle">
-                    <a>Edit</a>
-                    <a>Delete</a>
-                </Space>
-            ),
-        },
-    ];
+    const dispatch = useAppDispatch();
+    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
+
+    const debounce = useDebounce(searchInput);
+
+    useEffect(() => {
+        handleGetAllSkillAsync();
+    }, []);
+
+    useEffect(() => {
+        setSkills(listSkill);
+    }, [listSkill]);
+
+    useEffect(() => {
+        setSkills(
+            listSkill.filter((s) =>
+                s.name.toLowerCase().includes(searchInput.toLowerCase())
+            )
+        );
+    }, [debounce]);
+
+    const handleGetAllSkillAsync = async () => {
+        await dispatch(getAllSkillAsync());
+    };
+
+    const handleFindSkill = (e: any) => {
+        setSearchInput(e.target.value);
+    };
 
     return (
-        <div>
-            <Button type="primary" icon="">
-                Create
-            </Button>
-            <Table columns={columnsServices} dataSource={data} />;
+        <div className="system-service">
+            <Spin spinning={loadingSkill}>
+                <div className="wrap-input-find">
+                    <Input
+                        addonBefore={
+                            <SearchOutlined style={{ fontSize: "20px" }} />
+                        }
+                        placeholder="Nhập loại dịch vụ cần tìm kiếm"
+                        onChange={handleFindSkill}
+                    />
+                </div>
+                <div className="system-service-content">
+                    {skills.map((skill) => {
+                        return (
+                            <Link key={skill.skillId} to={`${skill.skillId}`}>
+                                <Card
+                                    hoverable
+                                    style={{ width: 250 }}
+                                    cover={
+                                        <img
+                                            alt="card"
+                                            style={{
+                                                height: 250,
+                                                backgroundColor: "#ccc",
+                                            }}
+                                            src={
+                                                skill.imageUrl ||
+                                                Images.no_image
+                                            }
+                                        />
+                                    }
+                                >
+                                    <div style={{ textAlign: "center" }}>
+                                        {skill.name}
+                                    </div>
+                                </Card>
+                            </Link>
+                        );
+                    })}
+                </div>
+            </Spin>
         </div>
     );
 };

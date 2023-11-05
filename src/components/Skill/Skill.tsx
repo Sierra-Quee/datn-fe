@@ -1,15 +1,12 @@
-import { Link } from "react-router-dom";
 import { ISkill } from "../../utils/model";
-import { ServiceComponent } from "../Services/Service";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { useEffect, useState } from "react";
-import skill, { getAllSkillAsync } from "../../core/reducers/skill";
+import { getAllSkillAsync } from "../../core/reducers/skill";
 import Table, { ColumnsType } from "antd/es/table";
 import { Button, Input, Spin } from "antd";
 import "./Skill.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import UpdateSkill from "./UpdateSkill/UpdateSkill";
-import DeleteSkill from "./DeleteSkill/DeleteSkill";
 import { formatDate } from "../../utils/functions/utils";
 import { FORMAT_DATETIME } from "../../utils/constants";
 import useDebounce from "../../hooks/useDebounce";
@@ -17,9 +14,7 @@ import useDebounce from "../../hooks/useDebounce";
 export const Skill = () => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-    const [isDeleteSkill, setIsDeleteSkill] = useState<boolean>(false);
     const [skillUpdate, setSkillUpdate] = useState<ISkill | null | undefined>();
-    const [skillDelete, setSkillDelete] = useState<ISkill | null>(null);
     const [searchInput, setSearchInput] = useState<string>("");
     const [skills, setSkills] = useState<ISkill[]>([]);
 
@@ -38,15 +33,19 @@ export const Skill = () => {
     }, [listSkill]);
 
     useEffect(() => {
-        setSkills(listSkill.filter((s) => s.name.includes(searchInput)));
+        setSkills(
+            listSkill.filter((s) =>
+                s.name.toLowerCase().includes(searchInput.toLowerCase())
+            )
+        );
     }, [debounce]);
-
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
 
     const handleFindSkill = (e: any) => {
         setSearchInput(e.target.value);
+    };
+
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+        setSelectedRowKeys(newSelectedRowKeys);
     };
 
     const rowSelection = {
@@ -73,7 +72,6 @@ export const Skill = () => {
             title: "Tên nhóm dịch vụ",
             dataIndex: "name",
             key: "name",
-            render: (text: string) => <a>{text}</a>,
         },
         {
             title: "Thời gian tạo",
@@ -82,8 +80,8 @@ export const Skill = () => {
         },
         {
             title: "Thời gian cập nhật",
-            key: "createdAt",
-            dataIndex: "createdAt",
+            key: "updatedAt",
+            dataIndex: "updatedAt",
         },
         {
             title: "",
@@ -95,12 +93,10 @@ export const Skill = () => {
                         style={{ marginRight: "10px" }}
                         onClick={() => {
                             openUpdateModal(record);
-                            setSkillUpdate(record);
                         }}
                     >
                         Cập nhật
                     </a>
-                    <a>Xóa</a>
                 </div>
             ),
         },
@@ -127,7 +123,7 @@ export const Skill = () => {
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={skills.map((d) => {
+                    dataSource={skills.map((d: ISkill) => {
                         return {
                             ...d,
                             key: d.skillId,
@@ -148,16 +144,6 @@ export const Skill = () => {
                         skill={skillUpdate}
                         isCreate={!skillUpdate}
                         handleGetAllSkillAsync={handleGetAllSkillAsync}
-                    />
-                )}
-                {isDeleteSkill && (
-                    <DeleteSkill
-                        isOpen={isDeleteSkill}
-                        skill={skillDelete}
-                        close={() => {
-                            setSkillDelete(null);
-                            setIsDeleteSkill(!isDeleteSkill);
-                        }}
                     />
                 )}
             </div>

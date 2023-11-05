@@ -2,16 +2,19 @@ import "cropperjs/dist/cropper.css";
 import "./CustomCropper.scss";
 
 import { Button, Modal } from "antd";
-import { createRef, useEffect } from "react";
+import { createRef, useEffect, useState } from "react";
 import { Cropper, ReactCropperElement } from "react-cropper";
-import { toast } from "react-toastify";
 
 import ErrorBoundary from "../../../../core/errors/error-boundary";
 import {
+    IAccount,
     updateProfile,
-    uploadImageCloud,
 } from "../../../../core/reducers/authentication";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hook";
+import {
+    resetUploadImage,
+    uploadImageCloud,
+} from "../../../../core/reducers/image_cloud";
 
 interface CustomCropperProps {
     isOpenCustom: boolean;
@@ -24,6 +27,7 @@ const CustomCropper = ({
     closeCropper,
     image,
 }: CustomCropperProps) => {
+    const [accountProfile, setAccountProfile] = useState<IAccount>();
     const cropperRef = createRef<ReactCropperElement>();
     const dispatch = useAppDispatch();
 
@@ -35,30 +39,44 @@ const CustomCropper = ({
         (state) => state.authentication
     );
 
-    const { uploadFailed, uploadSuccess, errorMessageUpload } = useAppSelector(
-        (state) => state.authentication.uploadImage
-    );
+    const {
+        uploadSuccess,
+        loadingUploadImage,
+        image: imageCloud,
+    } = useAppSelector((state) => state.imageCloud);
+
+    useEffect(() => {
+        setAccountProfile(account);
+    }, []);
 
     useEffect(() => {
         if (updateProfileSuccess) {
+            dispatch(resetUploadImage());
             closeCropper();
         }
     }, [updateProfileSuccess, closeCropper]);
 
     useEffect(() => {
-        if (uploadFailed && errorMessageUpload) {
-            toast.error(errorMessageUpload);
-        } else if (uploadSuccess) {
+        if (uploadSuccess) {
             const update = async () => {
-                await dispatch(updateProfile(account));
+                await dispatch(
+                    updateProfile({
+                        ...(accountProfile as IAccount),
+                        imageUrl: imageCloud,
+                    })
+                );
             };
             update();
         }
-    }, [uploadFailed, uploadSuccess, errorMessageUpload, account, dispatch]);
+    }, [uploadSuccess, accountProfile, dispatch]);
 
     const buttonCancel = () => {
         return (
-            <Button key={1} disabled={loading} onClick={closeCropper}>
+            <Button
+                key={1}
+                disabled={loading || loadingUploadImage}
+                onClick={closeCropper}
+            >
                 Hủy bỏ
             </Button>
         );
@@ -70,7 +88,7 @@ const CustomCropper = ({
                 key={2}
                 type="primary"
                 onClick={getCropData}
-                loading={loading}
+                loading={loading || loadingUploadImage}
             >
                 Lưu
             </Button>

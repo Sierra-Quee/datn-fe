@@ -8,7 +8,11 @@ import { toast } from "react-toastify";
 
 import Images from "../../../assets/Images";
 import ErrorBoundary from "../../../core/errors/error-boundary";
-import { IAccount, updateProfile } from "../../../core/reducers/authentication";
+import {
+    IAccount,
+    resetUpdateProfile,
+    updateProfile,
+} from "../../../core/reducers/authentication";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { FORMAT_DATE } from "../../../utils/constants";
 import {
@@ -27,21 +31,16 @@ const Profile = ({ account }: ProfileProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const dispatch = useAppDispatch();
 
-    const { updateProfileFailed, errorMessageUpdate, updateProfileSuccess } =
-        useAppSelector((state) => state.authentication.updateProfile);
+    const { updateProfileSuccess } = useAppSelector(
+        (state) => state.authentication.updateProfile
+    );
 
     useEffect(() => {
-        if (updateProfileFailed && errorMessageUpdate) {
-            errorMessageUpdate?.forEach((mess: string) => toast.error(mess));
-        } else if (updateProfileSuccess) {
+        if (updateProfileSuccess) {
             toast.success("Cập nhật tài khoản thành công");
+            dispatch(resetUpdateProfile());
         }
-    }, [
-        updateProfileFailed,
-        errorMessageUpdate,
-        updateProfileSuccess,
-        dispatch,
-    ]);
+    }, [updateProfileSuccess, dispatch]);
 
     const changeAvatar = () => {
         setIsOpen(true);

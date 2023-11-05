@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import Sidebar from "../Sidebar/Sidebar";
 import "./Main.scss";
@@ -10,6 +10,8 @@ export interface MainProps {
 }
 
 const Main = ({ children }: MainProps) => {
+    const [collapsed, setCollapsed] = useState<boolean>(false);
+
     const { account } = useAppSelector((state) => state.authentication);
     return (
         <div className="main">
@@ -17,9 +19,19 @@ const Main = ({ children }: MainProps) => {
                 <>
                     {" "}
                     <div className="_sidebar">
-                        <Sidebar />
+                        <Sidebar
+                            collapsed={collapsed}
+                            setCollapsed={() => setCollapsed(!collapsed)}
+                        />
                     </div>
-                    <div className="_main">
+                    <div
+                        className="_main"
+                        style={{
+                            width: collapsed
+                                ? "calc(100vw - 85px)"
+                                : "calc(100vw - 250px)",
+                        }}
+                    >
                         <div className="_navbar">
                             <Navbar />
                         </div>

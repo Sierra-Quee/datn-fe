@@ -17,7 +17,7 @@ import { RoutePath } from "./routes";
 import { ACCESS_TOKEN } from "./utils/constants";
 import { getCookie } from "./utils/functions/cookies";
 import { Skill } from "./components/Skill/Skill";
-import SystemService from "./components/SystemService/SystemService";
+import AdminServiceRoute from "./routes/adminServiceRoute";
 
 function App() {
     const { isAuthenticated } = useAppSelector((state) => state.authentication);
@@ -72,10 +72,10 @@ function App() {
                             }
                         />
                         <Route
-                            path={RoutePath.Service}
+                            path={`${RoutePath.Service}/*`}
                             element={
                                 <PrivateRoute roles={[Role.ROLE_ADMIN]}>
-                                    <SystemService />
+                                    <AdminServiceRoute />
                                 </PrivateRoute>
                             }
                         />

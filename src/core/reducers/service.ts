@@ -1,33 +1,63 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IService } from "../../utils/model";
-import { getAllServiceApi } from "../../api/service/serviceAPI";
+import { ICreateService, IService } from "../../utils/model";
+import {
+    createServiceAPI,
+    deleteServiceAPI,
+    getAllServiceAPI,
+    getServiceBySkillIdAPI,
+    updateServiceAPI,
+} from "../../api/service/serviceAPI";
 
 interface IServiceSlice {
-    service: IService;
+    listService: IService[];
     isLoadingService: boolean;
+    updateService: {
+        loadingUpdateService: boolean;
+        updateServiceStatus: "success" | "failed" | "none";
+    };
 }
-const initialState = {
-    service: {
-        serviceId: -1,
-        name: "",
-        type: -1,
-        price: -1,
-        rate: -1,
-        desc: "",
-        createdAt: -1,
-        updatedAt: -1,
-        skillId: -1,
-        skill: {},
-        image: "",
-    },
+const initialState: IServiceSlice = {
+    listService: [],
     isLoadingService: false,
+    updateService: {
+        loadingUpdateService: false,
+        updateServiceStatus: "none",
+    },
 };
 
 export const getAllServiceAsync = createAsyncThunk(
-    "Service",
-    async (id: number) => {
-        var response = await getAllServiceApi(id);
+    "getAllService",
+    async () => {
+        var response = await getAllServiceAPI();
         return response.data;
+    }
+);
+
+export const getServiceBySkillIdAsync = createAsyncThunk(
+    "getServiceBySkillId",
+    async (skillId: number) => {
+        return (await getServiceBySkillIdAPI(skillId)).data;
+    }
+);
+
+export const createServiceAsync = createAsyncThunk(
+    "createService",
+    async (service: ICreateService) => {
+        return (await createServiceAPI(service)).data;
+    }
+);
+
+export const updadteServiceAsync = createAsyncThunk(
+    "updateService",
+    async (service: IService) => {
+        return (await updateServiceAPI(service)).data;
+    }
+);
+
+export const deleteServiceAsync = createAsyncThunk(
+    "deleteService",
+    async (id: string) => {
+        return (await deleteServiceAPI(id)).data;
     }
 );
 
@@ -39,7 +69,13 @@ export const ServiceSlice = createSlice({
             return initialState;
         },
         setAllService: (state, action) => {
-            state.service = action.payload;
+            state.listService = action.payload;
+        },
+        clearListService: (state) => {
+            state.listService = [];
+        },
+        clearUpdateService: (state) => {
+            return { ...state, updateService: initialState.updateService };
         },
     },
     extraReducers: (builder) => {
@@ -48,8 +84,7 @@ export const ServiceSlice = createSlice({
                 state.isLoadingService = true;
             })
             .addCase(getAllServiceAsync.fulfilled, (state, action) => {
-                const { data } = action.payload;
-                state.service = data;
+                state.listService = action.payload;
                 state.isLoadingService = false;
             })
             .addCase(
@@ -57,10 +92,66 @@ export const ServiceSlice = createSlice({
                 (state, action: PayloadAction<any>) => {
                     state.isLoadingService = false;
                 }
+            )
+            .addCase(getServiceBySkillIdAsync.pending, (state, action) => {
+                state.isLoadingService = true;
+            })
+            .addCase(getServiceBySkillIdAsync.fulfilled, (state, action) => {
+                state.listService = action.payload;
+                state.isLoadingService = false;
+            })
+            .addCase(
+                getServiceBySkillIdAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.isLoadingService = false;
+                }
+            )
+            .addCase(createServiceAsync.pending, (state, action) => {
+                state.updateService.loadingUpdateService = true;
+            })
+            .addCase(createServiceAsync.fulfilled, (state, action) => {
+                state.updateService.updateServiceStatus = "success";
+                state.updateService.loadingUpdateService = false;
+            })
+            .addCase(
+                createServiceAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateService.updateServiceStatus = "failed";
+                    state.updateService.loadingUpdateService = false;
+                }
+            )
+            .addCase(updadteServiceAsync.pending, (state, action) => {
+                state.updateService.loadingUpdateService = true;
+            })
+            .addCase(updadteServiceAsync.fulfilled, (state, action) => {
+                state.updateService.updateServiceStatus = "success";
+                state.updateService.loadingUpdateService = false;
+            })
+            .addCase(
+                updadteServiceAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateService.updateServiceStatus = "failed";
+                    state.updateService.loadingUpdateService = false;
+                }
+            )
+            .addCase(deleteServiceAsync.pending, (state, action) => {
+                state.updateService.loadingUpdateService = true;
+            })
+            .addCase(deleteServiceAsync.fulfilled, (state, action) => {
+                state.updateService.updateServiceStatus = "success";
+                state.updateService.loadingUpdateService = false;
+            })
+            .addCase(
+                deleteServiceAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateService.updateServiceStatus = "failed";
+                    state.updateService.loadingUpdateService = false;
+                }
             );
     },
 });
 
 export default ServiceSlice.reducer;
 
-export const { setAllService } = ServiceSlice.actions;
+export const { setAllService, clearListService, clearUpdateService } =
+    ServiceSlice.actions;

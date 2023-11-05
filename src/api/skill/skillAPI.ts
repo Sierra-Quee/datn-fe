@@ -16,3 +16,7 @@ export const getSkillByIdAPI = (id: number) => {
 export const updateSkillAPI = (skill: ISkill) => {
     return fetchHandler.patch("/skill/updateSkill", skill);
 };
+
+export const updateStatusSkillAPI = (skillId: number) => {
+    return fetchHandler.patch(`/skill/toggleSkillActive/${skillId}`);
+};

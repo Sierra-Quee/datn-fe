@@ -3,12 +3,15 @@ import { ISkill } from "../../utils/model";
 import {
     createSkillAPI,
     getAllSkillAPI,
+    getSkillByIdAPI,
     updateSkillAPI,
+    updateStatusSkillAPI,
 } from "../../api/skill/skillAPI";
 
 interface ISkillSlice {
     listSkill: ISkill[];
     loadingSkill: boolean;
+    skill?: ISkill | null | undefined;
     updateSkill: {
         loadingUpdateSkill: boolean;
         updateSkillStatus: "success" | "failed" | "none";
@@ -17,6 +20,7 @@ interface ISkillSlice {
 const initialState: ISkillSlice = {
     listSkill: [],
     loadingSkill: false,
+    skill: null,
     updateSkill: {
         loadingUpdateSkill: false,
         updateSkillStatus: "none",
@@ -42,6 +46,20 @@ export const updateSkillAsync = createAsyncThunk(
     }
 );
 
+export const updateStatusSkillAsync = createAsyncThunk(
+    "updateStatusSkill",
+    async (skillId: number) => {
+        return (await updateStatusSkillAPI(skillId)).data;
+    }
+);
+
+export const getSkillByIdAsync = createAsyncThunk(
+    "getSkillById",
+    async (skillId: number) => {
+        return (await getSkillByIdAPI(skillId)).data;
+    }
+);
+
 export const skillSlice = createSlice({
     name: "skillAll",
     initialState,
@@ -55,6 +73,9 @@ export const skillSlice = createSlice({
         clearUpdateSkill: (state) => {
             return { ...state, updateSkill: initialState.updateSkill };
         },
+        clearSkill: (state) => {
+            return { ...state, skill: initialState.skill };
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -67,6 +88,19 @@ export const skillSlice = createSlice({
             })
             .addCase(
                 getAllSkillAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.loadingSkill = false;
+                }
+            )
+            .addCase(getSkillByIdAsync.pending, (state, action) => {
+                state.loadingSkill = true;
+            })
+            .addCase(getSkillByIdAsync.fulfilled, (state, action) => {
+                state.skill = action.payload;
+                state.loadingSkill = false;
+            })
+            .addCase(
+                getSkillByIdAsync.rejected,
                 (state, action: PayloadAction<any>) => {
                     state.loadingSkill = false;
                 }
@@ -98,9 +132,23 @@ export const skillSlice = createSlice({
                     state.updateSkill.loadingUpdateSkill = false;
                     state.updateSkill.updateSkillStatus = "failed";
                 }
+            )
+            .addCase(updateStatusSkillAsync.pending, (state, action) => {
+                state.updateSkill.loadingUpdateSkill = true;
+            })
+            .addCase(updateStatusSkillAsync.fulfilled, (state, action) => {
+                state.updateSkill.loadingUpdateSkill = false;
+                state.updateSkill.updateSkillStatus = "success";
+            })
+            .addCase(
+                updateStatusSkillAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateSkill.loadingUpdateSkill = false;
+                    state.updateSkill.updateSkillStatus = "failed";
+                }
             );
     },
 });
 
 export default skillSlice.reducer;
-export const { setAllSkill, clearUpdateSkill } = skillSlice.actions;
+export const { setAllSkill, clearUpdateSkill, clearSkill } = skillSlice.actions;

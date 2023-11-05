@@ -20,10 +20,15 @@ body {
     height: 100%;
 }
 
+a {
+    text-decoration: none;
+}
+
 // Scrollbar CSS
 html *::-webkit-scrollbar {
     border-radius: 0;
     width: 8px;
+    height: 8px;
 }
 
 html *::-webkit-scrollbar {

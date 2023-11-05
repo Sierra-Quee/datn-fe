@@ -19,20 +19,17 @@ const Password = () => {
     const [validateStatusRePass, setValidateStatusRePass] =
         useState<ValidateStatus>();
     const [helpValidate, setHelpValidate] = useState<string | null>();
-    const { updatePassSuccess, updatePassFailed, errorMessageUpdatePass } =
-        useAppSelector((state) => state.authentication.updatePassword);
+    const { updatePassSuccess, updatePassFailed } = useAppSelector(
+        (state) => state.authentication.updatePassword
+    );
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (updatePassSuccess) {
             toast.success("Đổi mật khẩu thành công", { autoClose: 2000 });
             form.resetFields();
-        } else if (updatePassFailed) {
-            errorMessageUpdatePass?.forEach((mess: string) =>
-                toast.error(mess)
-            );
         }
-    }, [updatePassSuccess, updatePassFailed, errorMessageUpdatePass, form]);
+    }, [updatePassSuccess, updatePassFailed, form]);
 
     const onFinishChangePass = async (values: any) => {
         if (

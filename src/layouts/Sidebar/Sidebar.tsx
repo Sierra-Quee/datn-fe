@@ -19,9 +19,12 @@ import { SIDEBAR } from "../../utils/constants";
 
 export type MenuItem = Required<MenuProps>["items"][number];
 
-const Sidebar = () => {
-    const [collapsed, setCollapsed] = useState<boolean>(false);
+interface ISidebarProps {
+    collapsed: boolean;
+    setCollapsed: () => void;
+}
 
+const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
     const location = useLocation();
 
     const getItem = (
@@ -100,7 +103,7 @@ const Sidebar = () => {
                             fontSize: "25px",
                             cursor: "pointer",
                         }}
-                        onClick={() => setCollapsed(!collapsed)}
+                        onClick={() => setCollapsed()}
                     />
                 ) : (
                     <VerticalRightOutlined
@@ -109,7 +112,7 @@ const Sidebar = () => {
                             fontSize: "25px",
                             cursor: "pointer",
                         }}
-                        onClick={() => setCollapsed(!collapsed)}
+                        onClick={() => setCollapsed()}
                     />
                 )}
             </div>

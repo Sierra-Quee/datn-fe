@@ -45,7 +45,7 @@ const UpdateSkill = ({
             toast.success(
                 isCreate
                     ? "Thêm loại dịch vụ thành công"
-                    : "Cập nhật thông tin dịch vụ thành công"
+                    : "Cập nhật thông tin loại dịch vụ thành công"
             );
             dispatch(clearUpdateSkill());
             handleGetAllSkillAsync();

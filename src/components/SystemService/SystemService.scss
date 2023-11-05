@@ -1,0 +1,46 @@
+.system-service {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .ant-spin-nested-loading {
+        height: 100%;
+
+        .ant-spin-container {
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+
+            .wrap-input-find {
+                margin-top: 20px;
+
+                .ant-input-group-wrapper {
+                    width: unset;
+                    margin-left: 20px;
+
+                    .ant-input-group-addon {
+                        padding: 9px 11px;
+                    }
+
+                    .ant-input {
+                        padding: 9px 11px;
+                    }
+                }
+            }
+
+            .system-service-content {
+                flex: 1;
+                height: 100%;
+                margin-top: 20px;
+                padding-left: 20px;
+                display: flex;
+                flex-wrap: wrap;
+                column-gap: 50px;
+                row-gap: 20px;
+                overflow: auto;
+            }
+        }
+    }
+}

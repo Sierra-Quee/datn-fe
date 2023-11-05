@@ -6,25 +6,31 @@ export interface ISkill {
     imageUrl: string;
 }
 export interface IService {
-    serviceId: number;
+    serviceId: string;
     name: string;
-    type: number;
+    type: ITypeService | string;
     price: number;
     rate: number;
     desc: string;
     createdAt: string;
     updatedAt: string;
-    skillId: string;
-    skill: ISkill;
+    skillId: number;
+    skill?: ISkill;
     image?: string;
-    // isActive: boolean;
+    isActive: boolean;
 }
+
+export enum ITypeService {
+    MainTain = 1,
+    Repair = 2,
+}
+
 export interface ICreateService {
     name: string;
-    type: number;
+    type: ITypeService;
     price: number;
     desc: string;
-    skillId: string;
+    skillId: number;
 }
 
 export interface ICartItem {

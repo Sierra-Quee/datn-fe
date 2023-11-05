@@ -6,9 +6,8 @@ import {
     logInApi,
     updateProfileAPI,
 } from "../../api/auth/auth";
-import { uploadImageCloudAPI } from "../../api/cloud-dictionary/cloud";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../utils/constants";
-import { setCookie } from "../../utils/functions/cookies";
+import { clearCookie, setCookie } from "../../utils/functions/cookies";
 
 export interface AuthenticationState {
     loading: boolean;
@@ -16,8 +15,6 @@ export interface AuthenticationState {
     loginSuccess: boolean;
     loginError: boolean; // Errors returned from server side
     account: IAccount;
-    errorMessage: string[] | string; // Errors returned from server side
-    uploadImage: IUploadImage;
     updateProfile: IUpdateProfile;
     updatePassword: IUpdatePassword;
 }
@@ -28,21 +25,13 @@ export const initialState: AuthenticationState = {
     loginSuccess: false,
     loginError: false, // Errors returned from server side
     account: {} as any,
-    errorMessage: [], // Errors returned from server side
-    uploadImage: {
-        uploadFailed: false,
-        uploadSuccess: false,
-        errorMessageUpload: null,
-    },
     updateProfile: {
         updateProfileSuccess: false,
         updateProfileFailed: false,
-        errorMessageUpdate: null,
     },
     updatePassword: {
         updatePassFailed: false,
         updatePassSuccess: false,
-        errorMessageUpdatePass: null,
     },
 };
 
@@ -59,19 +48,16 @@ export interface ILoginResponseToken {
 export interface IUploadImage {
     uploadSuccess: boolean;
     uploadFailed: boolean;
-    errorMessageUpload: string | null;
 }
 
 export interface IUpdatePassword {
     updatePassSuccess: boolean;
     updatePassFailed: boolean;
-    errorMessageUpdatePass: string[] | null;
 }
 
 export interface IUpdateProfile {
     updateProfileSuccess: boolean;
     updateProfileFailed: boolean;
-    errorMessageUpdate: string[] | null;
 }
 
 export interface IChangePassword {
@@ -97,16 +83,9 @@ export interface IAccount {
 
 export const login = createAsyncThunk(
     "authenticate/login",
-    async (auth: ILoginParams, { rejectWithValue }) => {
-        try {
-            var response = await logInApi(auth);
-            return response.data;
-        } catch (err: any) {
-            if (!err.response) {
-                throw err;
-            }
-            return rejectWithValue(err.response.data);
-        }
+    async (auth: ILoginParams) => {
+        var response = await logInApi(auth);
+        return response.data;
     }
 );
 
@@ -121,45 +100,16 @@ export const getAccount = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
     "authentication/updateProfile",
-    async (newProfile: IAccount, { rejectWithValue }) => {
-        try {
-            return (await updateProfileAPI(newProfile)).data;
-        } catch (err: any) {
-            if (!err.response) {
-                throw err;
-            }
-            return rejectWithValue(err.response.data);
-        }
+    async (newProfile: IAccount) => {
+        return (await updateProfileAPI(newProfile)).data;
     }
 );
 
 export const changePassword = createAsyncThunk(
     "authentication/changePassword",
-    async (body: IChangePassword, { rejectWithValue }) => {
-        try {
-            var response = await changePasswordAPI(body);
-            return response.data;
-        } catch (err: any) {
-            if (!err.response) {
-                throw err;
-            }
-            return rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const uploadImageCloud = createAsyncThunk(
-    "authentication/uploadImageCloud",
-    async (body: FormData, { rejectWithValue }) => {
-        try {
-            var response = await uploadImageCloudAPI(body);
-            return response.data;
-        } catch (err: any) {
-            if (!err.response) {
-                throw err;
-            }
-            return rejectWithValue(err.response.data);
-        }
+    async (body: IChangePassword) => {
+        var response = await changePasswordAPI(body);
+        return response.data;
     }
 );
 
@@ -175,9 +125,6 @@ export const authenticationSlice = createSlice({
         },
         resetUpdateProfile: (state) => {
             return { ...state, updateProfile: initialState.updateProfile };
-        },
-        resetUploadImage: (state) => {
-            return { ...state, uploadImage: initialState.uploadImage };
         },
     },
     extraReducers: (builder) => {
@@ -205,7 +152,6 @@ export const authenticationSlice = createSlice({
                     loading: false,
                     loginSuccess: false,
                     loginError: true,
-                    errorMessage: action.payload.message,
                 };
             })
             .addCase(logout.pending, (state, action) => {})
@@ -219,7 +165,6 @@ export const authenticationSlice = createSlice({
                 state.updatePassword = {
                     updatePassFailed: false,
                     updatePassSuccess: true,
-                    errorMessageUpdatePass: null,
                 };
             })
             .addCase(changePassword.rejected, (state, action) => {
@@ -227,7 +172,6 @@ export const authenticationSlice = createSlice({
                 state.updatePassword = {
                     updatePassFailed: true,
                     updatePassSuccess: false,
-                    errorMessageUpdatePass: (action.payload as any).message,
                 };
             })
             .addCase(updateProfile.pending, (state, action) => {
@@ -236,38 +180,19 @@ export const authenticationSlice = createSlice({
             .addCase(updateProfile.fulfilled, (state, action) => {
                 state.account = { ...action.payload };
                 state.loading = false;
-                state.uploadImage = { ...initialState.uploadImage };
                 state.updateProfile = {
                     updateProfileSuccess: true,
                     updateProfileFailed: false,
-                    errorMessageUpdate: null,
                 };
             })
             .addCase(updateProfile.rejected, (state, action) => {
                 state.loading = false;
-                state.uploadImage = { ...initialState.uploadImage };
                 state.updateProfile = {
                     updateProfileSuccess: false,
                     updateProfileFailed: true,
-                    errorMessageUpdate: (action.payload as any).message,
                 };
             })
-            .addCase(uploadImageCloud.pending, (state, action) => {
-                state.loading = true;
-            })
-            .addCase(uploadImageCloud.fulfilled, (state, action) => {
-                state.account.imageUrl = action.payload.url;
-                state.uploadImage = {
-                    uploadFailed: false,
-                    uploadSuccess: true,
-                    errorMessageUpload: null,
-                };
-            })
-            .addCase(uploadImageCloud.rejected, (state, action) => {
-                state.loading = false;
-                state.uploadImage.uploadFailed = true;
-                state.uploadImage.errorMessageUpload = action.payload as string;
-            })
+
             .addCase(getAccount.pending, (state, action) => {
                 state.loading = true;
             })
@@ -279,16 +204,15 @@ export const authenticationSlice = createSlice({
                         loading: false,
                         isAuthenticated: true,
                         account: action.payload,
-                        errorMessage: [],
                     };
                 }
             )
             .addCase(getAccount.rejected, (state, action) => {
+                clearCookie();
                 return {
                     ...state,
                     loading: false,
                     isAuthenticated: false,
-                    errorMessage: action.error.message as string,
                 };
             });
     },
@@ -296,5 +220,5 @@ export const authenticationSlice = createSlice({
 
 export default authenticationSlice.reducer;
 
-export const { resetAuth, deleteAvatar, resetUploadImage, resetUpdateProfile } =
+export const { resetAuth, deleteAvatar, resetUpdateProfile } =
     authenticationSlice.actions;

@@ -56,33 +56,40 @@ const SystemService = () => {
                     />
                 </div>
                 <div className="system-service-content">
-                    {skills.map((skill) => {
-                        return (
-                            <Link key={skill.skillId} to={`${skill.skillId}`}>
-                                <Card
-                                    hoverable
-                                    style={{ width: 250 }}
-                                    cover={
-                                        <img
-                                            alt="card"
-                                            style={{
-                                                height: 250,
-                                                backgroundColor: "#ccc",
-                                            }}
-                                            src={
-                                                skill.imageUrl ||
-                                                Images.no_image
-                                            }
-                                        />
-                                    }
+                    {skills && skills.length === 0 ? (
+                        <div>Không có dữ liệu nào</div>
+                    ) : (
+                        skills.map((skill) => {
+                            return (
+                                <Link
+                                    key={skill.skillId}
+                                    to={`${skill.skillId}`}
                                 >
-                                    <div style={{ textAlign: "center" }}>
-                                        {skill.name}
-                                    </div>
-                                </Card>
-                            </Link>
-                        );
-                    })}
+                                    <Card
+                                        hoverable
+                                        style={{ width: 250 }}
+                                        cover={
+                                            <img
+                                                alt="card"
+                                                style={{
+                                                    height: 250,
+                                                    backgroundColor: "#ccc",
+                                                }}
+                                                src={
+                                                    skill.imageUrl ||
+                                                    Images.no_image
+                                                }
+                                            />
+                                        }
+                                    >
+                                        <div style={{ textAlign: "center" }}>
+                                            {skill.name}
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })
+                    )}
                 </div>
             </Spin>
         </div>

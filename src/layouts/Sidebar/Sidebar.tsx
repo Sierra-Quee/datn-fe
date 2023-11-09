@@ -1,4 +1,5 @@
-import { Menu, MenuProps } from "antd";
+import "./Sidebar.scss";
+
 import {
     GlobalOutlined,
     HomeOutlined,
@@ -9,11 +10,10 @@ import {
     VerticalRightOutlined,
     WalletOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
-
-import "./Sidebar.scss";
-import Images from "../../assets/Images";
+import { Menu, MenuProps } from "antd";
 import { Link, useLocation } from "react-router-dom";
+
+import Images from "../../assets/Images";
 import { RoutePath } from "../../routes";
 import { SIDEBAR } from "../../utils/constants";
 

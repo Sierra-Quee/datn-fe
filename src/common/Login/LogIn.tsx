@@ -18,7 +18,7 @@ const LogIn = () => {
         useAppSelector((state) => state.authentication);
     const dispatch = useAppDispatch();
     const location = useLocation();
-    const { from } = location.state || { from: "/" };
+    const { from } = location.state || { from: "/home" };
 
     useEffect(() => {
         if (isAuthenticated && loginSuccess) {
@@ -42,7 +42,15 @@ const LogIn = () => {
             ) : (
                 <Spin spinning={loading}>
                     <Row style={{ width: "100%", height: "100%" }}>
-                        <Col span={14} className="wrap-logo">
+                        <Col
+                            xxl={14}
+                            xl={14}
+                            lg={14}
+                            md={24}
+                            sm={24}
+                            xs={24}
+                            className="wrap-logo"
+                        >
                             <img
                                 style={{ width: "400px", height: "400px" }}
                                 src={Images.ismart}
@@ -52,7 +60,15 @@ const LogIn = () => {
                                 Hệ thống sửa chữa điện lạnh ISmart
                             </h2>
                         </Col>
-                        <Col span={10} className="form-login-wrap">
+                        <Col
+                            xxl={10}
+                            xl={10}
+                            lg={10}
+                            md={24}
+                            sm={24}
+                            xs={24}
+                            className="form-login-wrap"
+                        >
                             <Form onFinish={onFinish} layout="vertical">
                                 <h1>Đăng nhập</h1>
                                 <Form.Item<ILoginParams>

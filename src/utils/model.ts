@@ -1,3 +1,12 @@
+import { ReactElement, ReactNode } from "react";
+import { PublicProps } from "../layouts/Public/Public";
+
+export interface IRoutePath {
+    path: string;
+    component: () => ReactElement;
+    layout?: (children: PublicProps) => ReactElement;
+}
+
 export interface ISkill {
     skillId?: number;
     name: string;

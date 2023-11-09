@@ -16,7 +16,7 @@ import { FORMAT_DATETIME } from "../../utils/constants";
 import useDebounce from "../../hooks/useDebounce";
 import { toast } from "react-toastify";
 
-export const Skill = () => {
+const Skill = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [skillUpdate, setSkillUpdate] = useState<ISkill | null | undefined>();
     const [searchInput, setSearchInput] = useState<string>("");
@@ -174,3 +174,5 @@ export const Skill = () => {
         </Spin>
     );
 };
+
+export default Skill;

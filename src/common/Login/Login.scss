@@ -17,7 +17,6 @@
 
                 h2 {
                     font-size: 30px;
-
                     font-weight: 700;
                     text-transform: uppercase;
                     color: white;
@@ -47,6 +46,33 @@
                     text-align: center;
                 }
             }
+        }
+    }
+}
+
+@media (max-width: 991px) {
+    .login-wrap {
+        .form-login-wrap {
+            padding: 20px 15px !important;
+        }
+
+        img {
+            width: 200px !important;
+            height: 200px !important;
+        }
+
+        h2,
+        h1 {
+            font-size: 20px !important;
+            margin-top: 0 !important;
+        }
+
+        h1 {
+            margin-bottom: 20px !important;
+        }
+
+        h2 {
+            display: none !important;
         }
     }
 }

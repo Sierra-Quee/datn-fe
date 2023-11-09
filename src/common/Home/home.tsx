@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { getAllSkillAsync, setAllSkill } from "../../core/reducers/skill";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
 
-export const Home = () => {
+import { useAppDispatch } from "../../redux/hook";
+
+const Home = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -19,3 +19,5 @@ export const Home = () => {
         </div>
     );
 };
+
+export default Home;

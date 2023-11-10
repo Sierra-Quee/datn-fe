@@ -3,6 +3,7 @@ import { clearCookie, getCookie } from "../utils/functions/cookies";
 import { ACCESS_TOKEN } from "../utils/constants";
 import { log } from "console";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const getAuthorizationHeader = () => `Bearer ${getCookie(ACCESS_TOKEN)}`;
 
@@ -35,8 +36,7 @@ fetchHandler.interceptors.response.use(
         if (err.response.status === 500) {
             clearCookie();
         }
-
-        if (err.response.status !== 500 && err.response.status != 401) {
+        if (err.response.status !== 500 && err.response.status !== 401) {
             toast.error(err.message);
         }
     }

@@ -6,13 +6,12 @@ import { ToastContainer } from "react-toastify";
 
 import Account from "./common/Account/Account";
 import CommonRoutes from "./common/CommonRoutes";
-import Home from "./common/Home/home";
+import Home from "./common/Home/Home";
 import Skill from "./common/Skill/Skill";
 import { PrivateRoute } from "./core/auth/private-route";
 import { Role } from "./core/auth/roles";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";
 import { getAccount } from "./core/reducers/authentication";
-import NotFound from "./layouts/NotFound/NotFound";
 import { useAppDispatch, useAppSelector } from "./redux/hook";
 import { RoutePath } from "./routes";
 import AdminServiceRoute from "./routes/adminServiceRoute";
@@ -34,7 +33,6 @@ function App() {
                 <BrowserRouter>
                     <ErrorBoundaryRoutes>
                         <Route path="/*" element={<CommonRoutes />} />
-
                         <Route
                             path={RoutePath.Home}
                             element={
@@ -79,7 +77,6 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
-                        <Route path="*" element={<NotFound />} />
                     </ErrorBoundaryRoutes>
                 </BrowserRouter>
             )}

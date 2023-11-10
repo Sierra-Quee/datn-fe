@@ -1,10 +1,13 @@
 import { ReactElement, ReactNode } from "react";
-import { PublicProps } from "../layouts/Public/Public";
+
+export interface IChildRoutePath {
+    children: ReactNode;
+}
 
 export interface IRoutePath {
     path: string;
     component: () => ReactElement;
-    layout?: (children: PublicProps) => ReactElement;
+    layout?: ({ children }: IChildRoutePath) => ReactElement;
 }
 
 export interface ISkill {

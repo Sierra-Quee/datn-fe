@@ -40,7 +40,7 @@ export const PublicRoutes: IRoutePath[] = [
         layout: Public,
     },
     {
-        path: RoutePath.IntroduceServices,
+        path: `${RoutePath.IntroduceServices}/:skillId`,
         component: IntroduceServices,
         layout: Public,
     },

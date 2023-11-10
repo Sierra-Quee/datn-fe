@@ -1,0 +1,28 @@
+.introduce-services {
+    padding: 20px 100px 50px;
+
+    &-title {
+        margin-top: 0;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 25px;
+        margin-bottom: 50px;
+    }
+
+    &-content {
+        display: flex;
+        column-gap: 30px;
+        row-gap: 30px;
+
+        .card-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 17px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .card-value {
+        }
+    }
+}

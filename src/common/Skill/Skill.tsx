@@ -1,20 +1,23 @@
-import { ISkill } from "../../utils/model";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import "./Skill.scss";
+
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Spin, Switch } from "antd";
+import Table, { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 import {
+    clearListSkill,
     clearUpdateStatusSkill,
     getAllSkillAsync,
     updateStatusSkillAsync,
 } from "../../core/reducers/skill";
-import Table, { ColumnsType } from "antd/es/table";
-import { Button, Input, Spin, Switch } from "antd";
-import "./Skill.scss";
-import { SearchOutlined } from "@ant-design/icons";
-import UpdateSkill from "./UpdateSkill/UpdateSkill";
-import { formatDate } from "../../utils/functions/utils";
-import { FORMAT_DATETIME } from "../../utils/constants";
 import useDebounce from "../../hooks/useDebounce";
-import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { FORMAT_DATETIME } from "../../utils/constants";
+import { formatDate } from "../../utils/functions/utils";
+import { ISkill } from "../../utils/model";
+import UpdateSkill from "./UpdateSkill/UpdateSkill";
 
 const Skill = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -33,6 +36,10 @@ const Skill = () => {
 
     useEffect(() => {
         handleGetAllSkillAsync();
+
+        return () => {
+            dispatch(clearListSkill());
+        };
     }, []);
 
     useEffect(() => {
@@ -41,7 +48,7 @@ const Skill = () => {
             dispatch(clearUpdateStatusSkill());
             handleGetAllSkillAsync();
         }
-    }, [updateStatusSkillStatus]);
+    }, [updateStatusSkillStatus, dispatch]);
 
     useEffect(() => {
         setSkills(listSkill);

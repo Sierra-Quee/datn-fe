@@ -1,7 +1,9 @@
 import { Route } from "react-router-dom";
+
 import ErrorBoundaryRoutes from "../core/errors/error-boundary-routes";
 import { PublicRoutes } from "../routes";
 import { IRoutePath } from "../utils/model";
+import NotFound from "../layouts/NotFound/NotFound";
 
 const CommonRoutes = () => {
     return (
@@ -27,6 +29,7 @@ const CommonRoutes = () => {
                     />
                 );
             })}
+            <Route path="*" element={<NotFound />} />
         </ErrorBoundaryRoutes>
     );
 };

@@ -18,6 +18,8 @@ import { ACCESS_TOKEN } from "./utils/constants";
 import { getCookie } from "./utils/functions/cookies";
 import { Skill } from "./components/Skill/Skill";
 import AdminServiceRoute from "./routes/adminServiceRoute";
+import { SystemCustomer } from "./components/SystemUsers/SystemCustomer/SystemCustomer";
+import SystemRepairment from "./components/SystemUsers/SystemRepairment/SystemRepairment";
 
 function App() {
     const { isAuthenticated } = useAppSelector((state) => state.authentication);
@@ -76,6 +78,22 @@ function App() {
                             element={
                                 <PrivateRoute roles={[Role.ROLE_ADMIN]}>
                                     <AdminServiceRoute />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path={`${RoutePath.Employee}/*`}
+                            element={
+                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
+                                    <SystemRepairment />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path={`${RoutePath.Customer}/*`}
+                            element={
+                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
+                                    <SystemCustomer />
                                 </PrivateRoute>
                             }
                         />

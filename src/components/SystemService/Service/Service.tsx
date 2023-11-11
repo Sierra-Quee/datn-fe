@@ -1,26 +1,30 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Spin, Switch, Table } from "antd";
-import { convertServiceType, formatDate } from "../../../utils/functions/utils";
-import { FORMAT_DATETIME } from "../../../utils/constants";
-import { useEffect, useState } from "react";
 import { ColumnsType } from "antd/es/table";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { IService, ITypeService } from "../../../utils/model";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import useDebounce from "../../../hooks/useDebounce";
+import { toast } from "react-toastify";
 import {
     clearListService,
     clearUpdateStatusService,
     deleteServiceAsync,
+    getDetailServiceAsync,
     getServiceBySkillIdAsync,
 } from "../../../core/reducers/service";
-import "./Service.scss";
 import { clearSkill, getSkillByIdAsync } from "../../../core/reducers/skill";
+import useDebounce from "../../../hooks/useDebounce";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { FORMAT_DATETIME } from "../../../utils/constants";
+import { convertServiceType, formatDate } from "../../../utils/functions/utils";
+import { IService, ITypeService } from "../../../utils/model";
+import "./Service.scss";
 import UpdateService from "./UpdateService/UpdateService";
-import { toast } from "react-toastify";
+import { DetailService } from "./DetailService";
 
 const Service = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [isOpenPanelService, setIsOpenPanelService] =
+        useState<boolean>(false);
     const [serviceUpdate, setServiceUpdate] = useState<
         IService | null | undefined
     >();
@@ -29,7 +33,7 @@ const Service = () => {
 
     const params = useParams();
     const dispatch = useAppDispatch();
-    const { listService, isLoadingService } = useAppSelector(
+    const { listService, isLoadingService, service } = useAppSelector(
         (state) => state.service
     );
     const { loadingUpdateStatusService, updateStatusServiceStatus } =
@@ -103,6 +107,29 @@ const Service = () => {
             key: "name",
             fixed: "left",
             width: 150,
+            render: (_: any, record: IService) => {
+                return (
+                    <div>
+                        <div
+                            style={{
+                                textDecoration: "solid underline",
+                                cursor: "pointer",
+                                width: "fit-content",
+                            }}
+                            onClick={() => {
+                                setIsOpenPanelService(true);
+                                dispatch(
+                                    getDetailServiceAsync(
+                                        +(record.serviceId as string)
+                                    )
+                                );
+                            }}
+                        >
+                            {record.name}
+                        </div>
+                    </div>
+                );
+            },
         },
         {
             title: "Loại",
@@ -171,6 +198,9 @@ const Service = () => {
         },
     ];
 
+    const handleConfirmPanel = () => {
+        setIsOpenPanelService(false);
+    };
     return (
         <Spin
             spinning={
@@ -219,6 +249,13 @@ const Service = () => {
                         isCreate={!serviceUpdate}
                         handleGetAllServiceAsync={handleGetAllServiceAsync}
                         skillId={skill?.skillId as number}
+                    />
+                )}
+                {isOpenPanelService && (
+                    <DetailService
+                        isOpenPanel={isOpenPanelService}
+                        handleConfirmPanel={handleConfirmPanel}
+                        info={service.detailService}
                     />
                 )}
             </div>

@@ -4,6 +4,7 @@ import {
     createServiceAPI,
     deleteServiceAPI,
     getAllServiceAPI,
+    getDetailServiceAPI,
     getServiceBySkillIdAPI,
     updateServiceAPI,
 } from "../../api/service/serviceAPI";
@@ -19,6 +20,10 @@ interface IServiceSlice {
         loadingUpdateStatusService: boolean;
         updateStatusServiceStatus: "success" | "failed" | "none";
     };
+    service: {
+        detailService: IService;
+        isLoadingDetailService: boolean;
+    };
 }
 const initialState: IServiceSlice = {
     listService: [],
@@ -30,6 +35,22 @@ const initialState: IServiceSlice = {
     updateStatusService: {
         loadingUpdateStatusService: false,
         updateStatusServiceStatus: "none",
+    },
+    service: {
+        detailService: {
+            serviceId: "",
+            name: "",
+            type: "",
+            price: -1,
+            rate: -1,
+            desc: "",
+            createdAt: "",
+            updatedAt: "",
+            skillId: -1,
+            image: "",
+            isActive: false,
+        },
+        isLoadingDetailService: false,
     },
 };
 
@@ -66,6 +87,12 @@ export const deleteServiceAsync = createAsyncThunk(
     "deleteService",
     async (id: string) => {
         return (await deleteServiceAPI(id)).data;
+    }
+);
+export const getDetailServiceAsync = createAsyncThunk(
+    "detailService",
+    async (id: number) => {
+        return (await getDetailServiceAPI(id)).data;
     }
 );
 
@@ -118,6 +145,19 @@ export const ServiceSlice = createSlice({
                 getServiceBySkillIdAsync.rejected,
                 (state, action: PayloadAction<any>) => {
                     state.isLoadingService = false;
+                }
+            )
+            .addCase(getDetailServiceAsync.pending, (state, action) => {
+                state.service.isLoadingDetailService = true;
+            })
+            .addCase(getDetailServiceAsync.fulfilled, (state, action) => {
+                state.service.detailService = action.payload;
+                state.service.isLoadingDetailService = false;
+            })
+            .addCase(
+                getDetailServiceAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.service.isLoadingDetailService = false;
                 }
             )
             .addCase(createServiceAsync.pending, (state, action) => {

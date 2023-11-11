@@ -20,3 +20,6 @@ export const deleteServiceAPI = (serviceId: string) => {
 export const getServiceBySkillIdAPI = (skillId: number) => {
     return fetchHandler.get(`/service/getServiceBySkill/${skillId}`);
 };
+export const getDetailServiceAPI = (serviceId: number) => {
+    return fetchHandler.get(`/service/${serviceId}`);
+};

@@ -46,3 +46,25 @@ export interface ICart {
     updatedAt: string;
     userId: string;
 }
+
+export interface IUserAPI {
+    name?: string;
+    role: number;
+    status?: number;
+}
+export interface IUser {
+    userId: string;
+    accountName: string;
+    firstName: string;
+    lastName: string;
+    dob: string;
+    phone: string;
+    email: string;
+    imageUrl: string;
+    role: number;
+    gender: boolean;
+    createdAt: string;
+    updatedAt: string;
+    status: number;
+    skills: string[];
+}

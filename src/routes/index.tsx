@@ -15,7 +15,7 @@ export enum RoutePath {
     Order = "/list-order",
     Comment = "list-order-comment",
     Skill = "/skill",
-    Service = "/service",
+    Service = "/services",
     Employee = "/list-employee",
     Customer = "/list-customer",
     Login = "/login",

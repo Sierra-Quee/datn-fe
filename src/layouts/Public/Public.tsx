@@ -2,27 +2,35 @@ import "./Public.scss";
 
 import { Layout, Menu, MenuProps } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
-import { Link } from "react-router-dom";
+import { ItemType } from "antd/es/menu/hooks/useItems";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import { getAllSkillAsync } from "../../core/reducers/skill";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { RoutePath } from "../../routes";
 import { IChildRoutePath, ISkill } from "../../utils/model";
-import { useEffect, useRef, useState } from "react";
-import { ItemType } from "antd/es/menu/hooks/useItems";
 
 const Public = ({ children }: IChildRoutePath) => {
     const [skills, setSkills] = useState<ISkill[]>([]);
     const [itemMenu, setItemMenu] = useState<MenuProps["items"]>([]);
 
+    const location = useLocation();
+
+    const defaultSelectedKey = useRef(
+        ["introduction", "introduce-services", "contact"].filter((s) =>
+            location.pathname.includes(s)
+        )
+    );
+
     const items = useRef([
         {
             label: <Link to={RoutePath.Introduce}>Giới thiệu</Link>,
-            key: "introduce",
+            key: "introduction",
         },
         {
             label: "Dịch vụ",
-            key: "services",
+            key: "introduce-services",
         },
         {
             label: <Link to={RoutePath.Contact}>Liên hệ</Link>,
@@ -43,30 +51,37 @@ const Public = ({ children }: IChildRoutePath) => {
     }, [listSkill]);
 
     useEffect(() => {
-        setItemMenu([
-            ...items?.current.map((item: ItemType) => {
-                if (item?.key === "services") {
-                    return {
-                        ...item,
-                        children: [
-                            ...(skills.map((skill) => {
-                                return {
-                                    label: (
-                                        <Link
-                                            to={`${RoutePath.IntroduceServices}/${skill.skillId}`}
-                                        >
-                                            {skill.name}
-                                        </Link>
-                                    ),
-                                    key: skill.skillId,
-                                };
-                            }) as ItemType[]),
-                        ],
-                    } as ItemType;
-                }
-                return item;
-            }),
-        ]);
+        if (skills && skills.length > 0) {
+            setItemMenu([
+                ...items?.current.map((item: ItemType) => {
+                    if (item?.key === "introduce-services") {
+                        return {
+                            ...item,
+                            children: [
+                                ...(skills.map((skill) => {
+                                    return {
+                                        label: (
+                                            <Link
+                                                to={`${RoutePath.IntroduceServices}/${skill.skillId}`}
+                                            >
+                                                {skill.name}
+                                            </Link>
+                                        ),
+                                        key: skill.skillId,
+                                    };
+                                }) as ItemType[]),
+                            ],
+                        } as ItemType;
+                    }
+                    return item;
+                }),
+            ]);
+        } else {
+            const newMenu = [...items.current];
+            newMenu.splice(1, 1);
+
+            setItemMenu(newMenu);
+        }
     }, [items, skills]);
 
     const handleGetAllSkillAsync = async () => {
@@ -106,6 +121,7 @@ const Public = ({ children }: IChildRoutePath) => {
                     <Menu
                         style={{ paddingLeft: 35 }}
                         mode="horizontal"
+                        defaultSelectedKeys={defaultSelectedKey.current}
                         items={itemMenu}
                     />
                     <div className="public-content">{children}</div>

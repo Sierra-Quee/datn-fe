@@ -1,24 +1,25 @@
-import { Button, Card, Input, Spin, Switch, Table } from "antd";
+import { Button, Input, Spin, Table } from "antd";
 import { useCallback, useEffect, useState } from "react";
 
 import { SearchOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import Images from "../../../assets/Images";
+import { ColumnsType } from "antd/es/table";
 import { Role } from "../../../core/auth/roles";
 import {
     getAllUserRoleAsync,
     getDetailUserAsync,
     setCustomerList,
-    setRepairList,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { ColumnsType } from "antd/es/table";
 import { IUser } from "../../../utils/model";
 import { DetailUser } from "../DetailUser";
+import { UpdateUser } from "../UpdateUser";
 export const SystemCustomer = () => {
     const [searchInput, setSearchInput] = useState<string>("");
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
+    const [isOpenPanelUpdate, setIsOpenPanelUisOpenPanelUpdate] =
+        useState<boolean>(false);
+    const [isCreate, setIsCreate] = useState<boolean>(false);
 
     const dispatch = useAppDispatch();
     const { loadingUser, customerList, user } = useAppSelector(
@@ -81,11 +82,7 @@ export const SystemCustomer = () => {
                             }}
                             onClick={() => {
                                 setIsOpenPanelUser(true);
-                                dispatch(
-                                    getDetailUserAsync(
-                                        +(record.userId as string)
-                                    )
-                                );
+                                dispatch(getDetailUserAsync(record.userId));
                             }}
                         >
                             {record.accountName}
@@ -111,26 +108,6 @@ export const SystemCustomer = () => {
             render: (_: any, record: IUser) => (
                 <div>{record.gender ? "Nam" : "Nữ"}</div>
             ),
-        },
-        {
-            title: "Kĩ năng",
-            key: "skills",
-            dataIndex: "skills",
-        },
-        {
-            title: "Trạng thái",
-            key: "status",
-            dataIndex: "status",
-            fixed: "right",
-            width: 100,
-            // render: (_: any, record: IUser) => (
-            //     <Switch
-            //         checked={record.status}
-            //         onChange={(checked) =>
-            //             onChangeStatus(checked, record.userId)
-            //         }
-            //     />
-            // ),
         },
         {
             title: "",
@@ -180,6 +157,11 @@ export const SystemCustomer = () => {
                     dataSource={customerList}
                     pagination={{ pageSize: 7 }}
                     scroll={{ x: 1300 }}
+                />
+                <UpdateUser
+                    isOpenPanel={isOpenPanelUpdate}
+                    currentUser={user}
+                    isCreate={isCreate}
                 />
                 {isOpenPanelUser && (
                     <DetailUser

@@ -15,6 +15,12 @@ export const filterUsers = (body: IUserAPI) => {
         `/user/getAll?name=${body.name}&&role=${body.role}&&status=${body.status}`
     );
 };
-export const getDetailUserAPI = (userId: number) => {
+export const getDetailUserAPI = (userId: string) => {
     return fetchHandler.get(`/user/${userId}`);
+};
+export const createUserAPI = (user: IUser) => {
+    return fetchHandler.post(`user/createUser`, user);
+};
+export const updateUserAPI = (user: IUser) => {
+    return fetchHandler.post(`user/createUser`, user);
 };

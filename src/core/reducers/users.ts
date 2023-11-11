@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IUser } from "../../utils/model";
-import { getAllUsersRole } from "../../api/users/userAPI";
+import {
+    createUserAPI,
+    getAllUsersRole,
+    getDetailUserAPI,
+    updateUserAPI,
+} from "../../api/users/userAPI";
+import { IUser, defaultUser } from "../../utils/model";
 
 interface IUserSlice {
     usersList: IUser[];
@@ -8,6 +13,7 @@ interface IUserSlice {
     customerList: IUser[];
     loadingUser: boolean;
     loadingDetailUser: boolean;
+    loadingUpdatelUser: boolean;
     user: IUser;
 }
 const initialState: IUserSlice = {
@@ -16,22 +22,8 @@ const initialState: IUserSlice = {
     customerList: [],
     loadingUser: false,
     loadingDetailUser: false,
-    user: {
-        userId: "",
-        accountName: "",
-        firstName: "",
-        lastName: "",
-        dob: "",
-        phone: "",
-        email: "",
-        imageUrl: "",
-        role: -1,
-        gender: false,
-        createdAt: "",
-        updatedAt: "",
-        status: -1,
-        skills: [],
-    },
+    loadingUpdatelUser: false,
+    user: defaultUser,
 };
 
 export const getAllUserRoleAsync = createAsyncThunk(
@@ -42,9 +34,23 @@ export const getAllUserRoleAsync = createAsyncThunk(
     }
 );
 export const getDetailUserAsync = createAsyncThunk(
-    "getUser/role",
-    async (userId: number) => {
-        const res = await getAllUsersRole(userId);
+    "getDetailUser/role",
+    async (userId: string) => {
+        const res = await getDetailUserAPI(userId);
+        return res.data;
+    }
+);
+export const createUserAsync = createAsyncThunk(
+    "createUser",
+    async (user: IUser) => {
+        const res = await createUserAPI(user);
+        return res.data;
+    }
+);
+export const updateUserAsync = createAsyncThunk(
+    "updateUser",
+    async (user: IUser) => {
+        const res = await updateUserAPI(user);
         return res.data;
     }
 );
@@ -60,6 +66,9 @@ export const userSlice = createSlice({
         },
         setCustomerList: (state, action) => {
             state.customerList = action.payload;
+        },
+        setUser: (state, action) => {
+            state.user = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -83,8 +92,29 @@ export const userSlice = createSlice({
             })
             .addCase(getDetailUserAsync.rejected, (state, action) => {
                 state.loadingDetailUser = false;
+            })
+            .addCase(createUserAsync.pending, (state, action) => {
+                state.loadingUpdatelUser = true;
+            })
+            .addCase(createUserAsync.fulfilled, (state, action) => {
+                state.loadingUpdatelUser = false;
+                state.user = action.payload;
+            })
+            .addCase(createUserAsync.rejected, (state, action) => {
+                state.loadingUpdatelUser = false;
+            })
+            .addCase(updateUserAsync.pending, (state, action) => {
+                state.loadingUpdatelUser = true;
+            })
+            .addCase(updateUserAsync.fulfilled, (state, action) => {
+                state.loadingUpdatelUser = false;
+                state.user = action.payload;
+            })
+            .addCase(updateUserAsync.rejected, (state, action) => {
+                state.loadingUpdatelUser = false;
             });
     },
 });
 export default userSlice.reducer;
-export const { resetUser, setRepairList, setCustomerList } = userSlice.actions;
+export const { resetUser, setRepairList, setCustomerList, setUser } =
+    userSlice.actions;

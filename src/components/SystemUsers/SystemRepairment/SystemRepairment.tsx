@@ -7,21 +7,27 @@ import Images from "../../../assets/Images";
 import { Role } from "../../../core/auth/roles";
 import {
     getAllUserRoleAsync,
+    getDetailUserAsync,
     setRepairList,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { ColumnsType } from "antd/es/table";
 import { IUser } from "../../../utils/model";
+import { DetailUser } from "../DetailUser";
+import { UpdateUser } from "../UpdateUser";
 
 const SystemRepairment = () => {
     const [searchInput, setSearchInput] = useState<string>("");
-
+    const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
+    const [isCreate, setIsCreate] = useState<boolean>(false);
     const dispatch = useAppDispatch();
-    const { loadingUser, repairList } = useAppSelector((state) => state.users);
+    const { loadingUser, repairList, user } = useAppSelector(
+        (state) => state.users
+    );
 
     const debounce = useDebounce(searchInput);
-    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
 
     const handleGetAllRepairList = useCallback(async () => {
         const res = await dispatch(getAllUserRoleAsync(Role.ROLE_REPAIRMAN));
@@ -32,6 +38,7 @@ const SystemRepairment = () => {
     useEffect(() => {
         handleGetAllRepairList();
     }, []);
+    ("");
 
     // useEffect(() => {
     //     setSkills(listSkill);
@@ -48,6 +55,14 @@ const SystemRepairment = () => {
     // const handleGetAllSkillAsync = async () => {
     //     await dispatch(getAllSkillAsync());
     // };
+    const onGetStatusRepair = (status: number) => {
+        if (status === 0) return "Đang hoạt động";
+        if (status === 1) return "Đang bận";
+        if (status === 2) return "Không hoạt động";
+    };
+    const handleConfirmPanel = () => {
+        setIsOpenPanelUser(false);
+    };
     const columns: ColumnsType<IUser> = [
         {
             title: "Mã",
@@ -62,6 +77,25 @@ const SystemRepairment = () => {
             key: "accountName",
             fixed: "left",
             width: 150,
+            render: (_: any, record: IUser) => {
+                return (
+                    <div>
+                        <div
+                            style={{
+                                textDecoration: "solid underline",
+                                cursor: "pointer",
+                                width: "fit-content",
+                            }}
+                            onClick={() => {
+                                setIsOpenPanelUser(true);
+                                dispatch(getDetailUserAsync(record.userId));
+                            }}
+                        >
+                            {record.accountName}
+                        </div>
+                    </div>
+                );
+            },
         },
         {
             title: "Số điện thoại",
@@ -92,14 +126,9 @@ const SystemRepairment = () => {
             dataIndex: "status",
             fixed: "right",
             width: 100,
-            // render: (_: any, record: IUser) => (
-            //     <Switch
-            //         checked={record.status}
-            //         onChange={(checked) =>
-            //             onChangeStatus(checked, record.userId)
-            //         }
-            //     />
-            // ),
+            render: (_: any, record: IUser) => (
+                <div>{onGetStatusRepair(record?.status)}</div>
+            ),
         },
         {
             title: "",
@@ -111,9 +140,10 @@ const SystemRepairment = () => {
                 <div>
                     <a
                         style={{ marginRight: "10px" }}
-                        // onClick={() => {
-                        //     openUpdateModal(record);
-                        // }}
+                        onClick={() => {
+                            setIsOpenPanelUpdate(true);
+                            // openUpdatePanelUpdate(record);
+                        }}
                     >
                         Cập nhật
                     </a>
@@ -132,7 +162,7 @@ const SystemRepairment = () => {
                 <div className="header-table-repair">
                     <Button
                         type="primary"
-                        onClick={() => setIsOpenModal(!isOpenModal)}
+                        onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
                     >
                         Thêm nhân viên
                     </Button>
@@ -150,6 +180,18 @@ const SystemRepairment = () => {
                     pagination={{ pageSize: 7 }}
                     scroll={{ x: 1300 }}
                 />
+                <UpdateUser
+                    isOpenPanel={isOpenPanelUpdate}
+                    currentUser={user}
+                    isCreate={isCreate}
+                />
+                {isOpenPanelUser && (
+                    <DetailUser
+                        isOpenPanel={isOpenPanelUser}
+                        handleConfirmPanel={handleConfirmPanel}
+                        info={user}
+                    />
+                )}
             </Spin>
         </div>
     );

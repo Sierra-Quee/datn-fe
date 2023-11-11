@@ -39,7 +39,9 @@ export const DetailUser = (props: IDetailUserProps) => {
                 >
                     {info?.role === Role.ROLE_USER
                         ? "Khách hàng"
-                        : info?.skills.join(" ,")}
+                        : Array.isArray(info?.skills)
+                        ? info?.skills.join(" ,")
+                        : info?.skills}
                 </div>
             </div>
             <img src={info?.imageUrl} alt="Not image" />
@@ -52,6 +54,7 @@ export const DetailUser = (props: IDetailUserProps) => {
             </p>
             <p>Số điện thoại: {info?.phone}</p>
             <p>Email: {info?.email}</p>
+            <div>Địa chỉ:</div>
             <p>Ngày được tạo: {info?.createdAt.slice(0, 10)}</p>
             <p>Ngày cập nhật: {info?.updatedAt.slice(0, 10)}</p>
         </Modal>

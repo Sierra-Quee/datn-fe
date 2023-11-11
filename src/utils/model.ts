@@ -66,5 +66,23 @@ export interface IUser {
     createdAt: string;
     updatedAt: string;
     status: number;
+    // address: IAddress[];
     skills: string[];
 }
+export const defaultUser = {
+    userId: "",
+    accountName: "",
+    firstName: "",
+    lastName: "",
+    dob: "",
+    phone: "",
+    email: "",
+    imageUrl: "",
+    role: -1,
+    gender: false,
+    createdAt: "",
+    updatedAt: "",
+    status: -1,
+    skills: [],
+    address: [],
+};

@@ -10,6 +10,7 @@ import { getAllSkillAsync } from "../../core/reducers/skill";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { RoutePath } from "../../routes";
 import { IChildRoutePath, ISkill } from "../../utils/model";
+import { BellOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 const Public = ({ children }: IChildRoutePath) => {
     const [skills, setSkills] = useState<ISkill[]>([]);
@@ -29,7 +30,7 @@ const Public = ({ children }: IChildRoutePath) => {
             key: "introduction",
         },
         {
-            label: "Dịch vụ",
+            label: <Link to={RoutePath.Contact}>Dịch vụ</Link>,
             key: "introduce-services",
         },
         {
@@ -102,20 +103,58 @@ const Public = ({ children }: IChildRoutePath) => {
                         justifyContent: "space-between",
                     }}
                 >
-                    <a href="/" className="header-title">
-                        Ismart
-                    </a>
+                    <div style={{ width: "20%" }}>
+                        <a href="/" className="header-title">
+                            Ismart
+                        </a>
+                    </div>
+
+                    <Menu
+                        style={{
+                            paddingLeft: 35,
+                            backgroundColor: "transparent",
+                            color: "white",
+                            transitionDuration: "0",
+                            width: "60%",
+                        }}
+                        mode="horizontal"
+                        defaultSelectedKeys={defaultSelectedKey.current}
+                        items={itemMenu}
+                    />
+                    <Link
+                        to={RoutePath.Contact}
+                        style={{ color: "white", fontSize: "20px" }}
+                    >
+                        <ShoppingCartOutlined />
+                    </Link>
 
                     <Link
-                        to={RoutePath.Login}
-                        style={{
-                            color: "white",
-                        }}
+                        to={RoutePath.Contact}
+                        style={{ color: "white", fontSize: "20px" }}
                     >
-                        Đăng nhập
+                        <BellOutlined />
                     </Link>
+                    {}
+                    <div>
+                        <Link
+                            to={RoutePath.SignUp}
+                            style={{
+                                color: "white",
+                            }}
+                        >
+                            Đăng ký {" / "}
+                        </Link>
+                        <Link
+                            to={RoutePath.Login}
+                            style={{
+                                color: "white",
+                            }}
+                        >
+                            Đăng nhập
+                        </Link>
+                    </div>
                 </Header>
-                <Content
+                {/* <Content
                     style={{ height: "calc(100vh - 64px)", overflow: "auto" }}
                 >
                     <Menu
@@ -125,7 +164,7 @@ const Public = ({ children }: IChildRoutePath) => {
                         items={itemMenu}
                     />
                     <div className="public-content">{children}</div>
-                </Content>
+                </Content> */}
             </Layout>
         </div>
     );

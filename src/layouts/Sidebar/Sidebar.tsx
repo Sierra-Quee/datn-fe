@@ -1,4 +1,5 @@
-import { Menu, MenuProps } from "antd";
+import "./Sidebar.scss";
+
 import {
     GlobalOutlined,
     HomeOutlined,
@@ -9,13 +10,13 @@ import {
     VerticalRightOutlined,
     WalletOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
-
-import "./Sidebar.scss";
-import Images from "../../assets/Images";
+import { Menu, MenuProps } from "antd";
 import { Link, useLocation } from "react-router-dom";
+
+import Images from "../../assets/Images";
 import { RoutePath } from "../../routes";
 import { SIDEBAR } from "../../utils/constants";
+import { useRef } from "react";
 
 export type MenuItem = Required<MenuProps>["items"][number];
 
@@ -26,6 +27,24 @@ interface ISidebarProps {
 
 const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
     const location = useLocation();
+
+    const defaultSelectedKeys = useRef(
+        [
+            "home",
+            "manage-order-list-order",
+            "manage-order-list-order-comment",
+            "manage-service-skill",
+            "manage-service-services",
+            "manage-user-list-employee",
+            "manage-user-list-customer",
+        ].filter((s) => s.includes(location.pathname.split("/")[1]))
+    );
+
+    const defaultOpenKeys = useRef(
+        ["manage-order", "manage-service", "manage-user"].filter((s) =>
+            defaultSelectedKeys.current[0].includes(s)
+        )
+    );
 
     const getItem = (
         label: React.ReactNode,
@@ -46,42 +65,42 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
     const items: MenuItem[] = [
         getItem(
             <Link to={RoutePath.Home}>Trang chủ</Link>,
-            "1",
+            "home",
             <HomeOutlined />
         ),
-        getItem("Quản lý đơn hàng", "2", <UnorderedListOutlined />, [
-            getItem(<Link to={RoutePath.Order}>Danh sách đơn hàng</Link>, "3"),
+        getItem("Quản lý đơn hàng", "manage-order", <UnorderedListOutlined />, [
+            getItem(
+                <Link to={RoutePath.Order}>Danh sách đơn hàng</Link>,
+                "manage-order-list-order"
+            ),
             getItem(
                 <Link to={RoutePath.Comment}>Các nhận xét về đơn hàng</Link>,
-                "4"
+                "manage-order-list-order-comment"
             ),
         ]),
-        getItem("Quản lý dịch vụ", "5", <GlobalOutlined />, [
+        getItem("Quản lý dịch vụ", "manage-service", <GlobalOutlined />, [
             getItem(
                 <Link to={RoutePath.Skill}>Danh sách loại dịch vụ</Link>,
-                "6"
+                "manage-service-skill"
             ),
-            getItem(<Link to={RoutePath.Service}>Danh sách dịch vụ</Link>, "7"),
+            getItem(
+                <Link to={RoutePath.Service}>Danh sách dịch vụ</Link>,
+                "manage-service-services"
+            ),
         ]),
-        getItem("Quản lý người dùng", "8", <UserOutlined />, [
-            getItem(<Link to={RoutePath.Employee}>Danh sách thợ</Link>, "9"),
+        getItem("Quản lý người dùng", "manage-user", <UserOutlined />, [
+            getItem(
+                <Link to={RoutePath.Employee}>Danh sách thợ</Link>,
+                "manage-user-list-employee"
+            ),
             getItem(
                 <Link to={RoutePath.Customer}>Danh sách khách hàng</Link>,
-                "10"
+                "manage-user-list-customer"
             ),
         ]),
         getItem("Lịch sử thanh toán", "11", <WalletOutlined />),
         getItem("Cấu hình hệ thống", "12", <SettingOutlined />),
     ];
-
-    const getSelectedKey = (): string => {
-        return SIDEBAR.filter((item) => item.path === location.pathname)[0].key;
-    };
-
-    const getSelectedOpenKey = (): string => {
-        const item = SIDEBAR.filter((item) => item.path === location.pathname);
-        return item.length > 0 ? (item[0].openKey as string) : "";
-    };
 
     return (
         <div
@@ -117,7 +136,8 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
                 )}
             </div>
             <Menu
-                defaultSelectedKeys={["1"]}
+                defaultSelectedKeys={defaultSelectedKeys.current}
+                defaultOpenKeys={defaultOpenKeys.current}
                 mode="inline"
                 theme="dark"
                 inlineCollapsed={collapsed}

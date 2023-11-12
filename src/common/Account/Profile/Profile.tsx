@@ -216,11 +216,12 @@ const Profile = ({ account }: ProfileProps) => {
                         </Col>
                     </Row>
 
-                    <Form.Item style={{ float: "inline-end" }}>
+                    <Form.Item style={{ float: "inline-end", margin: 0 }}>
                         <Button
                             disabled={checkDisableButton()}
                             type="primary"
                             htmlType="submit"
+                            style={{ margin: 0 }}
                         >
                             Lưu thay đổi
                         </Button>

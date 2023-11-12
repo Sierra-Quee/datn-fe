@@ -1,22 +1,21 @@
+import "react-toastify/dist/ReactToastify.css";
+
+import { useEffect } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { useEffect } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import Account from "./components/Account/Account";
-import { Home } from "./components/Home/home";
-import LogIn from "./components/Login/LogIn";
-import SignUp from "./components/Signup/SignUp";
+import Account from "./common/Account/Account";
+import CommonRoutes from "./common/CommonRoutes";
+import Home from "./common/Home/Home";
+import Skill from "./common/Skill/Skill";
 import { PrivateRoute } from "./core/auth/private-route";
 import { Role } from "./core/auth/roles";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";
 import { getAccount } from "./core/reducers/authentication";
-import NotFound from "./layouts/NotFound/NotFound";
 import { useAppDispatch, useAppSelector } from "./redux/hook";
 import { RoutePath } from "./routes";
 import { ACCESS_TOKEN } from "./utils/constants";
 import { getCookie } from "./utils/functions/cookies";
-import { Skill } from "./components/Skill/Skill";
 import AdminServiceRoute from "./routes/adminServiceRoute";
 import { SystemCustomer } from "./components/SystemUsers/SystemCustomer/SystemCustomer";
 import SystemRepairment from "./components/SystemUsers/SystemRepairment/SystemRepairment";
@@ -35,10 +34,9 @@ function App() {
             {(!access_token || (access_token && isAuthenticated)) && (
                 <BrowserRouter>
                     <ErrorBoundaryRoutes>
-                        <Route path={RoutePath.Login} element={<LogIn />} />
-                        <Route path={RoutePath.SignUp} element={<SignUp />} />
+                        <Route path="/*" element={<CommonRoutes />} />
                         <Route
-                            index
+                            path={RoutePath.Home}
                             element={
                                 <PrivateRoute
                                     roles={[
@@ -97,7 +95,6 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
-                        <Route path="*" element={<NotFound />} />
                     </ErrorBoundaryRoutes>
                 </BrowserRouter>
             )}

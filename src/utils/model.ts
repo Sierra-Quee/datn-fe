@@ -1,9 +1,21 @@
+import { ReactElement, ReactNode } from "react";
+
+export interface IChildRoutePath {
+    children: ReactNode;
+}
+
+export interface IRoutePath {
+    path: string;
+    component: () => ReactElement;
+    layout?: ({ children }: IChildRoutePath) => ReactElement;
+}
+
 export interface ISkill {
     skillId?: number;
     name: string;
     createdAt?: string;
     updatedAt?: string;
-    imageUrl: string;
+    image: string;
     isActive?: boolean;
 }
 export interface IService {

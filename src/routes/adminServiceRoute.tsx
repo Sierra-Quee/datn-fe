@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import ErrorBoundaryRoutes from "../core/errors/error-boundary-routes";
-import SystemService from "../components/SystemService/SystemService";
-import Service from "../components/SystemService/Service/Service";
+import SystemService from "../common/SystemService/SystemService";
+import Service from "../common/SystemService/Service/Service";
 
 const AdminServiceRoute = () => {
     return (

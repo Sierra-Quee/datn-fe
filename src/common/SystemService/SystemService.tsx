@@ -3,7 +3,7 @@ import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import useDebounce from "../../hooks/useDebounce";
-import { getAllSkillAsync } from "../../core/reducers/skill";
+import { clearListSkill, getAllSkillAsync } from "../../core/reducers/skill";
 import { ISkill } from "../../utils/model";
 import { Link } from "react-router-dom";
 import Images from "../../assets/Images";
@@ -21,6 +21,10 @@ const SystemService = () => {
 
     useEffect(() => {
         handleGetAllSkillAsync();
+
+        return () => {
+            dispatch(clearListSkill());
+        };
     }, []);
 
     useEffect(() => {
@@ -56,33 +60,40 @@ const SystemService = () => {
                     />
                 </div>
                 <div className="system-service-content">
-                    {skills.map((skill) => {
-                        return (
-                            <Link key={skill.skillId} to={`${skill.skillId}`}>
-                                <Card
-                                    hoverable
-                                    style={{ width: 250 }}
-                                    cover={
-                                        <img
-                                            alt="card"
-                                            style={{
-                                                height: 250,
-                                                backgroundColor: "#ccc",
-                                            }}
-                                            src={
-                                                skill.imageUrl ||
-                                                Images.no_image
-                                            }
-                                        />
-                                    }
+                    {(skills && skills.length === 0) || !skills ? (
+                        <div>Không có dữ liệu nào</div>
+                    ) : (
+                        skills.map((skill) => {
+                            return (
+                                <Link
+                                    key={skill.skillId}
+                                    to={`${skill.skillId}`}
                                 >
-                                    <div style={{ textAlign: "center" }}>
-                                        {skill.name}
-                                    </div>
-                                </Card>
-                            </Link>
-                        );
-                    })}
+                                    <Card
+                                        hoverable
+                                        style={{ width: 250 }}
+                                        cover={
+                                            <img
+                                                alt="card"
+                                                style={{
+                                                    height: 250,
+                                                    backgroundColor: "#ccc",
+                                                }}
+                                                src={
+                                                    skill.image ||
+                                                    Images.no_image
+                                                }
+                                            />
+                                        }
+                                    >
+                                        <div style={{ textAlign: "center" }}>
+                                            {skill.name}
+                                        </div>
+                                    </Card>
+                                </Link>
+                            );
+                        })
+                    )}
                 </div>
             </Spin>
         </div>

@@ -1,35 +1,33 @@
-import { ISkill } from "../../utils/model";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import "./Skill.scss";
+
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Spin, Switch } from "antd";
+import Table, { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 import {
+    clearListSkill,
     clearUpdateStatusSkill,
     getAllSkillAsync,
-    getSkillByIdAsync,
     updateStatusSkillAsync,
 } from "../../core/reducers/skill";
-import Table, { ColumnsType } from "antd/es/table";
-import { Button, Input, Modal, Spin, Switch } from "antd";
-import "./Skill.scss";
-import { SearchOutlined } from "@ant-design/icons";
-import UpdateSkill from "./UpdateSkill/UpdateSkill";
-import { formatDate } from "../../utils/functions/utils";
-import { FORMAT_DATETIME } from "../../utils/constants";
 import useDebounce from "../../hooks/useDebounce";
-import { toast } from "react-toastify";
-import { DetailSkill } from "./DetailSkill";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { FORMAT_DATETIME } from "../../utils/constants";
+import { formatDate } from "../../utils/functions/utils";
+import { ISkill } from "../../utils/model";
+import UpdateSkill from "./UpdateSkill/UpdateSkill";
 
-export const Skill = () => {
+const Skill = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-    const [isOpenPanelSkill, setIsOpenPanelSkill] = useState<boolean>(false);
     const [skillUpdate, setSkillUpdate] = useState<ISkill | null | undefined>();
     const [searchInput, setSearchInput] = useState<string>("");
     const [skills, setSkills] = useState<ISkill[]>([]);
 
     const dispatch = useAppDispatch();
 
-    const { listSkill, loadingSkill, skill } = useAppSelector(
-        (state) => state.skill
-    );
+    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
 
     const { loadingUpdateStatusSkill, updateStatusSkillStatus } =
         useAppSelector((state) => state.skill.updateStatusSkill);
@@ -38,6 +36,10 @@ export const Skill = () => {
 
     useEffect(() => {
         handleGetAllSkillAsync();
+
+        return () => {
+            dispatch(clearListSkill());
+        };
     }, []);
 
     useEffect(() => {
@@ -46,7 +48,7 @@ export const Skill = () => {
             dispatch(clearUpdateStatusSkill());
             handleGetAllSkillAsync();
         }
-    }, [updateStatusSkillStatus]);
+    }, [updateStatusSkillStatus, dispatch]);
 
     useEffect(() => {
         setSkills(listSkill);
@@ -87,27 +89,6 @@ export const Skill = () => {
             title: "Tên nhóm dịch vụ",
             dataIndex: "name",
             key: "name",
-            render: (_: any, record: ISkill) => {
-                return (
-                    <div>
-                        <div
-                            style={{
-                                textDecoration: "solid underline",
-                                cursor: "pointer",
-                                width: "fit-content",
-                            }}
-                            onClick={() => {
-                                setIsOpenPanelSkill(true);
-                                dispatch(
-                                    getSkillByIdAsync(record.skillId || -1)
-                                );
-                            }}
-                        >
-                            {record.name}
-                        </div>
-                    </div>
-                );
-            },
         },
         {
             title: "Thời gian tạo",
@@ -152,9 +133,6 @@ export const Skill = () => {
             ),
         },
     ];
-    const handleConfirmPanel = () => {
-        setIsOpenPanelSkill(false);
-    };
 
     return (
         <Spin spinning={loadingSkill || loadingUpdateStatusSkill}>
@@ -199,14 +177,9 @@ export const Skill = () => {
                         handleGetAllSkillAsync={handleGetAllSkillAsync}
                     />
                 )}
-                {isOpenPanelSkill && (
-                    <DetailSkill
-                        isOpenPanel={isOpenPanelSkill}
-                        handleConfirmPanel={handleConfirmPanel}
-                        info={skill}
-                    />
-                )}
             </div>
         </Spin>
     );
 };
+
+export default Skill;

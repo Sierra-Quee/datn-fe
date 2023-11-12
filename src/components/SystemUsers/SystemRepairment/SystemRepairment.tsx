@@ -38,7 +38,6 @@ const SystemRepairment = () => {
     useEffect(() => {
         handleGetAllRepairList();
     }, []);
-    ("");
 
     // useEffect(() => {
     //     setSkills(listSkill);

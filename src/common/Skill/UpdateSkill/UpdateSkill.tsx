@@ -31,12 +31,14 @@ const UpdateSkill = ({
         (state) => state.skill.updateSkill
     );
     const [nameSkill, setNameSkill] = useState<string>("");
-    const [imageSkill, setImageSkill] = useState<string>("");
+    const [imageSkill, setImageSkill] = useState<string>(
+        "https://vcdn1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=i2M2IgCcw574LT-bXFY92g"
+    );
 
     useEffect(() => {
         if (skill) {
             setNameSkill(skill.name);
-            setImageSkill(skill.imageUrl);
+            setImageSkill(skill.image);
         }
     }, [skill]);
 
@@ -56,14 +58,14 @@ const UpdateSkill = ({
     const updateSkillModalAsync = async () => {
         if (isCreate) {
             await dispatch(
-                createSkillAsync({ name: nameSkill, imageUrl: imageSkill })
+                createSkillAsync({ name: nameSkill, image: imageSkill })
             );
         } else {
             await dispatch(
                 updateSkillAsync({
                     ...skill,
                     name: nameSkill,
-                    imageUrl: imageSkill,
+                    image: imageSkill,
                 })
             );
         }

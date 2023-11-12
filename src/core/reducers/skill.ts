@@ -90,6 +90,9 @@ export const skillSlice = createSlice({
                 updateStatusSkill: initialState.updateStatusSkill,
             };
         },
+        clearListSkill: (state) => {
+            state.listSkill = [];
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -170,4 +173,5 @@ export const {
     clearUpdateSkill,
     clearSkill,
     clearUpdateStatusSkill,
+    clearListSkill,
 } = skillSlice.actions;

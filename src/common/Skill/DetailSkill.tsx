@@ -39,7 +39,7 @@ export const DetailSkill = (props: IDetailSkillProps) => {
                     {info?.isActive ? "Đang hoạt động" : "Đã xóa"}
                 </div>
             </div>
-            <img src={info?.imageUrl} alt="Not image" />
+            <img src={info?.image} alt="Not image" />
             <p style={{ display: "block", textAlign: "center" }}>
                 Name: {info?.name}
             </p>

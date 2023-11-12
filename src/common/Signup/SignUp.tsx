@@ -88,7 +88,15 @@ const SignUp = () => {
             ) : (
                 <Spin spinning={loading}>
                     <Row style={{ width: "100%", height: "100%" }}>
-                        <Col span={14} className="wrap-logo">
+                        <Col
+                            xxl={14}
+                            xl={14}
+                            lg={14}
+                            md={24}
+                            sm={24}
+                            xs={24}
+                            className="wrap-logo"
+                        >
                             <img
                                 style={{ width: "400px", height: "400px" }}
                                 src={Images.ismart}
@@ -98,11 +106,26 @@ const SignUp = () => {
                                 Hệ thống sửa chữa điện lạnh ISmart
                             </h2>
                         </Col>
-                        <Col span={10} className="form-register-wrap">
+                        <Col
+                            xxl={10}
+                            xl={10}
+                            lg={10}
+                            md={24}
+                            sm={24}
+                            xs={24}
+                            className="form-register-wrap"
+                        >
                             <Form onFinish={onFinish} layout="vertical">
                                 <h1>Đăng ký</h1>
                                 <Row gutter={20}>
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <Form.Item
                                             label="Họ"
                                             name="lastName"
@@ -117,7 +140,14 @@ const SignUp = () => {
                                             <Input placeholder="Nhập họ của bạn" />
                                         </Form.Item>
                                     </Col>
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <Form.Item
                                             label="Tên"
                                             name="firstName"
@@ -134,7 +164,14 @@ const SignUp = () => {
                                     </Col>
                                 </Row>
                                 <Row gutter={20}>
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <Form.Item
                                             label="Số điện thoại"
                                             name="phone"
@@ -149,7 +186,14 @@ const SignUp = () => {
                                             <Input placeholder="Nhập số điện thoại của bạn" />
                                         </Form.Item>
                                     </Col>
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <Form.Item
                                             label="Email"
                                             name="email"
@@ -171,7 +215,14 @@ const SignUp = () => {
                                     </Col>
                                 </Row>
                                 <Row gutter={20}>
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <Form.Item
                                             label="Giới tính"
                                             name="gender"
@@ -193,7 +244,14 @@ const SignUp = () => {
                                             </Select>
                                         </Form.Item>
                                     </Col>
-                                    <Col span={12}>
+                                    <Col
+                                        xxl={12}
+                                        xl={12}
+                                        lg={12}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <Form.Item
                                             label="Ngày tháng năm sinh"
                                             name="dob"

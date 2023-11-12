@@ -11,7 +11,7 @@ const Navbar = () => {
     const { account } = useAppSelector((state) => state.authentication);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-
+    console.log({ account });
     const logout = () => {
         clearCookie();
         dispatch(resetAuth());

@@ -1,4 +1,7 @@
 .public {
+    width: 100vw;
+    overflow-x: hidden;
+    max-width: 100%;
     .header-title {
         color: white;
         font-size: 22px;

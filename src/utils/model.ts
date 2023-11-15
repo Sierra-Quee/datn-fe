@@ -2,6 +2,7 @@ import { ReactElement, ReactNode } from "react";
 
 export interface IChildRoutePath {
     children: ReactNode;
+    breadcrumb?: string[];
 }
 
 export interface IRoutePath {

@@ -1,7 +1,7 @@
 import "./Public.scss";
 
-import { Layout, Menu, MenuProps } from "antd";
-import { Content, Header } from "antd/es/layout/layout";
+import { Avatar, Dropdown, Layout, Menu, MenuProps } from "antd";
+import { Content, Header, Footer } from "antd/es/layout/layout";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -11,8 +11,11 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { RoutePath } from "../../routes";
 import { IChildRoutePath, ISkill } from "../../utils/model";
 import { BellOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { clearCookie } from "../../utils/functions/cookies";
+import { resetAuth } from "../../core/reducers/authentication";
 
 const Public = ({ children }: IChildRoutePath) => {
+    const { account } = useAppSelector((state) => state.authentication);
     const [skills, setSkills] = useState<ISkill[]>([]);
     const [itemMenu, setItemMenu] = useState<MenuProps["items"]>([]);
 
@@ -23,6 +26,11 @@ const Public = ({ children }: IChildRoutePath) => {
             location.pathname.includes(s)
         )
     );
+
+    const logout = () => {
+        clearCookie();
+        dispatch(resetAuth());
+    };
 
     const items = useRef([
         {
@@ -89,6 +97,17 @@ const Public = ({ children }: IChildRoutePath) => {
         await dispatch(getAllSkillAsync());
     };
 
+    const itemDrops: MenuProps["items"] = [
+        {
+            key: "1",
+            label: <Link to="/account">Thiết lập tài khoản</Link>,
+        },
+        {
+            key: "2",
+            label: <div onClick={logout}>Đăng xuất</div>,
+        },
+    ];
+
     return (
         <div className="public">
             <Layout>
@@ -134,37 +153,73 @@ const Public = ({ children }: IChildRoutePath) => {
                     >
                         <BellOutlined />
                     </Link>
-                    {}
-                    <div>
-                        <Link
-                            to={RoutePath.SignUp}
-                            style={{
-                                color: "white",
-                            }}
-                        >
-                            Đăng ký {" / "}
-                        </Link>
-                        <Link
-                            to={RoutePath.Login}
-                            style={{
-                                color: "white",
-                            }}
-                        >
-                            Đăng nhập
-                        </Link>
-                    </div>
+                    {!Object.keys(account).length ? (
+                        <div>
+                            <Link
+                                to={RoutePath.SignUp}
+                                style={{
+                                    color: "white",
+                                }}
+                            >
+                                Đăng ký {" / "}
+                            </Link>
+                            <Link
+                                to={RoutePath.Login}
+                                style={{
+                                    color: "white",
+                                }}
+                            >
+                                Đăng nhập
+                            </Link>
+                        </div>
+                    ) : (
+                        <div>
+                            <span className="navbar-account-name">
+                                {account.accountName ||
+                                    account.lastName + account.firstName}
+                            </span>
+                            <Dropdown
+                                placement="bottomRight"
+                                menu={{ items: itemDrops }}
+                            >
+                                <div style={{ cursor: "pointer" }}>
+                                    {account.imageUrl ? (
+                                        <Avatar src={account.imageUrl} />
+                                    ) : (
+                                        <Avatar
+                                            style={{
+                                                backgroundColor: "#f56a00",
+                                            }}
+                                            size="large"
+                                        >
+                                            <span
+                                                style={{
+                                                    fontSize: "20px",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                {(
+                                                    account.accountName[0] ||
+                                                    account.firstName
+                                                ).toUpperCase()}
+                                            </span>
+                                        </Avatar>
+                                    )}
+                                </div>
+                            </Dropdown>
+                        </div>
+                    )}
                 </Header>
-                {/* <Content
-                    style={{ height: "calc(100vh - 64px)", overflow: "auto" }}
+                <Content
+                    style={{
+                        height: "calc(100vh - 64px)",
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                    }}
                 >
-                    <Menu
-                        style={{ paddingLeft: 35 }}
-                        mode="horizontal"
-                        defaultSelectedKeys={defaultSelectedKey.current}
-                        items={itemMenu}
-                    />
                     <div className="public-content">{children}</div>
-                </Content> */}
+                </Content>
+                <Footer>hello</Footer>
             </Layout>
         </div>
     );

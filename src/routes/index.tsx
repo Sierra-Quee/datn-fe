@@ -1,11 +1,14 @@
+import CustomerProfile from "../common/Account/Profile/CustomerProfile";
 import Contact from "../common/Contact/Contact";
 import HomePage from "../common/HomePage/HomePage";
 import Introduce from "../common/Introduce/Introduce";
 import IntroduceServices from "../common/IntroduceServices/IntroduceServices";
 import LogIn from "../common/Login/LogIn";
 import SignUp from "../common/Signup/SignUp";
+import CustomerProfileLayout from "../layouts/CustomerLayout/CustomerProfileLayout";
 import Public from "../layouts/Public/Public";
 import { IRoutePath } from "../utils/model";
+import CustomerPassword from "../common/Account/Password/CustomerPassword";
 
 export enum RoutePath {
     Home = "/home",
@@ -21,6 +24,8 @@ export enum RoutePath {
     Login = "/login",
     SignUp = "/sign-up",
     Account = "/account",
+    CustomerAccount = "/user/my-profile",
+    CustomerPassword = "/user/password",
 }
 
 export const PublicRoutes: IRoutePath[] = [
@@ -51,6 +56,16 @@ export const PublicRoutes: IRoutePath[] = [
     {
         path: RoutePath.SignUp,
         component: SignUp,
+    },
+    {
+        path: RoutePath.CustomerAccount,
+        component: CustomerProfile,
+        layout: CustomerProfileLayout,
+    },
+    {
+        path: RoutePath.CustomerPassword,
+        component: CustomerPassword,
+        layout: CustomerProfileLayout,
     },
 ];
 

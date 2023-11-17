@@ -165,19 +165,19 @@ div.ant-picker {
 button.ant-btn {
     padding: 9px 11px;
     width: 100%;
-    background-color: var(--primary);
-    border: none;
-    outline: none;
+    // background-color: var(/--primary);
+    // border: none;
+    // outline: none;
     font-size: 16px;
     height: unset;
     font-weight: 600;
     margin-top: 20px;
 
-    &:hover,
-    &:focus {
-        background-color: var(--primary) !important;
-        opacity: 0.8;
-    }
+    // &:hover,
+    // &:focus {
+    //     background-color: var(--primary) !important;
+    //     opacity: 0.8;
+    // }
 }
 
 button.ant-btn:disabled {

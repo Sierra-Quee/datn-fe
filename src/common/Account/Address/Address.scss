@@ -1,0 +1,28 @@
+.address-header {
+    background-color: white;
+    border-bottom: solid 1px #3f3f3f;
+    display: flex;
+    padding: 0;
+
+    h3 {
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    .address-btn {
+        color: white;
+
+        :focus {
+            color: white;
+        }
+
+        :hover {
+            color: white;
+        }
+    }
+
+    &__content {
+        justify-content: space-between;
+        align-items: center;
+    }
+}

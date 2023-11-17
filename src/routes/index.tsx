@@ -9,6 +9,7 @@ import CustomerProfileLayout from "../layouts/CustomerLayout/CustomerProfileLayo
 import Public from "../layouts/Public/Public";
 import { IRoutePath } from "../utils/model";
 import CustomerPassword from "../common/Account/Password/CustomerPassword";
+import Address from "../common/Account/Address/Address";
 
 export enum RoutePath {
     Home = "/home",
@@ -26,6 +27,7 @@ export enum RoutePath {
     Account = "/account",
     CustomerAccount = "/user/my-profile",
     CustomerPassword = "/user/password",
+    CustomerAddress = "/user/address",
 }
 
 export const PublicRoutes: IRoutePath[] = [
@@ -65,6 +67,11 @@ export const PublicRoutes: IRoutePath[] = [
     {
         path: RoutePath.CustomerPassword,
         component: CustomerPassword,
+        layout: CustomerProfileLayout,
+    },
+    {
+        path: RoutePath.CustomerAddress,
+        component: Address,
         layout: CustomerProfileLayout,
     },
 ];

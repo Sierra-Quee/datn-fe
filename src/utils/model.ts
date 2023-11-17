@@ -7,7 +7,7 @@ export interface IChildRoutePath {
 
 export interface IRoutePath {
     path: string;
-    component: () => ReactElement;
+    component: (props: any) => ReactElement;
     layout?: ({ children }: IChildRoutePath) => ReactElement;
 }
 

@@ -1,6 +1,6 @@
 import "./Public.scss";
 
-import { Avatar, Dropdown, Layout, Menu, MenuProps } from "antd";
+import { Avatar, Dropdown, Input, Layout, Menu, MenuProps } from "antd";
 import { Content, Header, Footer } from "antd/es/layout/layout";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { useEffect, useRef, useState } from "react";
@@ -10,7 +10,11 @@ import { getAllSkillAsync } from "../../core/reducers/skill";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { RoutePath } from "../../routes";
 import { IChildRoutePath, ISkill } from "../../utils/model";
-import { BellOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import {
+    BellOutlined,
+    SearchOutlined,
+    ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { clearCookie } from "../../utils/functions/cookies";
 import { resetAuth } from "../../core/reducers/authentication";
 
@@ -113,7 +117,6 @@ const Public = ({ children }: IChildRoutePath) => {
             <Layout>
                 <Header
                     style={{
-                        position: "sticky",
                         top: 0,
                         zIndex: 1,
                         width: "100%",
@@ -128,17 +131,23 @@ const Public = ({ children }: IChildRoutePath) => {
                         </a>
                     </div>
 
+                    <Input
+                        addonAfter={
+                            <SearchOutlined style={{ fontSize: "20px" }} />
+                        }
+                        placeholder="Tìm kiếm dịch vụ"
+                        // onChange={handleFindSkill}
+                        style={{ width: "30%", background: "#f3f3f3" }}
+                    />
+
                     <Menu
                         style={{
-                            paddingLeft: 35,
-                            backgroundColor: "transparent",
-                            color: "white",
-                            transitionDuration: "0",
-                            width: "60%",
+                            background: "transparent",
                         }}
                         mode="horizontal"
                         defaultSelectedKeys={defaultSelectedKey.current}
                         items={itemMenu}
+                        className="main-menu"
                     />
                     <Link
                         to={RoutePath.Contact}

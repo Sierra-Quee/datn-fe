@@ -23,4 +23,24 @@
         height: calc(100% - 47px);
         overflow: auto;
     }
+
+    .main-menu {
+        display: flex;
+        // justify-content: space-evenly;
+        gap: 30px;
+        width: "30%";
+        background: "transparent" !important;
+        color: "white";
+
+        .ant-menu-submenu-title {
+            color: white;
+        }
+        .ant-menu-title-content {
+            color: white !important;
+
+            ::after {
+                background-color: white;
+            }
+        }
+    }
 }

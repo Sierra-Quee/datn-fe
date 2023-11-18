@@ -99,3 +99,12 @@ export const defaultUser = {
     skills: [],
     address: [],
 };
+
+export interface IAddress {
+    addressId: number;
+    userId: string;
+    address: string;
+    isMainAddress: boolean;
+    longitude: number;
+    latitude: number;
+}

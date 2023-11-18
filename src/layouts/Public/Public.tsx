@@ -104,7 +104,7 @@ const Public = ({ children }: IChildRoutePath) => {
     const itemDrops: MenuProps["items"] = [
         {
             key: "1",
-            label: <Link to="/account">Thiết lập tài khoản</Link>,
+            label: <Link to="/user/my-profile">Thiết lập tài khoản</Link>,
         },
         {
             key: "2",
@@ -163,7 +163,7 @@ const Public = ({ children }: IChildRoutePath) => {
                         <BellOutlined />
                     </Link>
                     {!Object.keys(account).length ? (
-                        <div>
+                        <>
                             <Link
                                 to={RoutePath.SignUp}
                                 style={{
@@ -180,10 +180,13 @@ const Public = ({ children }: IChildRoutePath) => {
                             >
                                 Đăng nhập
                             </Link>
-                        </div>
+                        </>
                     ) : (
-                        <div>
-                            <span className="navbar-account-name">
+                        <>
+                            <span
+                                className="navbar-account-name"
+                                style={{ color: "white" }}
+                            >
                                 {account.accountName ||
                                     account.lastName + account.firstName}
                             </span>
@@ -216,7 +219,7 @@ const Public = ({ children }: IChildRoutePath) => {
                                     )}
                                 </div>
                             </Dropdown>
-                        </div>
+                        </>
                     )}
                 </Header>
                 <Content

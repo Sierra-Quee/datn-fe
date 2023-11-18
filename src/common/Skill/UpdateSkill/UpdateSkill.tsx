@@ -1,15 +1,21 @@
-import { Button, Image, Input, Modal } from "antd";
-import { ISkill } from "../../../utils/model";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import "./UpdateSkill.scss";
+
+import { Button, Form, Input, Modal } from "antd";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+import Images from "../../../assets/Images";
+import {
+    resetUploadImage,
+    uploadImageCloud,
+} from "../../../core/reducers/image_cloud";
 import {
     clearUpdateSkill,
     createSkillAsync,
     updateSkillAsync,
 } from "../../../core/reducers/skill";
-import { useEffect, useState } from "react";
-import Images from "../../../assets/Images";
-import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { ISkill } from "../../../utils/model";
 
 interface IUpdateSkillProps {
     isOpen: boolean;
@@ -26,18 +32,22 @@ const UpdateSkill = ({
     isCreate = false,
     handleGetAllSkillAsync,
 }: IUpdateSkillProps) => {
+    const [imageCloud, setImageCloud] = useState<File>();
+    const [nameSkill, setNameSkill] = useState<string>("");
+    const [imageSkill, setImageSkill] = useState<string>("");
+
     const dispatch = useAppDispatch();
     const { loadingUpdateSkill, updateSkillStatus } = useAppSelector(
         (state) => state.skill.updateSkill
     );
-    const [nameSkill, setNameSkill] = useState<string>("");
-    const [imageSkill, setImageSkill] = useState<string>(
-        "https://vcdn1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=i2M2IgCcw574LT-bXFY92g"
-    );
+    const {
+        uploadSuccess,
+        loadingUploadImage,
+        image: imageCloudUpload,
+    } = useAppSelector((state) => state.imageCloud);
 
     useEffect(() => {
         if (skill) {
-            setNameSkill(skill.name);
             setImageSkill(skill.image);
         }
     }, [skill]);
@@ -50,24 +60,55 @@ const UpdateSkill = ({
                     : "Cập nhật thông tin loại dịch vụ thành công"
             );
             dispatch(clearUpdateSkill());
+            dispatch(resetUploadImage());
             handleGetAllSkillAsync();
             close();
         }
-    }, [updateSkillStatus]);
+    }, [updateSkillStatus, dispatch, isCreate]);
 
-    const updateSkillModalAsync = async () => {
-        if (isCreate) {
-            await dispatch(
-                createSkillAsync({ name: nameSkill, image: imageSkill })
-            );
-        } else {
-            await dispatch(
-                updateSkillAsync({
-                    ...skill,
-                    name: nameSkill,
-                    image: imageSkill,
-                })
-            );
+    useEffect(() => {
+        if (
+            uploadSuccess ||
+            (nameSkill &&
+                ((isCreate && !imageSkill) ||
+                    (!isCreate && skill?.image === imageSkill)))
+        ) {
+            const update = async () => {
+                if (isCreate) {
+                    await dispatch(
+                        createSkillAsync({
+                            name: nameSkill,
+                            image: imageCloudUpload || imageSkill,
+                        } as ISkill)
+                    );
+                } else {
+                    await dispatch(
+                        updateSkillAsync({
+                            name: nameSkill,
+                            image: imageCloudUpload || imageSkill,
+                        } as ISkill)
+                    );
+                }
+            };
+            update();
+        }
+    }, [
+        uploadSuccess,
+        nameSkill,
+        dispatch,
+        isCreate,
+        imageSkill,
+        skill?.image,
+        imageCloudUpload,
+    ]);
+
+    const updateSkillModalAsync = async (value: any) => {
+        setNameSkill(value.name);
+        if (
+            (isCreate && imageSkill) ||
+            (!isCreate && imageSkill !== skill?.image)
+        ) {
+            await handleUploadImageCloud();
         }
     };
 
@@ -76,8 +117,8 @@ const UpdateSkill = ({
             <Button
                 key={2}
                 type="primary"
-                onClick={updateSkillModalAsync}
-                loading={loadingUpdateSkill}
+                htmlType="submit"
+                loading={loadingUpdateSkill || loadingUploadImage}
             >
                 Cập nhật
             </Button>
@@ -86,7 +127,11 @@ const UpdateSkill = ({
 
     const buttonCancel = () => {
         return (
-            <Button key={1} disabled={loadingUpdateSkill} onClick={close}>
+            <Button
+                key={1}
+                disabled={loadingUpdateSkill || loadingUploadImage}
+                onClick={close}
+            >
                 Hủy bỏ
             </Button>
         );
@@ -95,7 +140,23 @@ const UpdateSkill = ({
     const handleSelectImage = (event: any) => {
         if (event && event.target.files) {
             setImageSkill(URL.createObjectURL(event.target.files[0]));
+            setImageCloud(event.target.files[0]);
         }
+    };
+
+    const handleUploadImageCloud = async () => {
+        const data = new FormData();
+        data.append("file", imageCloud as File);
+        data.append(
+            "upload_preset",
+            process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET as string
+        );
+        data.append(
+            "cloud_name",
+            process.env.REACT_APP_CLOUDINARY_CLOUD_NAME as string
+        );
+        data.append("folder", "DATN-FE");
+        await dispatch(uploadImageCloud(data));
     };
 
     const buttonUploadImage = () => {
@@ -133,23 +194,42 @@ const UpdateSkill = ({
                     ? "Thêm loại dịch vụ"
                     : "Cập nhật thông tin loại dịch vụ"
             }
-            footer={[buttonCancel(), buttonUpdate()]}
+            footer={[]}
             className="update-skill-modal"
         >
-            <div className="modal-update-skill-wrap">
-                <Input
-                    value={nameSkill}
-                    placeholder="Nhập tên loại dịch vụ"
-                    onChange={(e: any) => {
-                        setNameSkill(e.target.value);
-                    }}
-                />
-                {buttonUploadImage()}
-                <img
-                    className="image-skill"
-                    src={imageSkill || Images.no_image}
-                />
-            </div>
+            <Form layout="vertical" onFinish={updateSkillModalAsync}>
+                <div className="modal-update-skill-wrap">
+                    <Form.Item
+                        label="Tên loại dịch vụ"
+                        name="name"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Vui lòng nhập tên loại dịch vụ",
+                            },
+                        ]}
+                        initialValue={skill?.name}
+                        style={{ width: "100%" }}
+                    >
+                        <Input
+                            value={nameSkill}
+                            placeholder="Nhập tên loại dịch vụ"
+                        />
+                    </Form.Item>
+
+                    {buttonUploadImage()}
+                    <img
+                        className="image-skill"
+                        src={imageSkill || Images.no_image}
+                        alt=""
+                    />
+                </div>
+
+                <div className="button-wrap">
+                    {buttonCancel()}
+                    {buttonUpdate()}
+                </div>
+            </Form>
         </Modal>
     );
 };

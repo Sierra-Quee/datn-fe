@@ -76,7 +76,7 @@ export const createServiceAsync = createAsyncThunk(
     }
 );
 
-export const updadteServiceAsync = createAsyncThunk(
+export const updateServiceAsync = createAsyncThunk(
     "updateService",
     async (service: IService) => {
         return (await updateServiceAPI(service)).data;
@@ -174,15 +174,15 @@ export const ServiceSlice = createSlice({
                     state.updateService.loadingUpdateService = false;
                 }
             )
-            .addCase(updadteServiceAsync.pending, (state, action) => {
+            .addCase(updateServiceAsync.pending, (state, action) => {
                 state.updateService.loadingUpdateService = true;
             })
-            .addCase(updadteServiceAsync.fulfilled, (state, action) => {
+            .addCase(updateServiceAsync.fulfilled, (state, action) => {
                 state.updateService.updateServiceStatus = "success";
                 state.updateService.loadingUpdateService = false;
             })
             .addCase(
-                updadteServiceAsync.rejected,
+                updateServiceAsync.rejected,
                 (state, action: PayloadAction<any>) => {
                     state.updateService.updateServiceStatus = "failed";
                     state.updateService.loadingUpdateService = false;

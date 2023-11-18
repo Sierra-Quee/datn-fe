@@ -12,13 +12,16 @@ import Images from "../../assets/Images";
 import { RoutePath } from "../../routes";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { checkNullObj } from "../../utils/functions/utils";
+import { Role } from "../../core/auth/roles";
 
 const LogIn = () => {
     const { isAuthenticated, loginError, loginSuccess, loading, account } =
         useAppSelector((state) => state.authentication);
     const dispatch = useAppDispatch();
     const location = useLocation();
-    const { from } = location.state || { from: "/home" };
+    const { from } = location.state || {
+        from: account.role === Role.ROLE_ADMIN ? "/home" : "/",
+    };
 
     useEffect(() => {
         if (isAuthenticated && loginSuccess) {

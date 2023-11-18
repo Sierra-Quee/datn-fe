@@ -82,7 +82,12 @@ const Service = () => {
 
     const openUpdateModal = (data: IService) => {
         setIsOpenModal(!isOpenModal);
-        setServiceUpdate(data);
+        setServiceUpdate({
+            ...data,
+            // type: Object.entries(ITypeService).find(
+            //     (o) => o[1] === data.type
+            // )![0],
+        });
     };
 
     const handleFindService = (e: any) => {
@@ -201,6 +206,10 @@ const Service = () => {
     const handleConfirmPanel = () => {
         setIsOpenPanelService(false);
     };
+
+    console.log(serviceUpdate);
+    console.log(listService);
+
     return (
         <Spin
             spinning={

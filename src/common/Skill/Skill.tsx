@@ -55,11 +55,15 @@ const Skill = () => {
     }, [listSkill]);
 
     useEffect(() => {
-        setSkills(
-            listSkill.filter((s) =>
-                s.name.toLowerCase().includes(searchInput.toLowerCase())
-            )
-        );
+        if (debounce !== undefined) {
+            setSkills(
+                listSkill.filter((s) =>
+                    s.name
+                        .toLowerCase()
+                        .includes((debounce as string).toLowerCase())
+                )
+            );
+        }
     }, [debounce]);
 
     const handleFindSkill = (e: any) => {

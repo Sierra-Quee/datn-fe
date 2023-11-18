@@ -1,59 +1,67 @@
-import { Button, Card, Input, Spin, Switch, Table } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import "./SystemRepairment.scss";
 
 import { SearchOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import Images from "../../../assets/Images";
+import { Button, Input, Spin, Table } from "antd";
+import { ColumnsType } from "antd/es/table";
+import { useCallback, useEffect, useState } from "react";
+
 import { Role } from "../../../core/auth/roles";
 import {
+    clearListRepair,
     getAllUserRoleAsync,
     getDetailUserAsync,
-    setRepairList,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { ColumnsType } from "antd/es/table";
 import { IUser } from "../../../utils/model";
-import { DetailUser } from "../DetailUser";
-import { UpdateUser } from "../UpdateUser";
+import { DetailUser } from "../DetailUser/DetailUser";
+import { UpdateUser } from "../UpdateUser/UpdateUser";
+import { clearListSkill, getAllSkillAsync } from "../../../core/reducers/skill";
 
 const SystemRepairment = () => {
     const [searchInput, setSearchInput] = useState<string>("");
+    const [employeeUpdate, setEmployeeUpdate] = useState<
+        IUser | null | undefined
+    >();
+    const [employees, setEmployees] = useState<IUser[]>([]);
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
-    const [isCreate, setIsCreate] = useState<boolean>(false);
+    const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
+
     const dispatch = useAppDispatch();
+    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
     const { loadingUser, repairList, user } = useAppSelector(
         (state) => state.users
     );
 
     const debounce = useDebounce(searchInput);
-    const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
 
     const handleGetAllRepairList = useCallback(async () => {
-        const res = await dispatch(getAllUserRoleAsync(Role.ROLE_REPAIRMAN));
-        if (res.payload) {
-            dispatch(setRepairList(res.payload));
-        }
+        await dispatch(getAllUserRoleAsync(Role.ROLE_REPAIRMAN));
     }, []);
+
+    const handleGetAllSkillAsync = async () => {
+        await dispatch(getAllSkillAsync());
+    };
+
     useEffect(() => {
         handleGetAllRepairList();
+        handleGetAllSkillAsync();
+
+        return () => {
+            dispatch(clearListRepair());
+            dispatch(clearListSkill());
+        };
     }, []);
 
-    // useEffect(() => {
-    //     setSkills(listSkill);
-    // }, [listSkill]);
+    useEffect(() => {
+        setEmployees(repairList);
+    }, [repairList]);
 
-    // useEffect(() => {
-    //     setSkills(
-    //         listSkill.filter((s) =>
-    //             s.name.toLowerCase().includes(searchInput.toLowerCase())
-    //         )
-    //     );
-    // }, [debounce]);
+    const openUpdateModal = (data: IUser) => {
+        setIsOpenPanelUpdate(true);
+        setEmployeeUpdate(data);
+    };
 
-    // const handleGetAllSkillAsync = async () => {
-    //     await dispatch(getAllSkillAsync());
-    // };
     const onGetStatusRepair = (status: number) => {
         if (status === 0) return "Đang hoạt động";
         if (status === 1) return "Đang bận";
@@ -64,14 +72,14 @@ const SystemRepairment = () => {
     };
     const columns: ColumnsType<IUser> = [
         {
-            title: "Mã",
+            title: "Mã thợ",
             dataIndex: "userId",
             key: "userId",
             fixed: "left",
             width: 120,
         },
         {
-            title: "Tên taì khoản",
+            title: "Tên tài khoản",
             dataIndex: "accountName",
             key: "accountName",
             fixed: "left",
@@ -97,6 +105,16 @@ const SystemRepairment = () => {
             },
         },
         {
+            title: "Họ",
+            dataIndex: "lastName",
+            key: "lastName",
+        },
+        {
+            title: "Tên",
+            dataIndex: "firstName",
+            key: "firstName",
+        },
+        {
             title: "Số điện thoại",
             dataIndex: "phone",
             key: "phone",
@@ -118,6 +136,23 @@ const SystemRepairment = () => {
             title: "Kĩ năng",
             key: "skills",
             dataIndex: "skills",
+            render: (_: any, record: IUser) => {
+                return (
+                    <div>
+                        {record && record.skills && record.skills.length
+                            ? record.skills.map((skill: any) => (
+                                  <div>
+                                      {
+                                          listSkill.find(
+                                              (s) => s.skillId === skill.skillId
+                                          )?.name
+                                      }
+                                  </div>
+                              ))
+                            : ""}
+                    </div>
+                );
+            },
         },
         {
             title: "Trạng thái",
@@ -140,8 +175,7 @@ const SystemRepairment = () => {
                     <a
                         style={{ marginRight: "10px" }}
                         onClick={() => {
-                            setIsOpenPanelUpdate(true);
-                            // openUpdatePanelUpdate(record);
+                            openUpdateModal(record);
                         }}
                     >
                         Cập nhật
@@ -156,8 +190,9 @@ const SystemRepairment = () => {
     };
 
     return (
-        <div className="system-repair">
-            <Spin spinning={loadingUser}>
+        <Spin spinning={loadingUser}>
+            <div className="system-repair">
+                <h2>Danh sách thợ</h2>
                 <div className="header-table-repair">
                     <Button
                         type="primary"
@@ -169,21 +204,29 @@ const SystemRepairment = () => {
                         addonBefore={
                             <SearchOutlined style={{ fontSize: "20px" }} />
                         }
-                        placeholder="Nhập tên nhân viên cần tìm kiếm"
+                        placeholder="Nhập tên thợ cần tìm kiếm"
                         onChange={handleFindRepair}
                     />
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={repairList}
+                    dataSource={employees}
                     pagination={{ pageSize: 7 }}
                     scroll={{ x: 1300 }}
                 />
-                <UpdateUser
-                    isOpenPanel={isOpenPanelUpdate}
-                    currentUser={user}
-                    isCreate={isCreate}
-                />
+                {isOpenPanelUpdate && (
+                    <UpdateUser
+                        isOpenPanel={isOpenPanelUpdate}
+                        currentUser={employeeUpdate}
+                        isCreate={!employeeUpdate}
+                        close={() => {
+                            setEmployeeUpdate(null);
+                            setIsOpenPanelUpdate(!isOpenPanelUpdate);
+                        }}
+                        handleGetAllUser={handleGetAllRepairList}
+                    />
+                )}
+
                 {isOpenPanelUser && (
                     <DetailUser
                         isOpenPanel={isOpenPanelUser}
@@ -191,8 +234,8 @@ const SystemRepairment = () => {
                         info={user}
                     />
                 )}
-            </Spin>
-        </div>
+            </div>
+        </Spin>
     );
 };
 export default SystemRepairment;

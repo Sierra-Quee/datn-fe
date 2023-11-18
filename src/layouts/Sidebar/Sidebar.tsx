@@ -15,7 +15,6 @@ import { Link, useLocation } from "react-router-dom";
 
 import Images from "../../assets/Images";
 import { RoutePath } from "../../routes";
-import { SIDEBAR } from "../../utils/constants";
 import { useRef } from "react";
 
 export type MenuItem = Required<MenuProps>["items"][number];

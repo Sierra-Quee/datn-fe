@@ -1,5 +1,6 @@
 import { Button, Input, Spin, Table } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import "./SystemCustomer.scss";
 
 import { SearchOutlined } from "@ant-design/icons";
 import { ColumnsType } from "antd/es/table";
@@ -7,19 +8,20 @@ import { Role } from "../../../core/auth/roles";
 import {
     getAllUserRoleAsync,
     getDetailUserAsync,
-    setCustomerList,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { IUser } from "../../../utils/model";
-import { DetailUser } from "../DetailUser";
-import { UpdateUser } from "../UpdateUser";
+import { DetailUser } from "../DetailUser/DetailUser";
+import { UpdateUser } from "../UpdateUser/UpdateUser";
 export const SystemCustomer = () => {
     const [searchInput, setSearchInput] = useState<string>("");
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
-    const [isOpenPanelUpdate, setIsOpenPanelUisOpenPanelUpdate] =
-        useState<boolean>(false);
-    const [isCreate, setIsCreate] = useState<boolean>(false);
+    const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
+    const [customerUpdate, setCustomerUpdate] = useState<
+        IUser | null | undefined
+    >();
+    const [customers, setCustomers] = useState<IUser[]>([]);
 
     const dispatch = useAppDispatch();
     const { loadingUser, customerList, user } = useAppSelector(
@@ -27,46 +29,37 @@ export const SystemCustomer = () => {
     );
 
     const debounce = useDebounce(searchInput);
-    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
     const handleGetAllCustomerList = useCallback(async () => {
-        const res = await dispatch(getAllUserRoleAsync(Role.ROLE_USER));
-        if (res.payload) {
-            dispatch(setCustomerList(res.payload));
-        }
+        await dispatch(getAllUserRoleAsync(Role.ROLE_USER));
     }, []);
     useEffect(() => {
         handleGetAllCustomerList();
     }, []);
 
-    // useEffect(() => {
-    //     setSkills(listSkill);
-    // }, [listSkill]);
+    useEffect(() => {
+        setCustomers(customerList);
+    }, [customerList]);
 
-    // useEffect(() => {
-    //     setSkills(
-    //         listSkill.filter((s) =>
-    //             s.name.toLowerCase().includes(searchInput.toLowerCase())
-    //         )
-    //     );
-    // }, [debounce]);
-
-    // const handleGetAllSkillAsync = async () => {
-    //     await dispatch(getAllSkillAsync());
-    // };
     const handleConfirmPanel = () => {
         setIsOpenPanelUser(false);
     };
+
+    const openUpdateModal = (data: IUser) => {
+        setIsOpenPanelUpdate(true);
+        setCustomerUpdate(data);
+    };
+
     const columns: ColumnsType<IUser> = [
         {
-            title: "Mã",
+            title: "Mã khách hàng",
             dataIndex: "userId",
             key: "userId",
             fixed: "left",
-            width: 120,
+            width: 150,
         },
         {
-            title: "Tên taì khoản",
+            title: "Tên tài khoản",
             dataIndex: "accountName",
             key: "accountName",
             fixed: "left",
@@ -90,6 +83,16 @@ export const SystemCustomer = () => {
                     </div>
                 );
             },
+        },
+        {
+            title: "Họ",
+            dataIndex: "lastName",
+            key: "lastName",
+        },
+        {
+            title: "Tên",
+            dataIndex: "firstName",
+            key: "firstName",
         },
         {
             title: "Số điện thoại",
@@ -119,9 +122,9 @@ export const SystemCustomer = () => {
                 <div>
                     <a
                         style={{ marginRight: "10px" }}
-                        // onClick={() => {
-                        //     openUpdateModal(record);
-                        // }}
+                        onClick={() => {
+                            openUpdateModal(record);
+                        }}
                     >
                         Cập nhật
                     </a>
@@ -135,12 +138,13 @@ export const SystemCustomer = () => {
     };
 
     return (
-        <div className="system-customer">
-            <Spin spinning={loadingUser}>
+        <Spin spinning={loadingUser}>
+            <div className="system-customer">
+                <h2>Danh sách khách hàng</h2>
                 <div className="header-table-customer">
                     <Button
                         type="primary"
-                        onClick={() => setIsOpenModal(!isOpenModal)}
+                        onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
                     >
                         Thêm khách hàng
                     </Button>
@@ -148,21 +152,31 @@ export const SystemCustomer = () => {
                         addonBefore={
                             <SearchOutlined style={{ fontSize: "20px" }} />
                         }
-                        placeholder="Nhập tên nhân viên cần tìm kiếm"
+                        placeholder="Nhập tên khách hàng cần tìm kiếm"
                         onChange={handleFindCustomer}
                     />
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={customerList}
+                    dataSource={customers}
                     pagination={{ pageSize: 7 }}
                     scroll={{ x: 1300 }}
                 />
-                <UpdateUser
-                    isOpenPanel={isOpenPanelUpdate}
-                    currentUser={user}
-                    isCreate={isCreate}
-                />
+
+                {isOpenPanelUpdate && (
+                    <UpdateUser
+                        isOpenPanel={isOpenPanelUpdate}
+                        currentUser={customerUpdate}
+                        isCreate={!customerUpdate}
+                        close={() => {
+                            setCustomerUpdate(null);
+                            setIsOpenPanelUpdate(!isOpenPanelUpdate);
+                        }}
+                        isCustomer
+                        handleGetAllUser={handleGetAllCustomerList}
+                    />
+                )}
+
                 {isOpenPanelUser && (
                     <DetailUser
                         isOpenPanel={isOpenPanelUser}
@@ -170,7 +184,7 @@ export const SystemCustomer = () => {
                         info={user}
                     />
                 )}
-            </Spin>
-        </div>
+            </div>
+        </Spin>
     );
 };

@@ -1,6 +1,7 @@
 import { Modal } from "antd";
-import { IUser } from "../../utils/model";
-import { Role } from "../../core/auth/roles";
+import { IUser } from "../../../utils/model";
+import { Role } from "../../../core/auth/roles";
+import "./DetailUser.scss";
 
 interface IDetailUserProps {
     isOpenPanel: boolean;

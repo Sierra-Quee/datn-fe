@@ -141,6 +141,10 @@ div.ant-select {
     &:focus .ant-select-selector {
         border-color: var(--primary) !important;
     }
+
+    div.ant-select-selection-search {
+        margin-inline-start: 0;
+    }
 }
 
 div.ant-picker-focused.ant-picker {

@@ -38,6 +38,17 @@ fetchHandler.interceptors.response.use(
         }
         if (err.response.status !== 500 && err.response.status !== 401) {
             toast.error(err.message);
+            if (err.response.data && err.response.data.message) {
+                if (Array.isArray(err.response.data.message)) {
+                    err.response.data.message.forEach((mess: string) =>
+                        toast.error(mess)
+                    );
+                } else {
+                    toast.error(err.response.data.message);
+                }
+            }
         }
+
+        // return err;
     }
 );

@@ -79,7 +79,7 @@ export interface IUser {
     updatedAt: string;
     status: number;
     // address: IAddress[];
-    skills: string[];
+    skills: string[] | { skillId: number }[];
 }
 export const defaultUser = {
     userId: "",

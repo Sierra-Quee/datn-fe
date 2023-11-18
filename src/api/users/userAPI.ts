@@ -22,5 +22,8 @@ export const createUserAPI = (user: IUser) => {
     return fetchHandler.post(`user/createUser`, user);
 };
 export const updateUserAPI = (user: IUser) => {
-    return fetchHandler.post(`user/createUser`, user);
+    return fetchHandler.patch(`user/updateUser`, user);
+};
+export const updateStatusUserAPI = (userId: string) => {
+    return fetchHandler.patch(`user/switchUserActiveStatus`, userId);
 };

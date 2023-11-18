@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import {
     clearUpdateService,
     createServiceAsync,
-    updadteServiceAsync,
+    updateServiceAsync,
 } from "../../../../core/reducers/service";
 import Images from "../../../../assets/Images";
 import {
@@ -69,7 +69,7 @@ const UpdateService = ({
             handleGetAllServiceAsync();
             close();
         }
-    }, [updateServiceStatus]);
+    }, [updateServiceStatus, dispatch, isCreate]);
 
     useEffect(() => {
         if (
@@ -90,7 +90,7 @@ const UpdateService = ({
                     );
                 } else {
                     await dispatch(
-                        updadteServiceAsync({
+                        updateServiceAsync({
                             ...serviceInfo,
                             image: imageCloudUpload || imageService,
                             price: +serviceInfo.price,
@@ -103,7 +103,18 @@ const UpdateService = ({
             };
             update();
         }
-    }, [uploadSuccess, serviceInfo, dispatch]);
+    }, [
+        uploadSuccess,
+        serviceInfo,
+        dispatch,
+        isCreate,
+        imageService,
+        serviceUpdate?.image,
+        serviceUpdate?.rate,
+        serviceUpdate?.serviceId,
+        imageCloudUpload,
+        skillId,
+    ]);
 
     const handleSelectImage = (event: any) => {
         if (event && event.target.files) {
@@ -200,6 +211,7 @@ const UpdateService = ({
                 <div className="upload-service-wrap">
                     {buttonUploadImage()}
                     <img
+                        alt=""
                         className="image-service"
                         src={imageService || Images.no_image}
                     />

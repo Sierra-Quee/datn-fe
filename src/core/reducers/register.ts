@@ -29,16 +29,9 @@ export interface IRegisterParams {
 
 export const signUp = createAsyncThunk(
     "register/signUp",
-    async (info: IRegisterParams, { rejectWithValue }) => {
-        try {
-            var response = await signUpApi(info);
-            return response.data;
-        } catch (err: any) {
-            if (!err.response) {
-                throw err;
-            }
-            return rejectWithValue(err.response.data);
-        }
+    async (info: IRegisterParams) => {
+        var response = await signUpApi(info);
+        return response.data;
     }
 );
 
@@ -63,12 +56,14 @@ export const registerSlice = createSlice({
                     errorMessage: [],
                 };
             })
-            .addCase(signUp.rejected, (state, action: PayloadAction<any>) => {
+            .addCase(signUp.rejected, (state, action) => {
+                console.log(action);
+
                 return {
                     loading: false,
                     registrationSuccess: false,
                     registrationFailure: true,
-                    errorMessage: action.payload.message,
+                    errorMessage: [],
                 };
             });
     },

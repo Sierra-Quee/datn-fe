@@ -38,13 +38,7 @@ function App() {
                         <Route
                             path={RoutePath.Home}
                             element={
-                                <PrivateRoute
-                                    roles={[
-                                        Role.ROLE_USER,
-                                        Role.ROLE_ADMIN,
-                                        Role.ROLE_REPAIRMAN,
-                                    ]}
-                                >
+                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
                                     <Home />
                                 </PrivateRoute>
                             }

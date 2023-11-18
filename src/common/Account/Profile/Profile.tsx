@@ -83,8 +83,6 @@ const Profile = ({ account }: ProfileProps) => {
     };
 
     const onFinishUpdateProfile = async (value: any) => {
-        console.log(accountDeep);
-
         await dispatch(updateProfile({ ...accountDeep }));
     };
 
@@ -118,11 +116,7 @@ const Profile = ({ account }: ProfileProps) => {
                         ]}
                         initialValue={account.accountName}
                     >
-                        <Input
-                            name="accountName"
-                            onChange={changeInputValue}
-                            placeholder="Nhập tên tài khoản"
-                        />
+                        <Input name="accountName" disabled />
                     </Form.Item>
 
                     <Row className="row-input" gutter={20}>

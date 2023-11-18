@@ -1,4 +1,4 @@
-.update-skill-modal {
+.update-user-modal {
     button.ant-btn.ant-btn-default {
         width: unset;
         background-color: #ffffff;
@@ -23,11 +23,7 @@
         }
     }
 
-    .modal-update-skill-wrap {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-
+    .modal-update-user-wrap {
         .btn-upload-image {
             padding: 8px 11px;
             background-color: var(--primary);

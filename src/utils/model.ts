@@ -1,4 +1,5 @@
 import { ReactElement, ReactNode } from "react";
+import { UserStatus } from "../core/reducers/users";
 
 export interface IChildRoutePath {
     children: ReactNode;
@@ -77,7 +78,7 @@ export interface IUser {
     gender: boolean;
     createdAt: string;
     updatedAt: string;
-    status: number;
+    status: UserStatus;
     // address: IAddress[];
     skills: string[] | { skillId: number }[];
 }

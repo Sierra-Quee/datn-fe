@@ -1,9 +1,12 @@
+import "./Service.scss";
+
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Spin, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import {
     clearListService,
     clearUpdateStatusService,
@@ -17,9 +20,8 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { FORMAT_DATETIME } from "../../../utils/constants";
 import { convertServiceType, formatDate } from "../../../utils/functions/utils";
 import { IService, ITypeService } from "../../../utils/model";
-import "./Service.scss";
+import DetailService from "./DetailService/DetailService";
 import UpdateService from "./UpdateService/UpdateService";
-import { DetailService } from "./DetailService";
 
 const Service = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -140,6 +142,9 @@ const Service = () => {
             title: "Loại",
             dataIndex: "type",
             key: "type",
+            render: (_: any, record: IService) => (
+                <div>{convertServiceType(record.type as ITypeService)}</div>
+            ),
         },
         {
             title: "Giá",
@@ -207,9 +212,6 @@ const Service = () => {
         setIsOpenPanelService(false);
     };
 
-    console.log(serviceUpdate);
-    console.log(listService);
-
     return (
         <Spin
             spinning={
@@ -241,7 +243,6 @@ const Service = () => {
                             key: d.serviceId,
                             createdAt: formatDate(d.createdAt, FORMAT_DATETIME),
                             updatedAt: formatDate(d.updatedAt, FORMAT_DATETIME),
-                            type: convertServiceType(d.type as ITypeService),
                         };
                     })}
                     pagination={{ pageSize: 7 }}

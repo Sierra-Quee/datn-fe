@@ -57,6 +57,16 @@ const SystemRepairment = () => {
         setEmployees(repairList);
     }, [repairList]);
 
+    useEffect(() => {
+        setEmployees([
+            ...repairList.filter((r) =>
+                r.firstName
+                    .toLowerCase()
+                    .includes((debounce as string)?.toLowerCase())
+            ),
+        ]);
+    }, [debounce]);
+
     const openUpdateModal = (data: IUser) => {
         setIsOpenPanelUpdate(true);
         setEmployeeUpdate(data);
@@ -67,6 +77,7 @@ const SystemRepairment = () => {
         if (status === 1) return "Đang bận";
         if (status === 2) return "Không hoạt động";
     };
+
     const handleConfirmPanel = () => {
         setIsOpenPanelUser(false);
     };
@@ -190,7 +201,7 @@ const SystemRepairment = () => {
     };
 
     return (
-        <Spin spinning={loadingUser}>
+        <Spin spinning={loadingUser || loadingSkill}>
             <div className="system-repair">
                 <h2>Danh sách thợ</h2>
                 <div className="header-table-repair">

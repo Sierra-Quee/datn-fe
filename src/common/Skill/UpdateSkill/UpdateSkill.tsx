@@ -86,6 +86,7 @@ const UpdateSkill = ({
                         updateSkillAsync({
                             name: nameSkill,
                             image: imageCloudUpload || imageSkill,
+                            skillId: skill?.skillId,
                         } as ISkill)
                     );
                 }
@@ -99,6 +100,7 @@ const UpdateSkill = ({
         isCreate,
         imageSkill,
         skill?.image,
+        skill?.skillId,
         imageCloudUpload,
     ]);
 

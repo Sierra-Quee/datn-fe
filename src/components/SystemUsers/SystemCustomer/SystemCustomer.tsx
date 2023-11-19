@@ -1,19 +1,24 @@
-import { Button, Input, Spin, Table } from "antd";
-import { useCallback, useEffect, useState } from "react";
 import "./SystemCustomer.scss";
 
 import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Spin, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { useCallback, useEffect, useState } from "react";
+
 import { Role } from "../../../core/auth/roles";
 import {
+    UserStatus,
+    clearListCustomer,
     getAllUserRoleAsync,
     getDetailUserAsync,
+    updateStatusCustomerAsync,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { IUser } from "../../../utils/model";
 import { DetailUser } from "../DetailUser/DetailUser";
 import { UpdateUser } from "../UpdateUser/UpdateUser";
+
 export const SystemCustomer = () => {
     const [searchInput, setSearchInput] = useState<string>("");
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
@@ -35,11 +40,25 @@ export const SystemCustomer = () => {
     }, []);
     useEffect(() => {
         handleGetAllCustomerList();
+
+        return () => {
+            dispatch(clearListCustomer());
+        };
     }, []);
 
     useEffect(() => {
         setCustomers(customerList);
     }, [customerList]);
+
+    useEffect(() => {
+        setCustomers([
+            ...customerList.filter((r) =>
+                r.firstName
+                    .toLowerCase()
+                    .includes((debounce as string)?.toLowerCase())
+            ),
+        ]);
+    }, [debounce]);
 
     const handleConfirmPanel = () => {
         setIsOpenPanelUser(false);
@@ -48,6 +67,9 @@ export const SystemCustomer = () => {
     const openUpdateModal = (data: IUser) => {
         setIsOpenPanelUpdate(true);
         setCustomerUpdate(data);
+    };
+    const onChangeStatus = async (checked: boolean, customerId: string) => {
+        await dispatch(updateStatusCustomerAsync(customerId));
     };
 
     const columns: ColumnsType<IUser> = [
@@ -110,6 +132,21 @@ export const SystemCustomer = () => {
             key: "gender",
             render: (_: any, record: IUser) => (
                 <div>{record.gender ? "Nam" : "Nữ"}</div>
+            ),
+        },
+        {
+            title: "Trạng thái",
+            key: "isActive",
+            dataIndex: "isActive",
+            fixed: "right",
+            width: 100,
+            render: (_: any, record: IUser) => (
+                <Switch
+                    checked={record.status === UserStatus.ACTIVE}
+                    onChange={(checked) =>
+                        onChangeStatus(checked, record.userId)
+                    }
+                />
             ),
         },
         {

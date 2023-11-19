@@ -1,12 +1,12 @@
 import { Modal } from "antd";
-import { IService } from "../../../utils/model";
+import { IService } from "../../../../utils/model";
 
 interface IDetailServiceProps {
     isOpenPanel: boolean;
     handleConfirmPanel?: () => void;
     info?: IService | null;
 }
-export const DetailService = (props: IDetailServiceProps) => {
+const DetailService = (props: IDetailServiceProps) => {
     const { isOpenPanel, handleConfirmPanel, info } = props;
     return (
         <Modal
@@ -49,3 +49,5 @@ export const DetailService = (props: IDetailServiceProps) => {
         </Modal>
     );
 };
+
+export default DetailService;

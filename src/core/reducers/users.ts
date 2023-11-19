@@ -3,11 +3,17 @@ import {
     createUserAPI,
     getAllUsersRole,
     getDetailUserAPI,
-    updateStatusUserAPI,
+    updateStatusCustomerAPI,
     updateUserAPI,
 } from "../../api/users/userAPI";
 import { IUser, defaultUser } from "../../utils/model";
 import { Role } from "../auth/roles";
+
+export enum UserStatus {
+    ACTIVE,
+    BUSY,
+    INACTIVE,
+}
 
 interface IUserSlice {
     repairList: IUser[];
@@ -69,10 +75,10 @@ export const updateUserAsync = createAsyncThunk(
     }
 );
 
-export const updateStatusUserAsync = createAsyncThunk(
+export const updateStatusCustomerAsync = createAsyncThunk(
     "updateStatusUser",
     async (userId: string) => {
-        const res = await updateStatusUserAPI(userId);
+        const res = await updateStatusCustomerAPI(userId);
         return res.data;
     }
 );
@@ -151,14 +157,14 @@ export const userSlice = createSlice({
                 state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "failed";
             })
-            .addCase(updateStatusUserAsync.pending, (state, action) => {
+            .addCase(updateStatusCustomerAsync.pending, (state, action) => {
                 state.updateStatusUser.loadingUpdateUserStatus = true;
             })
-            .addCase(updateStatusUserAsync.fulfilled, (state, action) => {
+            .addCase(updateStatusCustomerAsync.fulfilled, (state, action) => {
                 state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "success";
             })
-            .addCase(updateStatusUserAsync.rejected, (state, action) => {
+            .addCase(updateStatusCustomerAsync.rejected, (state, action) => {
                 state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "failed";
             });

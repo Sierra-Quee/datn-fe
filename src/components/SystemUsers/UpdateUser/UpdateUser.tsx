@@ -59,10 +59,6 @@ export const UpdateUser = ({
         image: imageCloudUpload,
     } = useAppSelector((state) => state.imageCloud);
 
-    // useEffect(() => {
-    //     handleGetAllSkillAsync();
-    // }, []);
-
     useEffect(() => {
         if (currentUser) {
             setImageUser(currentUser.imageUrl);
@@ -99,7 +95,7 @@ export const UpdateUser = ({
                     await dispatch(
                         createUserAsync({
                             ...userInfo,
-                            image: imageCloudUpload || imageUser,
+                            image: imageCloudUpload || imageUser || "",
                             role: isCustomer
                                 ? Role.ROLE_USER
                                 : Role.ROLE_REPAIRMAN,
@@ -109,7 +105,7 @@ export const UpdateUser = ({
                     await dispatch(
                         updateUserAsync({
                             ...userInfo,
-                            image: imageCloudUpload || imageUser,
+                            image: imageCloudUpload || imageUser || "",
                             role: isCustomer
                                 ? Role.ROLE_USER
                                 : Role.ROLE_REPAIRMAN,

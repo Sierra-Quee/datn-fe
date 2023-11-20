@@ -40,9 +40,7 @@ export const DetailUser = (props: IDetailUserProps) => {
                 >
                     {info?.role === Role.ROLE_USER
                         ? "Khách hàng"
-                        : Array.isArray(info?.skills)
-                        ? info?.skills.join(" ,")
-                        : info?.skills}
+                        : info?.skills.join(" ,")}
                 </div>
             </div>
             <img src={info?.imageUrl} alt="Not image" />

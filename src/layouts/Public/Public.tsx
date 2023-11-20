@@ -13,39 +13,41 @@ import {
     QRCode,
     theme,
 } from "antd";
-import { Content, Header, Footer } from "antd/es/layout/layout";
+import { Content, Footer, Header } from "antd/es/layout/layout";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { getAllSkillAsync } from "../../core/reducers/skill";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { RoutePath } from "../../routes";
-import { IChildRoutePath, ISkill } from "../../utils/model";
 import {
     BellOutlined,
     HomeFilled,
     MailFilled,
     PhoneFilled,
     PushpinFilled,
-    SearchOutlined,
     ShoppingCartOutlined,
 } from "@ant-design/icons";
-import { clearCookie } from "../../utils/functions/cookies";
 import { resetAuth } from "../../core/reducers/authentication";
 import { getCartAsync } from "../../core/reducers/cart";
 import { getAllNotificationsAsync } from "../../core/reducers/notification";
+import { getAllSkillAsync } from "../../core/reducers/skill";
+import useDebounce from "../../hooks/useDebounce";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { RoutePath } from "../../routes";
+import { clearCookie } from "../../utils/functions/cookies";
+import { IChildRoutePath, ISkill } from "../../utils/model";
 const { useToken } = theme;
 const { Search } = Input;
 const Public = ({ children }: IChildRoutePath) => {
     const { token } = useToken();
     const { account } = useAppSelector((state) => state.authentication);
     const [skills, setSkills] = useState<ISkill[]>([]);
+    const [searchInput, setSearchInput] = useState<string>("");
     const [itemMenu, setItemMenu] = useState<MenuProps["items"]>([]);
     const { cartItemList, loadingCart, cartItemQuantity } = useAppSelector(
         (state) => state.cart
     );
     const location = useLocation();
+    const debounce = useDebounce(searchInput);
 
     const defaultSelectedKey = useRef(
         ["introduction", "introduce-services", "contact"].filter((s) =>
@@ -318,6 +320,13 @@ const Public = ({ children }: IChildRoutePath) => {
                     }}
                 >
                     <div className="public-content">{children}</div>
+                    {/* <Input
+                        addonBefore={
+                            <SearchOutlined style={{ fontSize: "20px" }} />
+                        }
+                        placeholder="Tìm kiếm"
+                        onChange={handleFind}
+                    /> */}
                 </Content>
                 <Footer className="footer">
                     <div className="right-footer">

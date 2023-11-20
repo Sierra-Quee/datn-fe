@@ -1,8 +1,8 @@
 import "./IntroduceServices.scss";
 
-import { Card, Rate, Spin } from "antd";
+import { Button, Card, Modal, Rate, Spin, message } from "antd";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Images from "../../assets/Images";
 import {
@@ -16,6 +16,8 @@ import ServiceCard from "./ServiceCard/ServiceCard";
 
 const IntroduceServices = () => {
     const [services, setServices] = useState<IService[]>([]);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [isOrder, setIsOrder] = useState<boolean>(false);
 
     const params = useParams();
     const dispatch = useAppDispatch();
@@ -44,6 +46,19 @@ const IntroduceServices = () => {
 
     const handleGetSkillSkillByIdAsync = async () => {
         await dispatch(getSkillByIdAsync(+(params.skillId as string)));
+    };
+    const showModal = () => {
+        setIsOpenModal(true);
+    };
+
+    const handleOk = () => {
+        setIsOpenModal(false);
+    };
+    const handleCancel = () => {
+        setIsOpenModal(false);
+    };
+    const showModalOrder = () => {
+        setIsOrder(true);
     };
 
     return (

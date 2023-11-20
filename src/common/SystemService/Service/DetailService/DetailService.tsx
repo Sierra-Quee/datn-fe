@@ -39,11 +39,26 @@ const DetailService = (props: IDetailServiceProps) => {
                     {info?.isActive ? "Đang hoạt động" : "Đã xóa"}
                 </div>
             </div>
-            <img src={info?.image} alt="Not image" />
-            <p style={{ display: "block", textAlign: "center" }}>
-                Name: {info?.name} - Loại: {info?.type}
-            </p>
-            <span>{info?.desc}</span>
+            <div
+                style={{
+                    marginTop: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    alignItems: "center",
+                }}
+            >
+                <img
+                    style={{ width: "360px", height: "250px" }}
+                    src={info?.image}
+                    alt="Not image"
+                />
+            </div>
+            <h2 style={{ display: "block", textAlign: "center" }}>
+                Tên: {info?.name} - Loại:{" "}
+                {info?.type !== 2 ? "Bảo dưỡng" : "Sữa chữa"}
+            </h2>
+            <span>Mô tả công việc: {info?.desc}</span>
             <p>Ngày được tạo: {info?.createdAt.slice(0, 10)}</p>
             <p>Ngày cập nhật: {info?.updatedAt.slice(0, 10)}</p>
         </Modal>

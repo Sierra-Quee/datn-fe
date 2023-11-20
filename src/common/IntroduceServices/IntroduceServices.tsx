@@ -1,8 +1,8 @@
 import "./IntroduceServices.scss";
 
-import { Card, Rate, Spin } from "antd";
+import { Button, Card, Modal, Rate, Spin, message } from "antd";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Images from "../../assets/Images";
 import {
@@ -12,9 +12,12 @@ import {
 import { clearSkill, getSkillByIdAsync } from "../../core/reducers/skill";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { IService } from "../../utils/model";
+import { OrderService } from "../OrderService/OrderService";
 
 const IntroduceServices = () => {
     const [services, setServices] = useState<IService[]>([]);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [isOrder, setIsOrder] = useState<boolean>(false);
 
     const params = useParams();
     const dispatch = useAppDispatch();
@@ -43,6 +46,19 @@ const IntroduceServices = () => {
 
     const handleGetSkillSkillByIdAsync = async () => {
         await dispatch(getSkillByIdAsync(+(params.skillId as string)));
+    };
+    const showModal = () => {
+        setIsOpenModal(true);
+    };
+
+    const handleOk = () => {
+        setIsOpenModal(false);
+    };
+    const handleCancel = () => {
+        setIsOpenModal(false);
+    };
+    const showModalOrder = () => {
+        setIsOrder(true);
     };
 
     return (
@@ -91,13 +107,54 @@ const IntroduceServices = () => {
                                             </span>
                                         </div>
                                         {service.rate ? (
-                                            <Rate
-                                                value={service.rate}
-                                                disabled
-                                            />
+                                            <div>
+                                                <Rate
+                                                    value={service.rate}
+                                                    disabled
+                                                />
+
+                                                <span className="ant-rate-text">
+                                                    {service.rate}
+                                                </span>
+                                            </div>
                                         ) : (
                                             <div>Không có đánh giá</div>
                                         )}
+                                        <div className="footer-card">
+                                            <Button
+                                                type="dashed"
+                                                block
+                                                onClick={showModal}
+                                                className="button-card-service"
+                                            >
+                                                Chọn
+                                            </Button>
+                                            <Modal
+                                                title="ISmart.com says"
+                                                open={isOpenModal}
+                                                onOk={handleOk}
+                                                onCancel={handleCancel}
+                                                footer={(_, { OkBtn }) => (
+                                                    <div className="button-service">
+                                                        <OkBtn />
+                                                    </div>
+                                                )}
+                                            >
+                                                <p>
+                                                    Cảm ơn quý khác đã lựa chọn
+                                                    dịch vụ, vui lòng vào giỏ
+                                                    hàng để hoàn tất đặt hàng
+                                                </p>
+                                            </Modal>
+                                            <Button
+                                                type="primary"
+                                                onClick={showModalOrder}
+                                                className="button-card-service-set"
+                                            >
+                                                Đặt dịch vụ
+                                            </Button>
+                                            {isOrder && <OrderService />}
+                                        </div>
                                     </div>
                                 </Card>
                                 // </Link>

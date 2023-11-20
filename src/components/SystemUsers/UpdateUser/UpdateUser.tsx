@@ -12,7 +12,6 @@ import {
     resetUploadImage,
     uploadImageCloud,
 } from "../../../core/reducers/image_cloud";
-import { getAllSkillAsync } from "../../../core/reducers/skill";
 import {
     clearUpdateUser,
     createUserAsync,
@@ -73,8 +72,8 @@ export const UpdateUser = ({
         if (updateUserStatus === "success") {
             toast.success(
                 isCreate
-                    ? "Thêm dịch vụ thành công"
-                    : "Cập nhật thông tin dịch vụ thành công"
+                    ? "Thêm thông tin thành công"
+                    : "Cập nhật thông tin thành công"
             );
             dispatch(clearUpdateUser());
             dispatch(resetUploadImage());
@@ -139,7 +138,7 @@ export const UpdateUser = ({
                 htmlType="submit"
                 loading={loadingUpdateUser || loadingUploadImage}
             >
-                Cập nhật
+                {isCreate ? "Thêm thông tin" : "Cập nhật"}
             </Button>
         );
     };

@@ -23,6 +23,22 @@
         }
 
         .card-value {
+            .footer-card {
+                display: flex;
+                column-gap: 10px;
+                .button-card-service,
+                .button-card-service-set {
+                    background-color: white;
+                    border: 1px solid #b1154a;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .button-card-service-set {
+                    background-color: rgb(204 32 32);
+                }
+            }
         }
     }
 }

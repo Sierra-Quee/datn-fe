@@ -20,4 +20,31 @@
         height: calc(100% - 47px);
         overflow: auto;
     }
+    .footer {
+        padding: 0px;
+        margin-top: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: #001529;
+        color: white;
+        display: flex;
+        .item-footer {
+            font-size: 16px;
+            .contact-content-title {
+                margin-left: 10px;
+            }
+        }
+        .right-footer {
+            width: 40%;
+            font-size: 22px;
+            font-weight: 500;
+            margin-left: 30px;
+        }
+        .between-footer {
+            width: 30%;
+        }
+        .left-footer {
+            font-size: 16px;
+        }
+    }
 }

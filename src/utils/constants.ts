@@ -40,3 +40,4 @@ export const SIDEBAR = [
         openKey: "8",
     },
 ];
+export const ADDRESS_API = "https://vapi.vnappmob.com/api";

@@ -163,7 +163,7 @@ const Public = ({ children }: IChildRoutePath) => {
                         <BellOutlined />
                     </Link>
                     {!Object.keys(account).length ? (
-                        <>
+                        <div>
                             <Link
                                 to={RoutePath.SignUp}
                                 style={{
@@ -180,7 +180,7 @@ const Public = ({ children }: IChildRoutePath) => {
                             >
                                 Đăng nhập
                             </Link>
-                        </>
+                        </div>
                     ) : (
                         <>
                             <span

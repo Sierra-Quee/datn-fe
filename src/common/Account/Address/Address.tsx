@@ -1,18 +1,33 @@
 import { Button, Checkbox, Flex, Form, Input, Layout, Modal } from "antd";
 import "./Address.scss";
 import { Typography, Select } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { IAddress } from "../../../utils/model";
 import AddressCard from "./AddressCard";
 import AddAddressPopup from "./AddAddressPopup";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import {
+    clearAddressList,
+    getAllAddressAsync,
+} from "../../../core/reducers/address";
 const { Header, Content } = Layout;
 
 const { Title } = Typography;
 type Props = {};
 
 const Address = (props: Props) => {
+    const dispatch = useAppDispatch();
     const [isOpenModal, setIsOpenModal] = useState<boolean>(true);
+    const { addressList, loadingAddress } = useAppSelector(
+        (state) => state.address
+    );
+
+    if (loadingAddress) {
+        console.log("loading");
+    }
+
+    console.log({ addressList });
     const handleOpenModal = () => {
         setIsOpenModal(true);
     };
@@ -20,6 +35,20 @@ const Address = (props: Props) => {
         setIsOpenModal(false);
     };
     const handleAddAddress = () => {};
+
+    const { account } = useAppSelector((state) => state.authentication);
+    console.log({ account });
+
+    const handleGetAllAddress = async (userId: string) => {
+        await dispatch(getAllAddressAsync(userId));
+    };
+    useEffect(() => {
+        handleGetAllAddress(account.userId);
+        return () => {
+            dispatch(clearAddressList());
+        };
+    }, []);
+
     const address: IAddress = {
         addressId: 12,
         address: "cụm 2/xã Duyên Thái, huyện Thường Tín, thành phố Hà Nội",

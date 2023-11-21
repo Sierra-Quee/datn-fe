@@ -5,9 +5,11 @@ import skillReducer from "../core/reducers/skill";
 import serviceReducer from "../core/reducers/service";
 import usersReducer from "../core/reducers/users";
 import imageCloudReducer from "../core/reducers/image_cloud";
+import addressReducer from "../core/reducers/address";
 
 export const store = configureStore({
     reducer: {
+        address: addressReducer,
         authentication: authenticationReducer,
         register: registerReducer,
         skill: skillReducer,

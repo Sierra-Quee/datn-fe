@@ -101,10 +101,10 @@ export const defaultUser = {
 };
 
 export interface IAddress {
-    addressId: number;
+    addressId?: number;
     userId: string;
     address: string;
     isMainAddress: boolean;
-    longitude: number;
-    latitude: number;
+    longitude?: number;
+    latitude?: number;
 }

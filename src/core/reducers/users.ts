@@ -18,6 +18,7 @@ export enum UserStatus {
 interface IUserSlice {
     repairList: IUser[];
     customerList: IUser[];
+    adminList: IUser[];
     loadingUser: boolean;
     loadingDetailUser: boolean;
     updateUser: {
@@ -33,6 +34,7 @@ interface IUserSlice {
 const initialState: IUserSlice = {
     repairList: [],
     customerList: [],
+    adminList: [],
     loadingUser: false,
     loadingDetailUser: false,
     updateUser: {
@@ -75,7 +77,7 @@ export const updateUserAsync = createAsyncThunk(
     }
 );
 
-export const updateStatusCustomerAsync = createAsyncThunk(
+export const updateStatusUserAsync = createAsyncThunk(
     "updateStatusUser",
     async (userId: string) => {
         const res = await updateStatusCustomerAPI(userId);
@@ -99,6 +101,9 @@ export const userSlice = createSlice({
         clearListCustomer: (state) => {
             state.customerList = [];
         },
+        clearListAdmin: (state) => {
+            state.adminList = [];
+        },
         clearUpdateUser: (state) => {
             return { ...state, updateUser: initialState.updateUser };
         },
@@ -118,8 +123,10 @@ export const userSlice = createSlice({
                 state.loadingUser = false;
                 if (action.payload.role === Role.ROLE_USER) {
                     state.customerList = action.payload.data;
-                } else {
+                } else if (action.payload.role === Role.ROLE_REPAIRMAN) {
                     state.repairList = action.payload.data;
+                } else {
+                    state.adminList = action.payload.data;
                 }
             })
             .addCase(getAllUserRoleAsync.rejected, (state, action) => {
@@ -157,14 +164,14 @@ export const userSlice = createSlice({
                 state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "failed";
             })
-            .addCase(updateStatusCustomerAsync.pending, (state, action) => {
+            .addCase(updateStatusUserAsync.pending, (state, action) => {
                 state.updateStatusUser.loadingUpdateUserStatus = true;
             })
-            .addCase(updateStatusCustomerAsync.fulfilled, (state, action) => {
+            .addCase(updateStatusUserAsync.fulfilled, (state, action) => {
                 state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "success";
             })
-            .addCase(updateStatusCustomerAsync.rejected, (state, action) => {
+            .addCase(updateStatusUserAsync.rejected, (state, action) => {
                 state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "failed";
             });
@@ -176,6 +183,7 @@ export const {
     setUser,
     clearListRepair,
     clearListCustomer,
+    clearListAdmin,
     clearUpdateUser,
     clearUpdateStatusUser,
 } = userSlice.actions;

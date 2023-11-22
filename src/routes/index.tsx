@@ -1,20 +1,25 @@
+import Skill from "../admin/Skill/Skill";
+import SystemCustomer from "../admin/User/SystemCustomer/SystemCustomer";
+import SystemRepairment from "../admin/User/SystemRepairment/SystemRepairment";
+import Address from "../common/Account/Address/Address";
+import CustomerPassword from "../common/Account/Password/CustomerPassword";
 import CustomerProfile from "../common/Account/Profile/CustomerProfile";
+import Cart from "../common/Cart/Cart";
+import Checkout from "../common/Checkout/Checkout";
 import Contact from "../common/Contact/Contact";
+import CustomerOrder from "../common/CustomerOrder/CustomerOrder";
+import OrderDetail from "../common/CustomerOrder/OrderDetail/OrderDetail";
+import Home from "../common/Home/Home";
 import HomePage from "../common/HomePage/HomePage";
 import Introduce from "../common/Introduce/Introduce";
+import DetailService from "../common/IntroduceServices/DetailService/DetailService";
 import IntroduceServices from "../common/IntroduceServices/IntroduceServices";
 import LogIn from "../common/Login/LogIn";
 import SignUp from "../common/Signup/SignUp";
 import CustomerProfileLayout from "../layouts/CustomerLayout/CustomerProfileLayout";
 import Public from "../layouts/Public/Public";
 import { IRoutePath } from "../utils/model";
-import CustomerPassword from "../common/Account/Password/CustomerPassword";
-import Address from "../common/Account/Address/Address";
-import Cart from "../common/Cart/Cart";
-import DetailService from "../common/IntroduceServices/DetailService/DetailService";
-import Checkout from "../common/Checkout/Checkout";
-import CustomerOrder from "../common/CustomerOrder/CustomerOrder";
-import OrderDetail from "../common/CustomerOrder/OrderDetail/OrderDetail";
+import AdminServiceRoute from "./adminServiceRoute";
 
 export enum RoutePath {
     Home = "/home",
@@ -27,6 +32,7 @@ export enum RoutePath {
     Service = "/services",
     Employee = "/list-employee",
     Customer = "/list-customer",
+    Admin = "/list-admin",
     Login = "/login",
     SignUp = "/sign-up",
     Account = "/account",
@@ -109,7 +115,19 @@ export const PublicRoutes: IRoutePath[] = [
     },
 ];
 
-export const AdminRoutes = [RoutePath.Skill];
+export const AdminAccessRoutes: IRoutePath[] = [
+    {
+        path: RoutePath.Home,
+        component: Home,
+    },
+    {
+        path: RoutePath.Skill,
+        component: Skill,
+    },
+    { path: `${RoutePath.Service}/*`, component: AdminServiceRoute },
+    { path: RoutePath.Employee, component: SystemRepairment },
+    { path: RoutePath.Customer, component: SystemCustomer },
+];
 
 export const EmployeeRoutes = [];
 

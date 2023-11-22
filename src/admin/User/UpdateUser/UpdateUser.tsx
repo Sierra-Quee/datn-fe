@@ -28,15 +28,15 @@ interface IUpdateUserProps {
     currentUser?: IUser | null | undefined;
     close: () => void;
     handleGetAllUser: () => void;
-    isCustomer?: boolean;
+    roleUpdate?: Role;
 }
-export const UpdateUser = ({
+const UpdateUser = ({
     isOpenPanel,
     currentUser,
     isCreate,
     close,
     handleGetAllUser,
-    isCustomer = false,
+    roleUpdate,
 }: IUpdateUserProps) => {
     const [imageUser, setImageUser] = useState<string>("");
     const [imageCloud, setImageCloud] = useState<File>();
@@ -95,9 +95,7 @@ export const UpdateUser = ({
                         createUserAsync({
                             ...userInfo,
                             image: imageCloudUpload || imageUser || "",
-                            role: isCustomer
-                                ? Role.ROLE_USER
-                                : Role.ROLE_REPAIRMAN,
+                            role: roleUpdate,
                         } as IUser)
                     );
                 } else {
@@ -105,9 +103,7 @@ export const UpdateUser = ({
                         updateUserAsync({
                             ...userInfo,
                             image: imageCloudUpload || imageUser || "",
-                            role: isCustomer
-                                ? Role.ROLE_USER
-                                : Role.ROLE_REPAIRMAN,
+                            role: roleUpdate,
                             userId: currentUser?.userId,
                         })
                     );
@@ -123,7 +119,7 @@ export const UpdateUser = ({
         imageUser,
         imageCloudUpload,
         currentUser?.imageUrl,
-        isCustomer,
+        roleUpdate,
     ]);
 
     // const handleGetAllSkillAsync = async () => {
@@ -175,6 +171,15 @@ export const UpdateUser = ({
         );
         data.append("folder", "DATN-FE");
         await dispatch(uploadImageCloud(data));
+    };
+
+    const getTitleRole = (role: Role) => {
+        if (role === Role.ROLE_ADMIN) {
+            return "quản lý";
+        } else if (role === Role.ROLE_REPAIRMAN) {
+            return "thợ";
+        }
+        return "khách hàng";
     };
 
     const buttonUploadImage = () => {
@@ -235,9 +240,9 @@ export const UpdateUser = ({
             open={isOpenPanel}
             width={800}
             onCancel={close}
-            title={`${isCreate ? "Thêm" : "Cập nhật thông tin"} ${
-                isCustomer ? "khách hàng" : "thợ"
-            }`}
+            title={`${isCreate ? "Thêm" : "Cập nhật thông tin"} ${getTitleRole(
+                roleUpdate as Role
+            )}`}
             footer={[]}
             className="update-user-modal"
         >
@@ -366,7 +371,7 @@ export const UpdateUser = ({
                             </Form.Item>
                         </Col>
                     </Row>
-                    {!isCustomer && (
+                    {roleUpdate === Role.ROLE_REPAIRMAN && (
                         <Form.Item
                             label="Kĩ năng nghề nghiệp"
                             name="skills"
@@ -444,3 +449,5 @@ export const UpdateUser = ({
         </Modal>
     );
 };
+
+export default UpdateUser;

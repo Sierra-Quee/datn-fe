@@ -25,5 +25,5 @@ export const updateUserAPI = (user: IUser) => {
     return fetchHandler.patch(`user/updateUser`, user);
 };
 export const updateStatusCustomerAPI = (userId: string) => {
-    return fetchHandler.patch(`user/switchUserActiveStatus`, userId);
+    return fetchHandler.patch(`user/switchUserActiveStatus/${userId}`);
 };

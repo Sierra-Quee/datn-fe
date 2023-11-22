@@ -20,7 +20,11 @@ const LogIn = () => {
     const dispatch = useAppDispatch();
     const location = useLocation();
     const { from } = location.state || {
-        from: account.role === Role.ROLE_ADMIN ? "/home" : "/",
+        from:
+            account.role === Role.ROLE_ADMIN ||
+            account.role === Role.ROLE_SUPERADMIN
+                ? "/admin/home"
+                : "/",
     };
 
     useEffect(() => {

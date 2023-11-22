@@ -1,58 +1,82 @@
-import "./SystemCustomer.scss";
+import "./SystemRepairment.scss";
 
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Spin, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { Role } from "../../../core/auth/roles";
+import { clearListSkill, getAllSkillAsync } from "../../../core/reducers/skill";
 import {
-    UserStatus,
-    clearListCustomer,
+    clearListRepair,
+    clearUpdateStatusUser,
     getAllUserRoleAsync,
     getDetailUserAsync,
-    updateStatusCustomerAsync,
+    updateStatusUserAsync,
+    UserStatus,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { FORMAT_DATETIME } from "../../../utils/constants";
+import { formatDate } from "../../../utils/functions/utils";
 import { IUser } from "../../../utils/model";
-import { DetailUser } from "../DetailUser/DetailUser";
-import { UpdateUser } from "../UpdateUser/UpdateUser";
+import DetailUser from "../DetailUser/DetailUser";
+import UpdateUser from "../UpdateUser/UpdateUser";
 
-export const SystemCustomer = () => {
+const SystemRepairment = () => {
     const [searchInput, setSearchInput] = useState<string>("");
-    const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
-    const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
-    const [customerUpdate, setCustomerUpdate] = useState<
+    const [employeeUpdate, setEmployeeUpdate] = useState<
         IUser | null | undefined
     >();
-    const [customers, setCustomers] = useState<IUser[]>([]);
+    const [employees, setEmployees] = useState<IUser[]>([]);
+    const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
+    const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
 
     const dispatch = useAppDispatch();
-    const { loadingUser, customerList, user } = useAppSelector(
+    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
+    const { loadingUser, repairList, user } = useAppSelector(
         (state) => state.users
+    );
+    const { loadingUpdateUserStatus, updateStatusUserStatus } = useAppSelector(
+        (state) => state.users.updateStatusUser
     );
 
     const debounce = useDebounce(searchInput);
 
-    const handleGetAllCustomerList = useCallback(async () => {
-        await dispatch(getAllUserRoleAsync(Role.ROLE_USER));
+    const handleGetAllRepairList = useCallback(async () => {
+        await dispatch(getAllUserRoleAsync(Role.ROLE_REPAIRMAN));
     }, []);
+
+    const handleGetAllSkillAsync = async () => {
+        await dispatch(getAllSkillAsync());
+    };
+
     useEffect(() => {
-        handleGetAllCustomerList();
+        handleGetAllRepairList();
+        handleGetAllSkillAsync();
 
         return () => {
-            dispatch(clearListCustomer());
+            dispatch(clearListRepair());
+            dispatch(clearListSkill());
         };
     }, []);
 
     useEffect(() => {
-        setCustomers(customerList);
-    }, [customerList]);
+        if (updateStatusUserStatus === "success") {
+            toast.success("Cập nhật trang thái thành công");
+            dispatch(clearUpdateStatusUser());
+            handleGetAllRepairList();
+        }
+    }, [updateStatusUserStatus, dispatch]);
 
     useEffect(() => {
-        setCustomers([
-            ...customerList.filter((r) =>
+        setEmployees(repairList);
+    }, [repairList]);
+
+    useEffect(() => {
+        setEmployees([
+            ...repairList.filter((r) =>
                 r.firstName
                     .toLowerCase()
                     .includes((debounce as string)?.toLowerCase())
@@ -60,25 +84,25 @@ export const SystemCustomer = () => {
         ]);
     }, [debounce]);
 
+    const openUpdateModal = (data: IUser) => {
+        setIsOpenPanelUpdate(true);
+        setEmployeeUpdate(data);
+    };
+
+    const onChangeStatus = async (checked: boolean, userIđ: string) => {
+        await dispatch(updateStatusUserAsync(userIđ));
+    };
+
     const handleConfirmPanel = () => {
         setIsOpenPanelUser(false);
     };
-
-    const openUpdateModal = (data: IUser) => {
-        setIsOpenPanelUpdate(true);
-        setCustomerUpdate(data);
-    };
-    const onChangeStatus = async (checked: boolean, customerId: string) => {
-        await dispatch(updateStatusCustomerAsync(customerId));
-    };
-
     const columns: ColumnsType<IUser> = [
         {
-            title: "Mã khách hàng",
+            title: "Mã thợ",
             dataIndex: "userId",
             key: "userId",
             fixed: "left",
-            width: 150,
+            width: 120,
         },
         {
             title: "Tên tài khoản",
@@ -135,18 +159,56 @@ export const SystemCustomer = () => {
             ),
         },
         {
+            title: "Kĩ năng",
+            key: "skills",
+            dataIndex: "skills",
+            render: (_: any, record: IUser) => {
+                return (
+                    <div>
+                        {record && record.skills && record.skills.length
+                            ? record.skills.map((skill: any) => (
+                                  <div key={skill.skillId}>
+                                      {
+                                          listSkill.find(
+                                              (s) => s.skillId === skill.skillId
+                                          )?.name
+                                      }
+                                  </div>
+                              ))
+                            : ""}
+                    </div>
+                );
+            },
+        },
+        {
+            title: "Thời gian tạo",
+            key: "createdAt",
+            dataIndex: "createdAt",
+        },
+        {
+            title: "Thời gian cập nhật",
+            key: "createdAt",
+            dataIndex: "createdAt",
+        },
+        {
             title: "Trạng thái",
-            key: "isActive",
-            dataIndex: "isActive",
+            key: "status",
+            dataIndex: "status",
             fixed: "right",
             width: 100,
             render: (_: any, record: IUser) => (
-                <Switch
-                    checked={record.status === UserStatus.ACTIVE}
-                    onChange={(checked) =>
-                        onChangeStatus(checked, record.userId)
-                    }
-                />
+                <div>
+                    {record.status === UserStatus.BUSY ? (
+                        <span>Đang bận</span>
+                    ) : (
+                        <Switch
+                            checked={record.status === UserStatus.ACTIVE}
+                            onChange={(checked) =>
+                                onChangeStatus(checked, record.userId)
+                            }
+                        />
+                    )}
+                </div>
             ),
         },
         {
@@ -170,47 +232,53 @@ export const SystemCustomer = () => {
         },
     ];
 
-    const handleFindCustomer = (e: any) => {
+    const handleFindRepair = (e: any) => {
         setSearchInput(e.target.value);
     };
 
     return (
-        <Spin spinning={loadingUser}>
-            <div className="system-customer">
-                <h2>Danh sách khách hàng</h2>
-                <div className="header-table-customer">
+        <Spin spinning={loadingUser || loadingSkill || loadingUpdateUserStatus}>
+            <div className="system-repair">
+                <h2>Danh sách thợ</h2>
+                <div className="header-table-repair">
                     <Button
                         type="primary"
                         onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
                     >
-                        Thêm khách hàng
+                        Thêm nhân viên
                     </Button>
                     <Input
                         addonBefore={
                             <SearchOutlined style={{ fontSize: "20px" }} />
                         }
-                        placeholder="Nhập tên khách hàng cần tìm kiếm"
-                        onChange={handleFindCustomer}
+                        placeholder="Nhập tên thợ cần tìm kiếm"
+                        onChange={handleFindRepair}
                     />
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={customers}
+                    dataSource={employees.map((e) => {
+                        return {
+                            ...e,
+                            key: e.userId,
+                            createdAt: formatDate(e.createdAt, FORMAT_DATETIME),
+                            updatedAt: formatDate(e.updatedAt, FORMAT_DATETIME),
+                        };
+                    })}
                     pagination={{ pageSize: 7 }}
                     scroll={{ x: 1300 }}
                 />
-
                 {isOpenPanelUpdate && (
                     <UpdateUser
                         isOpenPanel={isOpenPanelUpdate}
-                        currentUser={customerUpdate}
-                        isCreate={!customerUpdate}
+                        currentUser={employeeUpdate}
+                        isCreate={!employeeUpdate}
                         close={() => {
-                            setCustomerUpdate(null);
+                            setEmployeeUpdate(null);
                             setIsOpenPanelUpdate(!isOpenPanelUpdate);
                         }}
-                        isCustomer
-                        handleGetAllUser={handleGetAllCustomerList}
+                        handleGetAllUser={handleGetAllRepairList}
+                        roleUpdate={Role.ROLE_REPAIRMAN}
                     />
                 )}
 
@@ -225,3 +293,4 @@ export const SystemCustomer = () => {
         </Spin>
     );
 };
+export default SystemRepairment;

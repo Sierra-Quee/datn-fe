@@ -1,65 +1,64 @@
-import "./SystemRepairment.scss";
+import "./SystemAdmin.scss";
 
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Table } from "antd";
-import { ColumnsType } from "antd/es/table";
+import { Button, Input, Spin, Switch } from "antd";
+import Table, { ColumnsType } from "antd/es/table";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { Role } from "../../../core/auth/roles";
 import {
-    clearListRepair,
+    clearListAdmin,
+    clearUpdateStatusUser,
     getAllUserRoleAsync,
     getDetailUserAsync,
+    updateStatusUserAsync,
+    UserStatus,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { FORMAT_DATETIME } from "../../../utils/constants";
+import { formatDate } from "../../../utils/functions/utils";
 import { IUser } from "../../../utils/model";
-import { DetailUser } from "../DetailUser/DetailUser";
-import { UpdateUser } from "../UpdateUser/UpdateUser";
-import { clearListSkill, getAllSkillAsync } from "../../../core/reducers/skill";
+import DetailUser from "../DetailUser/DetailUser";
+import UpdateUser from "../UpdateUser/UpdateUser";
 
-const SystemRepairment = () => {
+const SystemAdmin = () => {
     const [searchInput, setSearchInput] = useState<string>("");
-    const [employeeUpdate, setEmployeeUpdate] = useState<
-        IUser | null | undefined
-    >();
-    const [employees, setEmployees] = useState<IUser[]>([]);
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
     const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
+    const [adminUpdate, setAdminUpdate] = useState<IUser | null | undefined>();
+    const [admins, setAdmins] = useState<IUser[]>([]);
 
     const dispatch = useAppDispatch();
-    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
-    const { loadingUser, repairList, user } = useAppSelector(
+    const { loadingUser, adminList, user } = useAppSelector(
         (state) => state.users
+    );
+    const { loadingUpdateUserStatus, updateStatusUserStatus } = useAppSelector(
+        (state) => state.users.updateStatusUser
     );
 
     const debounce = useDebounce(searchInput);
 
-    const handleGetAllRepairList = useCallback(async () => {
-        await dispatch(getAllUserRoleAsync(Role.ROLE_REPAIRMAN));
+    const handleGetAllAdminList = useCallback(async () => {
+        await dispatch(getAllUserRoleAsync(Role.ROLE_ADMIN));
     }, []);
 
-    const handleGetAllSkillAsync = async () => {
-        await dispatch(getAllSkillAsync());
-    };
-
     useEffect(() => {
-        handleGetAllRepairList();
-        handleGetAllSkillAsync();
+        handleGetAllAdminList();
 
         return () => {
-            dispatch(clearListRepair());
-            dispatch(clearListSkill());
+            dispatch(clearListAdmin());
         };
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
-        setEmployees(repairList);
-    }, [repairList]);
+        setAdmins(adminList);
+    }, [adminList]);
 
     useEffect(() => {
-        setEmployees([
-            ...repairList.filter((r) =>
+        setAdmins([
+            ...adminList.filter((r) =>
                 r.firstName
                     .toLowerCase()
                     .includes((debounce as string)?.toLowerCase())
@@ -67,27 +66,34 @@ const SystemRepairment = () => {
         ]);
     }, [debounce]);
 
-    const openUpdateModal = (data: IUser) => {
-        setIsOpenPanelUpdate(true);
-        setEmployeeUpdate(data);
-    };
-
-    const onGetStatusRepair = (status: number) => {
-        if (status === 0) return "Đang hoạt động";
-        if (status === 1) return "Đang bận";
-        if (status === 2) return "Không hoạt động";
-    };
+    useEffect(() => {
+        if (updateStatusUserStatus === "success") {
+            toast.success("Cập nhật trang thái thành công");
+            dispatch(clearUpdateStatusUser());
+            handleGetAllAdminList();
+        }
+    }, [updateStatusUserStatus, dispatch]);
 
     const handleConfirmPanel = () => {
         setIsOpenPanelUser(false);
     };
+
+    const openUpdateModal = (data: IUser) => {
+        setIsOpenPanelUpdate(true);
+        setAdminUpdate(data);
+    };
+
+    const onChangeStatus = async (checked: boolean, userId: string) => {
+        await dispatch(updateStatusUserAsync(userId));
+    };
+
     const columns: ColumnsType<IUser> = [
         {
-            title: "Mã thợ",
+            title: "Mã quản lý",
             dataIndex: "userId",
             key: "userId",
             fixed: "left",
-            width: 120,
+            width: 150,
         },
         {
             title: "Tên tài khoản",
@@ -144,35 +150,28 @@ const SystemRepairment = () => {
             ),
         },
         {
-            title: "Kĩ năng",
-            key: "skills",
-            dataIndex: "skills",
-            render: (_: any, record: IUser) => {
-                return (
-                    <div>
-                        {record && record.skills && record.skills.length
-                            ? record.skills.map((skill: any) => (
-                                  <div>
-                                      {
-                                          listSkill.find(
-                                              (s) => s.skillId === skill.skillId
-                                          )?.name
-                                      }
-                                  </div>
-                              ))
-                            : ""}
-                    </div>
-                );
-            },
+            title: "Thời gian tạo",
+            key: "createdAt",
+            dataIndex: "createdAt",
+        },
+        {
+            title: "Thời gian cập nhật",
+            key: "createdAt",
+            dataIndex: "createdAt",
         },
         {
             title: "Trạng thái",
-            key: "status",
-            dataIndex: "status",
+            key: "isActive",
+            dataIndex: "isActive",
             fixed: "right",
             width: 100,
             render: (_: any, record: IUser) => (
-                <div>{onGetStatusRepair(record?.status)}</div>
+                <Switch
+                    checked={record.status === UserStatus.ACTIVE}
+                    onChange={(checked) =>
+                        onChangeStatus(checked, record.userId)
+                    }
+                />
             ),
         },
         {
@@ -196,45 +195,53 @@ const SystemRepairment = () => {
         },
     ];
 
-    const handleFindRepair = (e: any) => {
+    const handleFindAdmin = (e: any) => {
         setSearchInput(e.target.value);
     };
 
     return (
-        <Spin spinning={loadingUser || loadingSkill}>
-            <div className="system-repair">
-                <h2>Danh sách thợ</h2>
-                <div className="header-table-repair">
+        <Spin spinning={loadingUser || loadingUpdateUserStatus}>
+            <div className="system-admin">
+                <h2>Danh sách quản lý</h2>
+                <div className="header-table-admin">
                     <Button
                         type="primary"
                         onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
                     >
-                        Thêm nhân viên
+                        Thêm quản lý
                     </Button>
                     <Input
                         addonBefore={
                             <SearchOutlined style={{ fontSize: "20px" }} />
                         }
-                        placeholder="Nhập tên thợ cần tìm kiếm"
-                        onChange={handleFindRepair}
+                        placeholder="Nhập tên quản lý cần tìm kiếm"
+                        onChange={handleFindAdmin}
                     />
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={employees}
+                    dataSource={admins.map((c) => {
+                        return {
+                            ...c,
+                            key: c.userId,
+                            createdAt: formatDate(c.createdAt, FORMAT_DATETIME),
+                            updatedAt: formatDate(c.updatedAt, FORMAT_DATETIME),
+                        };
+                    })}
                     pagination={{ pageSize: 7 }}
                     scroll={{ x: 1300 }}
                 />
                 {isOpenPanelUpdate && (
                     <UpdateUser
                         isOpenPanel={isOpenPanelUpdate}
-                        currentUser={employeeUpdate}
-                        isCreate={!employeeUpdate}
+                        currentUser={adminUpdate}
+                        isCreate={!adminUpdate}
                         close={() => {
-                            setEmployeeUpdate(null);
+                            setAdminUpdate(null);
                             setIsOpenPanelUpdate(!isOpenPanelUpdate);
                         }}
-                        handleGetAllUser={handleGetAllRepairList}
+                        roleUpdate={Role.ROLE_ADMIN}
+                        handleGetAllUser={handleGetAllAdminList}
                     />
                 )}
 
@@ -249,4 +256,5 @@ const SystemRepairment = () => {
         </Spin>
     );
 };
-export default SystemRepairment;
+
+export default SystemAdmin;

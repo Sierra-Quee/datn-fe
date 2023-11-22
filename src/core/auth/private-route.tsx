@@ -32,7 +32,11 @@ export const PrivateRoute = ({
     }
 
     if (isAuthenticated && !checkNullObj(account)) {
-        if (isAuthorized) {
+        if (
+            isAuthorized &&
+            (account.role === Role.ROLE_ADMIN ||
+                account.role === Role.ROLE_SUPERADMIN)
+        ) {
             return (
                 <ErrorBoundary>
                     <Main>{children}</Main>

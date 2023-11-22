@@ -11,11 +11,13 @@ import {
     WalletOutlined,
 } from "@ant-design/icons";
 import { Menu, MenuProps } from "antd";
+import { useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import Images from "../../assets/Images";
+import { Role } from "../../core/auth/roles";
+import { useAppSelector } from "../../redux/hook";
 import { RoutePath } from "../../routes";
-import { useRef } from "react";
 
 export type MenuItem = Required<MenuProps>["items"][number];
 
@@ -27,6 +29,8 @@ interface ISidebarProps {
 const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
     const location = useLocation();
 
+    const { account } = useAppSelector((state) => state.authentication);
+
     const defaultSelectedKeys = useRef(
         [
             "home",
@@ -36,7 +40,14 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
             "manage-service-services",
             "manage-user-list-employee",
             "manage-user-list-customer",
-        ].filter((s) => s.includes(location.pathname.split("/")[1]))
+            "manage-user-list-admin",
+        ].filter((s) =>
+            s.includes(
+                location.pathname.split("/")[
+                    location.pathname.split("/").length - 1
+                ]
+            )
+        )
     );
 
     const defaultOpenKeys = useRef(
@@ -69,33 +80,49 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
         ),
         getItem("Quản lý đơn hàng", "manage-order", <UnorderedListOutlined />, [
             getItem(
-                <Link to={RoutePath.Order}>Danh sách đơn hàng</Link>,
+                <Link to={`/admin${RoutePath.Order}`}>Danh sách đơn hàng</Link>,
                 "manage-order-list-order"
             ),
             getItem(
-                <Link to={RoutePath.Comment}>Các nhận xét về đơn hàng</Link>,
+                <Link to={`/admin${RoutePath.Comment}`}>
+                    Các nhận xét về đơn hàng
+                </Link>,
                 "manage-order-list-order-comment"
             ),
         ]),
         getItem("Quản lý dịch vụ", "manage-service", <GlobalOutlined />, [
             getItem(
-                <Link to={RoutePath.Skill}>Danh sách loại dịch vụ</Link>,
+                <Link to={`/admin${RoutePath.Skill}`}>
+                    Danh sách loại dịch vụ
+                </Link>,
                 "manage-service-skill"
             ),
             getItem(
-                <Link to={RoutePath.Service}>Danh sách dịch vụ</Link>,
+                <Link to={`/admin${RoutePath.Service}`}>
+                    Danh sách dịch vụ
+                </Link>,
                 "manage-service-services"
             ),
         ]),
         getItem("Quản lý người dùng", "manage-user", <UserOutlined />, [
             getItem(
-                <Link to={RoutePath.Employee}>Danh sách thợ</Link>,
+                <Link to={`/admin${RoutePath.Employee}`}>Danh sách thợ</Link>,
                 "manage-user-list-employee"
             ),
             getItem(
-                <Link to={RoutePath.Customer}>Danh sách khách hàng</Link>,
+                <Link to={`/admin${RoutePath.Customer}`}>
+                    Danh sách khách hàng
+                </Link>,
                 "manage-user-list-customer"
             ),
+            account.role === Role.ROLE_SUPERADMIN
+                ? getItem(
+                      <Link to={`/admin${RoutePath.Admin}`}>
+                          Danh sách người quản lý
+                      </Link>,
+                      "manage-user-list-admin"
+                  )
+                : null,
         ]),
         getItem("Lịch sử thanh toán", "11", <WalletOutlined />),
         getItem("Cấu hình hệ thống", "12", <SettingOutlined />),

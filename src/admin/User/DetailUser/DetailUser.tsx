@@ -8,7 +8,7 @@ interface IDetailUserProps {
     handleConfirmPanel?: () => void;
     info?: IUser | null;
 }
-export const DetailUser = (props: IDetailUserProps) => {
+const DetailUser = (props: IDetailUserProps) => {
     const { isOpenPanel, handleConfirmPanel, info } = props;
     return (
         <Modal
@@ -59,3 +59,5 @@ export const DetailUser = (props: IDetailUserProps) => {
         </Modal>
     );
 };
+
+export default DetailUser;

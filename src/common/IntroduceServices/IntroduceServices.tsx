@@ -12,6 +12,7 @@ import {
 import { clearSkill, getSkillByIdAsync } from "../../core/reducers/skill";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { IService } from "../../utils/model";
+import ServiceCard from "./ServiceCard/ServiceCard";
 
 const IntroduceServices = () => {
     const [services, setServices] = useState<IService[]>([]);
@@ -59,47 +60,10 @@ const IntroduceServices = () => {
                                 //     key={service.serviceId}
                                 //     to={`service/${service.serviceId}`}
                                 // >
-                                <Card
-                                    hoverable
-                                    style={{ width: 250 }}
+                                <ServiceCard
+                                    service={service}
                                     key={service.serviceId}
-                                    cover={
-                                        <img
-                                            alt="card"
-                                            style={{
-                                                height: 250,
-                                                backgroundColor: "#ccc",
-                                            }}
-                                            src={
-                                                service.image || Images.no_image
-                                            }
-                                        />
-                                    }
-                                >
-                                    <div className="card-title">
-                                        {service?.name}
-                                    </div>
-                                    <div className="card-value">
-                                        <div style={{ marginBottom: 5 }}>
-                                            Giá:{" "}
-                                            <span
-                                                style={{
-                                                    fontWeight: 600,
-                                                }}
-                                            >
-                                                {service.price} đ
-                                            </span>
-                                        </div>
-                                        {service.rate ? (
-                                            <Rate
-                                                value={service.rate}
-                                                disabled
-                                            />
-                                        ) : (
-                                            <div>Không có đánh giá</div>
-                                        )}
-                                    </div>
-                                </Card>
+                                />
                                 // </Link>
                             );
                         })

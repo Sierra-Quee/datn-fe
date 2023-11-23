@@ -1,6 +1,6 @@
 import "./Public.scss";
 
-import { Avatar, Dropdown, Input, Layout, Menu, MenuProps } from "antd";
+import { Avatar, Badge, Dropdown, Input, Layout, Menu, MenuProps } from "antd";
 import { Content, Header, Footer } from "antd/es/layout/layout";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { useEffect, useRef, useState } from "react";
@@ -149,18 +149,20 @@ const Public = ({ children }: IChildRoutePath) => {
                         items={itemMenu}
                         className="main-menu"
                     />
-                    <Link
-                        to={RoutePath.Contact}
-                        style={{ color: "white", fontSize: "20px" }}
-                    >
-                        <ShoppingCartOutlined />
+                    <Link to={RoutePath.Contact}>
+                        <Badge size="small" count={5}>
+                            <ShoppingCartOutlined
+                                style={{ color: "white", fontSize: "20px" }}
+                            />
+                        </Badge>
                     </Link>
 
-                    <Link
-                        to={RoutePath.Contact}
-                        style={{ color: "white", fontSize: "20px" }}
-                    >
-                        <BellOutlined />
+                    <Link to={RoutePath.Contact}>
+                        <Badge count={6} size="small">
+                            <BellOutlined
+                                style={{ color: "white", fontSize: "20px" }}
+                            />
+                        </Badge>
                     </Link>
                     {!Object.keys(account).length ? (
                         <div>

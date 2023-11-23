@@ -1,7 +1,13 @@
 import { Checkbox, Input, Modal, Select, Form } from "antd";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ADDRESS_API } from "../../../utils/constants";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { IAddress } from "../../../utils/model";
+import {
+    createAddressAsync,
+    getAllAddressAsync,
+} from "../../../core/reducers/address";
 
 type Props = {
     isOpen: boolean;
@@ -14,14 +20,17 @@ const layout = {
     wrapperCol: { span: 16 },
 };
 const AddAddressPopup = (props: Props) => {
+    const dispatch = useAppDispatch();
     const [form] = Form.useForm();
     const [selectedProvince, setSelectedProvince] = useState<string>("");
     const [selectedDistrict, setSelectedDistrict] = useState<string>("");
     const [selectedWard, setSelectedWard] = useState<string>("");
+    const [detailAddress, setDetailAddress] = useState<string>("");
     const [provinceList, setProvinceList] = useState([]);
     const [districtList, setDistrictList] = useState([]);
     const [wardList, setWardList] = useState([]);
-
+    const [isMainAddress, setIsMainAddress] = useState<boolean>(false);
+    const { account } = useAppSelector((state) => state.authentication);
     useEffect(() => {
         const getProvinceData = async () => {
             try {
@@ -82,12 +91,26 @@ const AddAddressPopup = (props: Props) => {
         setSelectedWard(value);
     };
 
-    console.log({ selectedProvince, districtList });
+    const handleSubmitForm = useCallback(async () => {
+        const data: IAddress = {
+            address: `${detailAddress}/${selectedWard}, ${selectedDistrict}, ${selectedProvince}`,
+            latitude: 0,
+            longitude: 0,
+            userId: account.userId,
+            isMainAddress,
+        };
+
+        try {
+            await dispatch(createAddressAsync(data));
+            props.close();
+            await dispatch(getAllAddressAsync(account.userId));
+        } catch (error) {}
+    }, [selectedProvince, selectedDistrict, selectedWard, detailAddress]);
     return (
         <Modal
             title="Thêm địa chỉ"
             open={props.isOpen}
-            onOk={props.open}
+            onOk={handleSubmitForm}
             onCancel={props.close}
             cancelText="Quay lại"
             okText="Thêm địa chỉ"
@@ -152,10 +175,13 @@ const AddAddressPopup = (props: Props) => {
                     />
                 </Form.Item>
                 <Form.Item name="detail" label="Địa chỉ chi tiết">
-                    <Input />
+                    <Input
+                        value={detailAddress}
+                        onChange={(e) => setDetailAddress(e.target.value)}
+                    />
                 </Form.Item>
                 <Form.Item name="isDefault" label="Địa chỉ mặc định">
-                    <Checkbox />
+                    <Checkbox checked={isMainAddress} />
                 </Form.Item>
                 <Form.Item name="cordinate" label="Bản đồ">
                     <iframe

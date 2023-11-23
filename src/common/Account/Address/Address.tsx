@@ -1,4 +1,4 @@
-import { Button, Checkbox, Flex, Form, Input, Layout, Modal } from "antd";
+import { Button, Checkbox, Flex, Form, Input, Layout, Modal, Spin } from "antd";
 import "./Address.scss";
 import { Typography, Select } from "antd";
 import { useEffect, useState } from "react";
@@ -48,15 +48,6 @@ const Address = (props: Props) => {
             dispatch(clearAddressList());
         };
     }, []);
-
-    const address: IAddress = {
-        addressId: 12,
-        address: "cụm 2/xã Duyên Thái, huyện Thường Tín, thành phố Hà Nội",
-        userId: "a",
-        latitude: 1,
-        longitude: 1,
-        isMainAddress: true,
-    };
     return (
         <Layout>
             <Header className="address-header">
@@ -85,11 +76,13 @@ const Address = (props: Props) => {
                     maxHeight: "450px",
                 }}
             >
-                <AddressCard address={address} />
-                <AddressCard address={address} />
-                <AddressCard address={address} />
-                <AddressCard address={address} />
-                <AddressCard address={address} />
+                {addressList &&
+                    addressList.map((address) => (
+                        <AddressCard
+                            key={address.addressId}
+                            address={address}
+                        />
+                    ))}
             </Content>
             <AddAddressPopup
                 isOpen={isOpenModal}

@@ -6,9 +6,10 @@ import serviceReducer from "../core/reducers/service";
 import usersReducer from "../core/reducers/users";
 import imageCloudReducer from "../core/reducers/image_cloud";
 import addressReducer from "../core/reducers/address";
-
+import cartReducer from "../core/reducers/cart";
 export const store = configureStore({
     reducer: {
+        cart: cartReducer,
         address: addressReducer,
         authentication: authenticationReducer,
         register: registerReducer,

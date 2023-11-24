@@ -17,12 +17,15 @@ import {
 } from "@ant-design/icons";
 import { clearCookie } from "../../utils/functions/cookies";
 import { resetAuth } from "../../core/reducers/authentication";
+import { getCartAsync } from "../../core/reducers/cart";
 
 const Public = ({ children }: IChildRoutePath) => {
     const { account } = useAppSelector((state) => state.authentication);
     const [skills, setSkills] = useState<ISkill[]>([]);
     const [itemMenu, setItemMenu] = useState<MenuProps["items"]>([]);
-
+    const { cartItemList, loadingCart, cartItemQuantity } = useAppSelector(
+        (state) => state.cart
+    );
     const location = useLocation();
 
     const defaultSelectedKey = useRef(
@@ -64,6 +67,12 @@ const Public = ({ children }: IChildRoutePath) => {
     }, [listSkill]);
 
     useEffect(() => {
+        handleGetCartAsync();
+    }, []);
+
+    console.log({ cartItemList });
+
+    useEffect(() => {
         if (skills && skills.length > 0) {
             setItemMenu([
                 ...items?.current.map((item: ItemType) => {
@@ -100,7 +109,9 @@ const Public = ({ children }: IChildRoutePath) => {
     const handleGetAllSkillAsync = async () => {
         await dispatch(getAllSkillAsync());
     };
-
+    const handleGetCartAsync = async () => {
+        await dispatch(getCartAsync());
+    };
     const itemDrops: MenuProps["items"] = [
         {
             key: "1",
@@ -149,8 +160,8 @@ const Public = ({ children }: IChildRoutePath) => {
                         items={itemMenu}
                         className="main-menu"
                     />
-                    <Link to={RoutePath.Contact}>
-                        <Badge size="small" count={5}>
+                    <Link to={RoutePath.CustomerCart}>
+                        <Badge size="small" count={cartItemQuantity}>
                             <ShoppingCartOutlined
                                 style={{ color: "white", fontSize: "20px" }}
                             />

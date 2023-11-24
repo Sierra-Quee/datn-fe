@@ -48,10 +48,11 @@ export interface ICreateService {
 }
 
 export interface ICartItem {
-    id: number;
+    id?: number;
     isChoosen: boolean;
-    cartId: string;
+    cartId: string | number;
     serviceId: string;
+    service?: any;
 }
 
 export interface ICart {

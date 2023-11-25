@@ -237,7 +237,7 @@ const Public = ({ children }: IChildRoutePath) => {
                 </Header>
                 <Content
                     style={{
-                        height: "calc(100vh - 64px)",
+                        minHeight: "calc(100vh - 64px)",
                         overflowY: "auto",
                         overflowX: "hidden",
                     }}

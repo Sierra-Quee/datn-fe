@@ -11,6 +11,7 @@ import { IRoutePath } from "../utils/model";
 import CustomerPassword from "../common/Account/Password/CustomerPassword";
 import Address from "../common/Account/Address/Address";
 import Cart from "../common/Cart/Cart";
+import DetailService from "../common/IntroduceServices/DetailService/DetailService";
 
 export enum RoutePath {
     Home = "/home",
@@ -79,6 +80,11 @@ export const PublicRoutes: IRoutePath[] = [
     {
         path: RoutePath.CustomerCart,
         component: Cart,
+        layout: Public,
+    },
+    {
+        path: `${RoutePath.IntroduceServices}/:skillId/:serviceId`,
+        component: DetailService,
         layout: Public,
     },
 ];

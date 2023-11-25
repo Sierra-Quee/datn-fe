@@ -7,8 +7,11 @@ import usersReducer from "../core/reducers/users";
 import imageCloudReducer from "../core/reducers/image_cloud";
 import addressReducer from "../core/reducers/address";
 import cartReducer from "../core/reducers/cart";
+import reviewReducer from "../core/reducers/review";
+
 export const store = configureStore({
     reducer: {
+        review: reviewReducer,
         cart: cartReducer,
         address: addressReducer,
         authentication: authenticationReducer,

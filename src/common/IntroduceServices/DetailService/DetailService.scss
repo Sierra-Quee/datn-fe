@@ -1,0 +1,27 @@
+.detailService {
+    h1,
+    h2,
+    h3 {
+        margin: 0;
+    }
+
+    .detailService-mainInfo {
+        width: 70%;
+        border-radius: 5px;
+        box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+        .detailService-top {
+            border: 1px solid #f0f0f0;
+            padding: 10px;
+            width: 100%;
+            .detailService-image {
+                width: 50%;
+            }
+        }
+        .detailService-content {
+            border: 1px solid #f0f0f0;
+            padding: 10px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    }
+}

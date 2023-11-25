@@ -29,7 +29,7 @@ export interface IService {
     createdAt: string;
     updatedAt: string;
     skillId: number;
-    skill?: ISkill;
+    skill?: ISkill[];
     image?: string;
     isActive: boolean;
 }
@@ -108,4 +108,15 @@ export interface IAddress {
     isMainAddress: boolean;
     longitude?: number;
     latitude?: number;
+}
+
+export interface IReview {
+    reviewId?: number;
+    rate: number;
+    content: string;
+    userId: string;
+    serviceId?: number;
+    createdAt?: string;
+    updatedAt?: string;
+    user?: IUser;
 }

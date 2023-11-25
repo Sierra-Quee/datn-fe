@@ -4,12 +4,16 @@ import { Button, Card, Flex, Rate, message } from "antd";
 import Images from "../../../assets/Images";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { createCartItemAsync, getCartAsync } from "../../../core/reducers/cart";
+import { useNavigate, useParams } from "react-router-dom";
 
 type Props = {
     service: IService;
 };
 
 const ServiceCard = ({ service }: Props) => {
+    const { skillId } = useParams();
+    console.log({ skillId });
+    const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
     const dispatch = useAppDispatch();
     const { cartId, cartItemList } = useAppSelector((state) => state.cart);
@@ -48,8 +52,24 @@ const ServiceCard = ({ service }: Props) => {
                     />
                 }
             >
-                <div className="card-title">{service?.name}</div>
-                <div className="card-value">
+                <div
+                    className="card-title"
+                    onClick={() =>
+                        navigate(
+                            `/introduce-services/${skillId}/${service.serviceId}`
+                        )
+                    }
+                >
+                    {service?.name}
+                </div>
+                <div
+                    className="card-value"
+                    onClick={() =>
+                        navigate(
+                            `/introduce-services/${skillId}/${service.serviceId}`
+                        )
+                    }
+                >
                     <div style={{ marginBottom: 5 }}>
                         Giá:{" "}
                         <span

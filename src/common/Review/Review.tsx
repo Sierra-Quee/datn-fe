@@ -3,27 +3,53 @@ import { IReview } from "../../utils/model";
 import { useAppSelector } from "../../redux/hook";
 import { Avatar, Divider, Flex, Rate, Space, Typography } from "antd";
 import Images from "../../assets/Images";
+import "./Review.scss";
 const { Title, Paragraph, Text } = Typography;
 type Props = {
     review: IReview;
 };
 
 const Review = ({ review }: Props) => {
+    const { user } = review;
     return (
-        <Flex>
-            <Flex>
+        <Flex vertical className="reviewLayout">
+            <Flex align="center" className="reviewLayout__header" gap={10}>
                 <Space>
-                    <Avatar src={review.user?.imageUrl || Images.no_image} />
+                    {user && user?.imageUrl ? (
+                        <Avatar src={user.imageUrl} />
+                    ) : (
+                        <Avatar
+                            style={{
+                                backgroundColor: "#f56a00",
+                            }}
+                            size="large"
+                        >
+                            <span
+                                style={{
+                                    fontSize: "20px",
+                                    fontWeight: "600",
+                                }}
+                            >
+                                {(user?.accountName[0] || "").toUpperCase()}
+                            </span>
+                        </Avatar>
+                    )}
                 </Space>
-                <Flex>
-                    <Title>{review.user?.accountName}</Title>
+                <Flex
+                    justify="space-between"
+                    align="start"
+                    style={{ width: "100%" }}
+                >
+                    <Flex vertical>
+                        <Title level={5}>{review.user?.accountName}</Title>
+                        <Space>
+                            <Rate disabled defaultValue={3} />
+                        </Space>
+                    </Flex>
                     <Space>
-                        <Rate count={review.rate} />
+                        <Text>{review.createdAt}</Text>
                     </Space>
                 </Flex>
-                <Space>
-                    <Text>{review.createdAt}</Text>
-                </Space>
             </Flex>
             <Divider />
             <Space>

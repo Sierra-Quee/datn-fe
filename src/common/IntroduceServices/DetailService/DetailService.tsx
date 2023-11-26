@@ -2,10 +2,13 @@ import "./DetailService.scss";
 import { IService, ITypeService } from "../../../utils/model";
 import {
     Button,
+    Collapse,
+    CollapseProps,
     Flex,
     Image,
     Layout,
     List,
+    Pagination,
     Rate,
     Space,
     Table,
@@ -14,10 +17,11 @@ import {
 } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { getDetailServiceAsync } from "../../../core/reducers/service";
+import { getAllReviewAsync } from "../../../core/reducers/review";
+import Review from "../../Review/Review";
 const { Title, Text } = Typography;
 
 type Props = {};
@@ -70,36 +74,63 @@ const columns = [
         key: "price",
     },
 ];
-
+const items: CollapseProps["items"] = [
+    {
+        key: "1",
+        label: "Xem chi tiết",
+        children: (
+            <Flex vertical>
+                <Flex>
+                    <Rate disabled defaultValue={5} />
+                    <Text>5 đánh giá</Text>
+                </Flex>
+                <Flex>
+                    <Rate disabled defaultValue={4} />
+                    <Text>5 đánh giá</Text>
+                </Flex>
+                <Flex>
+                    <Rate disabled defaultValue={3} />
+                    <Text>5 đánh giá</Text>
+                </Flex>
+                <Flex>
+                    <Rate disabled defaultValue={2} />
+                    <Text>5 đánh giá</Text>
+                </Flex>
+                <Flex>
+                    <Rate disabled defaultValue={1} />
+                    <Text>5 đánh giá</Text>
+                </Flex>
+            </Flex>
+        ),
+    },
+];
 const DetailService = (props: Props) => {
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-    // const service: IService = {
-    //     serviceId: "123",
-    //     name: "Sửa chữa điều hòa",
-    //     type: ITypeService.Repair,
-    //     rate: 3,
-    //     desc: "<strong>caskjbckjasbcldbcasjkdbcljksdblcjkbdsjkcbsdjcsbdjav;sdbclijsab</strong>",
-    //     createdAt: "",
-    //     updatedAt: "",
-    //     image: "https://vccservices.vn/uploads/images/product/2022/11/30/d%E1%BB%8Bch%20v%E1%BB%A5%20m%C3%A1y%20in.png",
-    //     isActive: true,
-    //     price: 100000,
-    //     skillId: 1,
-    //     skill: [],
-    // };
     const dispatch = useAppDispatch();
-    const handleGetDetailSerice = async (serviceId: number) => {
-        dispatch(getDetailServiceAsync(serviceId));
-    };
     const { serviceId } = useParams();
     const { service } = useAppSelector((state) => state.service);
+    const { reviewList, isLoadingReviewList } = useAppSelector(
+        (state) => state.review
+    );
+    const handleGetDetailService = async (serviceId: number) => {
+        await dispatch(getDetailServiceAsync(serviceId));
+    };
+
+    const handleGetReviewList = async (serviceId: number) => {
+        await dispatch(getAllReviewAsync(serviceId));
+    };
+
     useEffect(() => {
         if (serviceId) {
-            handleGetDetailSerice(parseInt(serviceId));
+            handleGetDetailService(parseInt(serviceId));
+            handleGetReviewList(parseInt(serviceId));
         }
     }, [serviceId]);
+
+    console.log({ reviewList });
+
     return (
         <Layout
             style={{
@@ -167,19 +198,27 @@ const DetailService = (props: Props) => {
                         mua, giá linh kiện sẽ được tính vào hóa đơn cuối cùng.
                     </Text>
                 </Flex>
-                <Flex>
-                    <Flex>
+                <Flex vertical className="detailService-reviews" gap={20}>
+                    <Flex align="start" gap={20}>
                         <Title level={3}>Đánh giá</Title>
-                        <Space>
-                            <Rate disabled count={3} />
-                        </Space>
-                        <Text>12 đánh giá</Text>
-                    </Flex>
-                    <Flex>
-                        <Flex>
-                            <Rate></Rate>
-                            <Text>5 đánh giá</Text>
+
+                        <Flex vertical style={{ padding: "5px 0" }}>
+                            <Space>
+                                <Rate disabled defaultValue={3} />
+                                <Text>12 đánh giá</Text>
+                            </Space>
+                            <Space style={{ paddingLeft: 0 }}>
+                                <Collapse items={items} ghost />
+                            </Space>
                         </Flex>
+                    </Flex>
+                    <Flex vertical>
+                        {reviewList?.map((review) => (
+                            <Review review={review} key={review.reviewId} />
+                        ))}
+                    </Flex>
+                    <Flex justify="flex-end">
+                        <Pagination defaultCurrent={1} total={50} />
                     </Flex>
                 </Flex>
             </Flex>

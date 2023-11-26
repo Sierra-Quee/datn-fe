@@ -6,7 +6,6 @@ import {
     updateReviewApi,
     deleteReviewApi,
 } from "../../api/Review/reviewAPI";
-import { skillSlice } from "./skill";
 
 interface IReviewSlice {
     reviewList: IReview[];
@@ -120,5 +119,5 @@ export const reviewSlice = createSlice({
     },
 });
 
-export default skillSlice.reducer;
-export const { clearListSkill } = skillSlice.actions;
+export default reviewSlice.reducer;
+export const { clearReviewList, setAllReview } = reviewSlice.actions;

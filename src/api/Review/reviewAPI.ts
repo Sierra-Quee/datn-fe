@@ -6,7 +6,7 @@ export const getReviewsApi = async (serviceId: number) => {
 };
 
 export const createReviewApi = async (review: IReview) => {
-    return fetchHandler.post("/review/creareReview", review);
+    return fetchHandler.post("/review/createReview", review);
 };
 
 export const updateReviewApi = async (review: IReview) => {

@@ -43,7 +43,7 @@ const Review = ({ review }: Props) => {
                     <Flex vertical>
                         <Title level={5}>{review.user?.accountName}</Title>
                         <Space>
-                            <Rate disabled defaultValue={3} />
+                            <Rate disabled defaultValue={review.rate} />
                         </Space>
                     </Flex>
                     <Space>

@@ -1,8 +1,5 @@
-import React from "react";
 import { IReview } from "../../utils/model";
-import { useAppSelector } from "../../redux/hook";
 import { Avatar, Divider, Flex, Rate, Space, Typography } from "antd";
-import Images from "../../assets/Images";
 import "./Review.scss";
 const { Title, Paragraph, Text } = Typography;
 type Props = {

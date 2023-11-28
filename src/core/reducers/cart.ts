@@ -54,6 +54,9 @@ export const cartSlice = createSlice({
             state.cartItemList = action.payload;
             state.cartItemQuantity = state.cartItemList.length;
         },
+        setItemsForCheckout: (state, action) => {
+            state.cartItemForCheckout = action.payload;
+        },
         addItemToCheckout: (state, action) => {
             state.cartItemForCheckout = [
                 ...state.cartItemForCheckout,
@@ -137,4 +140,5 @@ export const {
     deleteItemFromCart,
     clearCart,
     clearCheckoutList,
+    setItemsForCheckout,
 } = cartSlice.actions;

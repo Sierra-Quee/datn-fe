@@ -4,8 +4,14 @@ import { ReactNode, useEffect, useState } from "react";
 import { ICartItem } from "../../utils/model";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import { setItemsForCheckout } from "../../core/reducers/cart";
+import {
+    deleteCartItemAsync,
+    getCartAsync,
+    removeItemToCheckout,
+    setItemsForCheckout,
+} from "../../core/reducers/cart";
 import { DeleteOutlined } from "@ant-design/icons";
+import "./Cart.scss";
 const { Text, Title } = Typography;
 type Props = {};
 interface DataType {
@@ -51,6 +57,15 @@ const Cart = (props: Props) => {
         );
         dispatch(setItemsForCheckout(selectedItem));
         setSelectedRowKeys(newSelectedRowKeys);
+    };
+    const handleDeleteItem = async (cartItem: ICartItem) => {
+        try {
+            dispatch(removeItemToCheckout(cartItem));
+            if (cartItem.id) {
+                await dispatch(deleteCartItemAsync(cartItem.id.toString()));
+            }
+            dispatch(getCartAsync());
+        } catch (error) {}
     };
     console.log({ cartItemForCheckout });
     const rowSelection: TableRowSelection<DataType> = {
@@ -110,6 +125,7 @@ const Cart = (props: Props) => {
                                 color: "red",
                                 cursor: "pointer",
                             }}
+                            onClick={async () => await handleDeleteItem(item)}
                         />
                     ),
                 };
@@ -127,15 +143,17 @@ const Cart = (props: Props) => {
             style={{
                 padding: "24px 0",
                 background: colorBgContainer,
-                width: "80%",
+                width: "60%",
                 margin: "auto",
                 borderRadius: "5px",
                 minHeight: "80vh",
             }}
-            className="detailService"
+            className="cartLayout"
         >
-            <Flex vertical>
-                <Title>Giỏ hàng</Title>
+            <Flex vertical className="cartContainer">
+                <Title level={3} style={{ textAlign: "center" }}>
+                    Giỏ hàng
+                </Title>
                 <Table
                     columns={columns}
                     dataSource={cartData}
@@ -143,7 +161,9 @@ const Cart = (props: Props) => {
                     rowSelection={rowSelection}
                 />
                 <Flex justify="space-between">
-                    <Text>Giá từ</Text>
+                    <Text className="priceLabel">
+                        Giá từ: <Text className="priceValue">{"1120000"}</Text>
+                    </Text>
                     <Button style={{ maxWidth: "200px" }} type="primary">
                         Đặt dịch vụ
                     </Button>

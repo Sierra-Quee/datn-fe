@@ -1,0 +1,24 @@
+.checkoutLayout {
+    background-color: transparent !important;
+    margin: 24px 0;
+
+    .checkoutAddress {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+        h3 {
+            margin: 0;
+        }
+    }
+
+    .checkoutServices {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+        h3 {
+            margin: 0;
+        }
+    }
+}

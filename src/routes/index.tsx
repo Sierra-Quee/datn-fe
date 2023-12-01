@@ -12,6 +12,7 @@ import CustomerPassword from "../common/Account/Password/CustomerPassword";
 import Address from "../common/Account/Address/Address";
 import Cart from "../common/Cart/Cart";
 import DetailService from "../common/IntroduceServices/DetailService/DetailService";
+import Checkout from "../common/Checkout/Checkout";
 
 export enum RoutePath {
     Home = "/home",
@@ -31,6 +32,7 @@ export enum RoutePath {
     CustomerPassword = "/user/password",
     CustomerAddress = "/user/address",
     CustomerCart = "/user/cart",
+    Checkout = "/checkout",
 }
 
 export const PublicRoutes: IRoutePath[] = [
@@ -85,6 +87,11 @@ export const PublicRoutes: IRoutePath[] = [
     {
         path: `${RoutePath.IntroduceServices}/:skillId/:serviceId`,
         component: DetailService,
+        layout: Public,
+    },
+    {
+        path: RoutePath.Checkout,
+        component: Checkout,
         layout: Public,
     },
 ];

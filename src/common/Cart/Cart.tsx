@@ -12,6 +12,8 @@ import {
 } from "../../core/reducers/cart";
 import { DeleteOutlined } from "@ant-design/icons";
 import "./Cart.scss";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const { Text, Title } = Typography;
 type Props = {};
 interface DataType {
@@ -42,6 +44,7 @@ const columns: ColumnsType<DataType> = [
 ];
 const Cart = (props: Props) => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -49,13 +52,17 @@ const Cart = (props: Props) => {
         (state) => state.cart
     );
     const [cartData, setCartData] = useState<DataType[]>([]);
+    console.log({ cartData });
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         console.log("selectedRowKeys changed: ", newSelectedRowKeys);
         const selectedItem = newSelectedRowKeys.map(
             (val) => cartData[parseInt(val.toString())]
         );
-        dispatch(setItemsForCheckout(selectedItem));
+        const selected = selectedItem.map(
+            (val) => cartItemList[parseInt(val.key.toString())]
+        );
+        dispatch(setItemsForCheckout(selected));
         setSelectedRowKeys(newSelectedRowKeys);
     };
     const handleDeleteItem = async (cartItem: ICartItem) => {
@@ -137,7 +144,13 @@ const Cart = (props: Props) => {
             setCartData(data);
         }
     }, [cartItemList]);
-
+    const handleForwardToCheckout = () => {
+        if (cartItemForCheckout.length > 0) {
+            navigate("/checkout");
+        } else {
+            toast.error("Bạn chưa chọn dịch vụ để đặt");
+        }
+    };
     return (
         <Layout
             style={{
@@ -164,7 +177,11 @@ const Cart = (props: Props) => {
                     <Text className="priceLabel">
                         Giá từ: <Text className="priceValue">{"1120000"}</Text>
                     </Text>
-                    <Button style={{ maxWidth: "200px" }} type="primary">
+                    <Button
+                        style={{ maxWidth: "200px" }}
+                        type="primary"
+                        onClick={handleForwardToCheckout}
+                    >
                         Đặt dịch vụ
                     </Button>
                 </Flex>

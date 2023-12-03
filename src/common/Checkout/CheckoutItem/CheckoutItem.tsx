@@ -9,6 +9,7 @@ import {
     Upload,
     Button,
     Space,
+    Image,
 } from "antd";
 import "./CheckoutItem.scss";
 import {
@@ -17,6 +18,7 @@ import {
     UploadOutlined,
 } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
+import { isEmpty } from "lodash";
 const { Text, Title } = Typography;
 const { TextArea } = Input;
 
@@ -62,31 +64,13 @@ const CheckoutItem = ({
         setIsOpenAddInfoModal(false);
     };
     const handleAddInfo = () => {
-        console.log("render");
-        console.log({ index });
         let cloneAddedInfoList = [...addedInfoList];
-        let clone2 = [...addedInfoList];
-        // console.log({ cloneAddedInfoList });
-        // cloneAddedInfoList[index].uploadedImage = fileList;
-        // cloneAddedInfoList[index].describedMalfunction = describedMalfunction;
         cloneAddedInfoList[index] = {
             describedMalfunction: describedMalfunction,
             uploadedImage: fileList,
         };
-        console.log({ cloneAddedInfoList, clone2, addedInfoList });
-        // const arr = [
-        //     { name: "log" },
-        //     { name: "hieu" },
-        //     { name: "cas" },
-        //     { name: "csacsac" },
-        // ];
-        // const test = { ...arr[index] };
-        // test.name = describedMalfunction;
-        // arr[index] = test;
-        // console.log({ arr });
-        // setAddedInfoList(cloneAddedInfoList);
-        // console.log({ cloneAddedInfoList });
-        // handleCloseAddInfoModal();
+        setAddedInfoList(cloneAddedInfoList);
+        handleCloseAddInfoModal();
     };
     const handleChangeDescribedMalfunction = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -122,25 +106,40 @@ const CheckoutItem = ({
 
     return (
         <>
-            <Flex className="checkoutItemLayout">
+            <Flex className="checkoutItemLayout" vertical gap={10}>
                 <Flex className="checkoutItemService">
-                    <Text className="checkoutItemService__id">
-                        {service?.serviceId}
-                    </Text>
-                    <Text className="checkoutItemService__name">
-                        {service?.name}
-                    </Text>
-                    <Text className="checkoutItemService__price">
-                        {service?.price}
-                    </Text>
+                    <Flex className="checkoutItemServiceInfo">
+                        <Text className="checkoutItemServiceInfo__id">
+                            {service?.serviceId}
+                        </Text>
+                        <Text className="checkoutItemServiceInfo__name">
+                            {service?.name}
+                        </Text>
+                        <Text className="checkoutItemServiceInfo__price">
+                            {service?.price}
+                        </Text>
+                    </Flex>
+                    <Flex
+                        className="checkoutItemService__btn"
+                        justify="flex-end"
+                    >
+                        <Tooltip title="Thêm thông tin">
+                            <CommentOutlined
+                                style={{ cursor: "pointer", fontSize: "20px" }}
+                                onClick={handleOpenAddInfoModal}
+                            />
+                        </Tooltip>
+                    </Flex>
                 </Flex>
-                <Flex className="checkoutItemService__btn" justify="flex-end">
-                    <Tooltip title="Thêm thông tin">
-                        <CommentOutlined
-                            style={{ cursor: "pointer", fontSize: "20px" }}
-                            onClick={handleOpenAddInfoModal}
-                        />
-                    </Tooltip>
+                <Flex>
+                    {!isEmpty(Object(addedInfoList[index])) &&
+                        addedInfoList[index].uploadedImage.map((image) => (
+                            <Image
+                                src={image.thumbUrl}
+                                width={50}
+                                previewPrefixCls={image.preview}
+                            />
+                        ))}
                 </Flex>
             </Flex>
 
@@ -150,12 +149,14 @@ const CheckoutItem = ({
                 onOk={handleAddInfo}
                 cancelText="Quay trở lại"
                 okText="Thêm"
+                className="checkoutItemModal"
             >
-                <Flex vertical>
-                    <Title level={4}>
+                <Flex vertical gap={10}>
+                    <Title level={4} className="checkoutItemModal__title">
                         Thêm thông tin hỏng hóc cho dịch vụ <br />
-                        {service?.name}
+                        <span>{service?.name}</span>
                     </Title>
+                    <Title level={5}>Miêu tả thiết bị lỗi</Title>
                     <TextArea
                         showCount
                         maxLength={100}

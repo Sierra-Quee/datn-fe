@@ -4,6 +4,7 @@ import cart from "../../core/reducers/cart";
 import {
     Button,
     DatePicker,
+    DatePickerProps,
     Flex,
     Layout,
     Modal,
@@ -18,6 +19,7 @@ import { getAllAddressAsync } from "../../core/reducers/address";
 import { IAddress, ICartItem } from "../../utils/model";
 import "./Checkout.scss";
 import CheckoutItem, { IAddedInfo } from "./CheckoutItem/CheckoutItem";
+import { Dayjs } from "dayjs";
 const { Title, Text } = Typography;
 type Props = {};
 
@@ -33,7 +35,7 @@ const Checkout = (props: Props) => {
     const [isOpenAddressModal, setIsOpenAddressModal] =
         useState<boolean>(false);
     const [selectedAddress, setSelectedAddress] = useState<number>(0);
-    const [expectedDate, setExpectedDate] = useState<string>("");
+    const [expectedDate, setExpectedDate] = useState<Dayjs | null>(null);
     const handleGetAddressList = async () => {
         if (account) {
             await dispatch(getAllAddressAsync(account.userId));
@@ -48,8 +50,21 @@ const Checkout = (props: Props) => {
     const handleChangeAddress = (e: RadioChangeEvent) => {
         setSelectedAddress(e.target.value);
     };
+    const handleChangeExpectedDate: DatePickerProps["onChange"] = (
+        date,
+        dateString
+    ) => {
+        setExpectedDate(date);
+    };
     useEffect(() => {
         handleGetAddressList();
+        if (addressList) {
+            const defaultAddressId = addressList.findIndex(
+                (add: IAddress) => add.isMainAddress
+            );
+            if (defaultAddressId >= 0) setSelectedAddress(defaultAddressId);
+            else setSelectedAddress(0);
+        }
     }, [account]);
     useEffect(() => {
         if (
@@ -59,10 +74,13 @@ const Checkout = (props: Props) => {
             setAddedInfoList(new Array(cartItemForCheckout.length).fill({}));
         }
     }, [cartItemForCheckout]);
-    const address =
-        addressList.filter((add: IAddress) => add.isMainAddress)[0] ||
-        addressList[0];
-    console.log({ addedInfoList1: addedInfoList, addressList });
+    const address = addressList[selectedAddress];
+
+    const handleSubmitOrder = async () => {
+        try {
+            console.log({ addedInfoList, expectedDate, address });
+        } catch (error) {}
+    };
     return (
         <>
             <Layout
@@ -86,8 +104,8 @@ const Checkout = (props: Props) => {
                             </Flex>
                         ) : (
                             <Flex gap={20}>
-                                <Text>{address.address}</Text>
-                                {address.isMainAddress && (
+                                <Text>{address?.address}</Text>
+                                {address?.isMainAddress && (
                                     <Button danger>Mặc định</Button>
                                 )}
                                 <Button
@@ -161,7 +179,11 @@ const Checkout = (props: Props) => {
                             <Flex gap={50}>
                                 <Title level={5}>Ngày sửa chữa mong muốn</Title>
                                 <Space>
-                                    <DatePicker showTime />
+                                    <DatePicker
+                                        showTime
+                                        onChange={handleChangeExpectedDate}
+                                        value={expectedDate}
+                                    />
                                 </Space>
                             </Flex>
                             <Flex justify="space-between">
@@ -178,7 +200,19 @@ const Checkout = (props: Props) => {
                                         : 0}
                                 </Title>
                             </Flex>
-                            <Button type="primary">Đặt dịch vụ</Button>
+                            <Flex justify="flex-end">
+                                <Button
+                                    type="primary"
+                                    size="middle"
+                                    style={{
+                                        maxWidth: "150px",
+                                        padding: "10px 5px",
+                                    }}
+                                    onClick={handleSubmitOrder}
+                                >
+                                    Đặt dịch vụ
+                                </Button>
+                            </Flex>
                         </Flex>
                     </Flex>
                 </Flex>
@@ -187,21 +221,25 @@ const Checkout = (props: Props) => {
                 open={isOpenAddressModal}
                 onCancel={handleCloseAddressModal}
                 onOk={handleCloseAddressModal}
+                okText="Xác nhận"
+                cancelText="Quay lại"
             >
-                <Flex vertical>
-                    <Title level={3} style={{ margin: 0 }}>
-                        Địa chỉ giao hàng
+                <Flex vertical style={{ height: "50vh", overflowY: "auto" }}>
+                    <Title level={3} style={{ margin: "0 0 20px 0" }}>
+                        Địa chỉ sửa chữa
                     </Title>
-                    <Space direction="vertical">
+                    <Flex vertical gap={10}>
                         <Radio.Group
                             value={selectedAddress}
                             onChange={handleChangeAddress}
                         >
                             {addressList.map((address, index) => (
-                                <Radio value={index}>{address.address}</Radio>
+                                <Radio value={index} key={address.addressId}>
+                                    {address.address}
+                                </Radio>
                             ))}
                         </Radio.Group>
-                    </Space>
+                    </Flex>
                 </Flex>
             </Modal>
         </>

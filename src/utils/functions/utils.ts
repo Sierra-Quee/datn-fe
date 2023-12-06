@@ -1,6 +1,7 @@
 import moment from "moment";
 import { FORMAT_DATE } from "../constants";
 import { ITypeService } from "../model";
+import { OrderStatus } from "../../core/reducers/order";
 
 export const isNullOrEmpty = (value: any): boolean => {
     return value === null || value === "";
@@ -35,4 +36,46 @@ export const convertServiceType = (type: ITypeService): string => {
     } else {
         return "";
     }
+};
+export const colorOrderStatus = (status: OrderStatus): string => {
+    if (status === OrderStatus.PENDING) {
+        return "ffaa56";
+    }
+    if (status === OrderStatus.REJECTED) {
+        return "ff0000";
+    }
+    if (status === OrderStatus.FINDING) {
+        return "b2b2b2";
+    }
+    if (status === OrderStatus.ACCEPTED) {
+        return "aad4ff";
+    }
+    if (status === OrderStatus.CHECKEDIN) {
+        return "ffffaa";
+    }
+    if (status === OrderStatus.COMPLETE) {
+        return "56ff56";
+    }
+    return "";
+};
+export const convertOrderStatus = (status: OrderStatus): string => {
+    if (status === OrderStatus.PENDING) {
+        return "Đang chờ xác nhận";
+    }
+    if (status === OrderStatus.REJECTED) {
+        return "Đơn hàng bị hủy";
+    }
+    if (status === OrderStatus.FINDING) {
+        return "Đang tìm kiếm thợ";
+    }
+    if (status === OrderStatus.ACCEPTED) {
+        return "Đơn hàng xác nhận";
+    }
+    if (status === OrderStatus.CHECKEDIN) {
+        return "Đơn hàng đang xử lí";
+    }
+    if (status === OrderStatus.COMPLETE) {
+        return "Đơn hàng hoàn thành";
+    }
+    return "";
 };

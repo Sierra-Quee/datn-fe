@@ -99,3 +99,26 @@ export const defaultUser = {
     skills: [],
     address: [],
 };
+
+export interface IOrder {
+    orderId: number;
+    code: string;
+    status: number;
+    expectDate: string;
+    repairmanId: string;
+    addressId: number;
+    incurredCost: number;
+    incurredCostReason: string;
+    orderDetail: string[];
+}
+export const defaultOrder = {
+    orderId: 0,
+    code: "",
+    status: 0,
+    expectDate: "",
+    repairmanId: "",
+    addressId: 0,
+    incurredCost: 0,
+    incurredCostReason: "",
+    orderDetail: [],
+};

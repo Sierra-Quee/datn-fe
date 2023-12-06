@@ -18,7 +18,7 @@ function AdminRoutes() {
                         path={route.path}
                         element={
                             <PrivateRoute
-                                roles={[Role.ROLE_ADMIN, Role.ROLE_SUPERADMIN]}
+                                roles={[Role.ROLE_ADMIN, Role.ROLE_STAFF]}
                             >
                                 <Component />
                             </PrivateRoute>
@@ -29,7 +29,7 @@ function AdminRoutes() {
             <Route
                 path={RoutePath.Admin}
                 element={
-                    <PrivateRoute roles={[Role.ROLE_SUPERADMIN]}>
+                    <PrivateRoute roles={[Role.ROLE_ADMIN]}>
                         <SystemAdmin />
                     </PrivateRoute>
                 }

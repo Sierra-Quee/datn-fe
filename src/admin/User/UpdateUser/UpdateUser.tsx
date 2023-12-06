@@ -174,7 +174,7 @@ const UpdateUser = ({
     };
 
     const getTitleRole = (role: Role) => {
-        if (role === Role.ROLE_ADMIN) {
+        if (role === Role.ROLE_STAFF) {
             return "quản lý";
         } else if (role === Role.ROLE_REPAIRMAN) {
             return "thợ";

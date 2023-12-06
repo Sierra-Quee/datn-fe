@@ -115,7 +115,7 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
                 </Link>,
                 "manage-user-list-customer"
             ),
-            account.role === Role.ROLE_SUPERADMIN
+            account.role === Role.ROLE_ADMIN
                 ? getItem(
                       <Link to={`/admin${RoutePath.Admin}`}>
                           Danh sách người quản lý

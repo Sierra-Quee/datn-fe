@@ -21,8 +21,7 @@ const LogIn = () => {
     const location = useLocation();
     const { from } = location.state || {
         from:
-            account.role === Role.ROLE_ADMIN ||
-            account.role === Role.ROLE_SUPERADMIN
+            account.role === Role.ROLE_ADMIN || account.role === Role.ROLE_STAFF
                 ? "/admin/home"
                 : "/",
     };

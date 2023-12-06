@@ -16,10 +16,19 @@ import {
     Typography,
 } from "antd";
 import { getAllAddressAsync } from "../../core/reducers/address";
-import { IAddress, ICartItem } from "../../utils/model";
+import {
+    IAddress,
+    ICartItem,
+    IDetailOrder,
+    IOrder,
+    IOrderMedia,
+} from "../../utils/model";
 import "./Checkout.scss";
 import CheckoutItem, { IAddedInfo } from "./CheckoutItem/CheckoutItem";
 import { Dayjs } from "dayjs";
+import { uploadImageCloud } from "../../core/reducers/image_cloud";
+import axios from "axios";
+import { createOrderAsync } from "../../core/reducers/order";
 const { Title, Text } = Typography;
 type Props = {};
 
@@ -31,6 +40,11 @@ const Checkout = (props: Props) => {
     const { cartItemForCheckout } = useAppSelector((state) => state.cart);
     const { addressList } = useAppSelector((state) => state.address);
     const { account } = useAppSelector((state) => state.authentication);
+    const {
+        uploadSuccess,
+        loadingUploadImage,
+        image: imageCloud,
+    } = useAppSelector((state) => state.imageCloud);
     const [addedInfoList, setAddedInfoList] = useState<IAddedInfo[]>([]);
     const [isOpenAddressModal, setIsOpenAddressModal] =
         useState<boolean>(false);
@@ -74,13 +88,82 @@ const Checkout = (props: Props) => {
             setAddedInfoList(new Array(cartItemForCheckout.length).fill({}));
         }
     }, [cartItemForCheckout]);
+    useEffect(() => {
+        if (imageCloud) {
+            console.log({ imageCloud });
+        }
+    }, [imageCloud]);
     const address = addressList[selectedAddress];
 
     const handleSubmitOrder = async () => {
         try {
-            console.log({ addedInfoList, expectedDate, address });
+            let orderDetailList: IDetailOrder[] = [];
+            orderDetailList = await Promise.all(
+                addedInfoList.map(async (value, index: number) => {
+                    const desc = value.describedMalfunction;
+                    let orderMediaList: IOrderMedia[] = [];
+                    if (
+                        Array.isArray(value.uploadedImage) &&
+                        value.uploadedImage.length > 0
+                    ) {
+                        const imageList = await Promise.all(
+                            value.uploadedImage.map(async (image) => {
+                                const img = image.thumbUrl;
+                                const data = new FormData();
+                                if (img) data.append("file", img);
+                                data.append(
+                                    "upload_preset",
+                                    process.env
+                                        .REACT_APP_CLOUDINARY_UPLOAD_PRESET as string
+                                );
+                                data.append(
+                                    "cloud_name",
+                                    process.env
+                                        .REACT_APP_CLOUDINARY_CLOUD_NAME as string
+                                );
+                                data.append("folder", "DATN-FE");
+                                const response = await axios.post(
+                                    `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                                    data
+                                );
+
+                                return response.data;
+                            })
+                        );
+
+                        if (Array.isArray(imageList) && imageList.length > 0) {
+                            orderMediaList = imageList.map((image) => {
+                                const media: IOrderMedia = {
+                                    mediaType: 0,
+                                    url: image.url,
+                                };
+
+                                return media;
+                            });
+                        }
+                    }
+                    const orderDetail: IDetailOrder = {
+                        serviceId: cartItemForCheckout[index].service.serviceId,
+                        desc: desc,
+                        media: orderMediaList,
+                    };
+
+                    return orderDetail;
+                })
+            );
+
+            console.log({ orderDetailList });
+
+            const order: IOrder = {
+                expectedDate: expectedDate ? expectedDate.toString() : "",
+                addressId: address.addressId || 0,
+                orderDetail: orderDetailList,
+            };
+
+            await dispatch(createOrderAsync(order));
         } catch (error) {}
     };
+    console.log({ addedInfoList });
     return (
         <>
             <Layout

@@ -15,6 +15,8 @@ interface IOrderSlice {
         loadingcreateOrder: boolean;
         createOrderStatus: "success" | "failed" | "none";
     };
+    order: IOrder;
+    loadingOrder: boolean;
 }
 
 const initialState: IOrderSlice = {
@@ -24,6 +26,15 @@ const initialState: IOrderSlice = {
         loadingcreateOrder: false,
         createOrderStatus: "none",
     },
+    order: {
+        orderId: 0,
+        orderDetail: [],
+        code: "",
+        status: 0,
+        addressId: 0,
+        expectedDate: "",
+    },
+    loadingOrder: false,
 };
 
 export const getAllOrderAsync = createAsyncThunk(
@@ -94,25 +105,30 @@ export const orderSlice = createSlice({
             .addCase(getAllOrderByUserIdAsync.rejected, (state, action) => {
                 state.loadingOrderList = false;
             })
-            .addCase(getAllOrderAsync.pending, (state, action) => {
-                state.loadingOrderList = true;
+            .addCase(getOrderByIdAsync.pending, (state, action) => {
+                state.loadingOrder = true;
             })
-            .addCase(getAllOrderAsync.fulfilled, (state, action) => {
-                state.loadingOrderList = false;
-                state.orderList = action.payload;
+            .addCase(getOrderByIdAsync.fulfilled, (state, action) => {
+                state.loadingOrder = false;
+                state.order = action.payload;
             })
-            .addCase(getAllOrderAsync.rejected, (state, action) => {
-                state.loadingOrderList = false;
+            .addCase(getOrderByIdAsync.rejected, (state, action) => {
+                state.loadingOrder = false;
             })
-            .addCase(getAllOrderAsync.pending, (state, action) => {
-                state.loadingOrderList = true;
+            .addCase(createOrderAsync.pending, (state, action) => {
+                state.createOrder.loadingcreateOrder = true;
             })
-            .addCase(getAllOrderAsync.fulfilled, (state, action) => {
-                state.loadingOrderList = false;
-                state.orderList = action.payload;
+            .addCase(createOrderAsync.fulfilled, (state, action) => {
+                state.createOrder.loadingcreateOrder = false;
+                state.createOrder.createOrderStatus = "success";
             })
-            .addCase(getAllOrderAsync.rejected, (state, action) => {
-                state.loadingOrderList = false;
+            .addCase(createOrderAsync.rejected, (state, action) => {
+                state.createOrder.loadingcreateOrder = false;
+                state.createOrder.createOrderStatus = "failed";
             });
     },
 });
+
+export default orderSlice.reducer;
+
+export const { setAllOrder, clearOrderList } = orderSlice.actions;

@@ -122,23 +122,23 @@ export interface IReview {
 }
 
 export interface IOrderMedia {
-    orderMediaId: number | string;
-    orderDetailId: number | string;
+    orderMediaId?: number | string;
+    orderDetailId?: number | string;
     mediaType: number;
     url: string;
     alt?: string;
 }
 export interface IDetailOrder {
-    orderDetailId: number | string;
-    orderId: number | string;
-    serviceId: number;
+    orderDetailId?: number | string;
+    orderId?: number | string;
+    serviceId: string;
     desc?: string;
     media?: IOrderMedia[];
 }
 export interface IOrder {
-    orderId: number | string;
-    code: string;
-    status: number;
+    orderId?: number | string;
+    code?: string;
+    status?: number;
     expectedDate: string;
     repairmanId?: string;
     addressId: number;

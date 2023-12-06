@@ -100,6 +100,7 @@ const CustomCropper = ({
             const image = cropperRef.current?.cropper
                 .getCroppedCanvas()
                 .toDataURL();
+            console.log({ image });
             const data = new FormData();
             data.append("file", image);
             data.append(

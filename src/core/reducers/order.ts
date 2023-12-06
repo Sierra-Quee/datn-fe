@@ -1,13 +1,13 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IOrder, IOrderMedia, IDetailOrder } from "../../utils/model";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { IOrder } from "../../utils/model";
 import {
-    getAllOrderApi,
-    getOrderByIdApi,
-    createOrderApi,
-    getAllOrderByUserIdApi,
     IGetAllOrderQuery,
+    createOrderApi,
+    getAllOrderApi,
+    getAllOrderByUserIdApi,
+    getOrderByIdApi,
     getOrderQrTokenApi,
-} from "../../api/order/orderApi";
+} from "../../api/order/orderAPI";
 
 interface IOrderSlice {
     orderList: IOrder[];

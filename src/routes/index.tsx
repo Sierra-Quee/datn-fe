@@ -1,3 +1,4 @@
+import Order from "../admin/Order/Order";
 import Skill from "../admin/Skill/Skill";
 import SystemCustomer from "../admin/User/SystemCustomer/SystemCustomer";
 import SystemRepairment from "../admin/User/SystemRepairment/SystemRepairment";
@@ -27,7 +28,7 @@ export enum RoutePath {
     Contact = "/contact",
     Introduce = "/introduction",
     Order = "/list-order",
-    Comment = "list-order-comment",
+    Comment = "/list-order-comment",
     Skill = "/skill",
     Service = "/services",
     Employee = "/list-employee",
@@ -120,6 +121,7 @@ export const AdminAccessRoutes: IRoutePath[] = [
         path: RoutePath.Home,
         component: Home,
     },
+    { path: RoutePath.Order, component: Order },
     {
         path: RoutePath.Skill,
         component: Skill,

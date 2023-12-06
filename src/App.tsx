@@ -40,7 +40,7 @@ function App() {
                                         Role.ROLE_USER,
                                         Role.ROLE_ADMIN,
                                         Role.ROLE_REPAIRMAN,
-                                        Role.ROLE_SUPERADMIN,
+                                        Role.ROLE_STAFF,
                                     ]}
                                 >
                                     <Account />

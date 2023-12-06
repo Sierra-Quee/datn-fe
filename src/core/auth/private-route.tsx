@@ -35,7 +35,7 @@ export const PrivateRoute = ({
         if (
             isAuthorized &&
             (account.role === Role.ROLE_ADMIN ||
-                account.role === Role.ROLE_SUPERADMIN)
+                account.role === Role.ROLE_STAFF)
         ) {
             return (
                 <ErrorBoundary>

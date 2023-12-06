@@ -41,7 +41,7 @@ const SystemAdmin = () => {
     const debounce = useDebounce(searchInput);
 
     const handleGetAllAdminList = useCallback(async () => {
-        await dispatch(getAllUserRoleAsync(Role.ROLE_ADMIN));
+        await dispatch(getAllUserRoleAsync(Role.ROLE_STAFF));
     }, []);
 
     useEffect(() => {
@@ -240,7 +240,7 @@ const SystemAdmin = () => {
                             setAdminUpdate(null);
                             setIsOpenPanelUpdate(!isOpenPanelUpdate);
                         }}
-                        roleUpdate={Role.ROLE_ADMIN}
+                        roleUpdate={Role.ROLE_STAFF}
                         handleGetAllUser={handleGetAllAdminList}
                     />
                 )}

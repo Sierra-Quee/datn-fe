@@ -1,6 +1,6 @@
 import "./SystemCustomer.scss";
 
-import { SearchOutlined } from "@ant-design/icons";
+import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Spin, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useCallback, useEffect, useState } from "react";
@@ -33,10 +33,8 @@ const SystemCustomer = () => {
     const [customers, setCustomers] = useState<IUser[]>([]);
 
     const dispatch = useAppDispatch();
-    const { loadingUser, customerList, user } = useAppSelector(
-        (state) => state.users
-    );
-    const { loadingUpdateUserStatus, updateStatusUserStatus } = useAppSelector(
+    const { customerList, user } = useAppSelector((state) => state.users);
+    const { updateStatusUserStatus } = useAppSelector(
         (state) => state.users.updateStatusUser
     );
 
@@ -201,16 +199,47 @@ const SystemCustomer = () => {
         setSearchInput(e.target.value);
     };
 
+    const handleAddByImport = () => {};
+
     return (
-        <Spin spinning={loadingUser || loadingUpdateUserStatus}>
-            <div className="system-customer">
-                <h2>Danh sách khách hàng</h2>
-                <div className="header-table-customer">
+        <div className="system-customer">
+            <h2>Danh sách khách hàng</h2>
+            <div className="header-table-customer">
+                <div className="header-table-customer-wrap">
                     <Button
                         type="primary"
                         onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
                     >
                         Thêm khách hàng
+                    </Button>
+                    <div className="button-upload">
+                        <input
+                            type="file"
+                            name="file"
+                            className="custom-file-input"
+                            id="inputGroupFile"
+                            required
+                            hidden
+                            onChange={handleAddByImport}
+                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        />
+                        <label
+                            className="custom-file-label"
+                            htmlFor="inputGroupFile"
+                        >
+                            Thêm bằng file excel
+                        </label>
+                    </div>
+                </div>
+                <div className="header-table-customer-wrap">
+                    <Button
+                        type="primary"
+                        // onClick={() =>
+                        //     setIsOpenPanelUpdate(!isOpenPanelUpdate)
+                        // }
+                        icon={<DownloadOutlined />}
+                    >
+                        Xuất file excel
                     </Button>
                     <Input
                         addonBefore={
@@ -220,43 +249,43 @@ const SystemCustomer = () => {
                         onChange={handleFindCustomer}
                     />
                 </div>
-                <Table
-                    columns={columns}
-                    dataSource={customers.map((c) => {
-                        return {
-                            ...c,
-                            key: c.userId,
-                            createdAt: formatDate(c.createdAt, FORMAT_DATETIME),
-                            updatedAt: formatDate(c.updatedAt, FORMAT_DATETIME),
-                        };
-                    })}
-                    pagination={{ pageSize: 7 }}
-                    scroll={{ x: 1300 }}
-                />
-
-                {isOpenPanelUpdate && (
-                    <UpdateUser
-                        isOpenPanel={isOpenPanelUpdate}
-                        currentUser={customerUpdate}
-                        isCreate={!customerUpdate}
-                        close={() => {
-                            setCustomerUpdate(null);
-                            setIsOpenPanelUpdate(!isOpenPanelUpdate);
-                        }}
-                        roleUpdate={Role.ROLE_USER}
-                        handleGetAllUser={handleGetAllCustomerList}
-                    />
-                )}
-
-                {isOpenPanelUser && (
-                    <DetailUser
-                        isOpenPanel={isOpenPanelUser}
-                        handleConfirmPanel={handleConfirmPanel}
-                        info={user}
-                    />
-                )}
             </div>
-        </Spin>
+            <Table
+                columns={columns}
+                dataSource={customers.map((c) => {
+                    return {
+                        ...c,
+                        key: c.userId,
+                        createdAt: formatDate(c.createdAt, FORMAT_DATETIME),
+                        updatedAt: formatDate(c.updatedAt, FORMAT_DATETIME),
+                    };
+                })}
+                pagination={{ pageSize: 7 }}
+                scroll={{ x: 1300 }}
+            />
+
+            {isOpenPanelUpdate && (
+                <UpdateUser
+                    isOpenPanel={isOpenPanelUpdate}
+                    currentUser={customerUpdate}
+                    isCreate={!customerUpdate}
+                    close={() => {
+                        setCustomerUpdate(null);
+                        setIsOpenPanelUpdate(!isOpenPanelUpdate);
+                    }}
+                    roleUpdate={Role.ROLE_USER}
+                    handleGetAllUser={handleGetAllCustomerList}
+                />
+            )}
+
+            {isOpenPanelUser && (
+                <DetailUser
+                    isOpenPanel={isOpenPanelUser}
+                    handleConfirmPanel={handleConfirmPanel}
+                    info={user}
+                />
+            )}
+        </div>
     );
 };
 

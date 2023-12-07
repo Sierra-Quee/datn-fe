@@ -64,7 +64,7 @@ const Order = () => {
     ) => {
         switch (role) {
             case Role.ROLE_ADMIN:
-            case Role.ROLE_SUPERADMIN:
+            case Role.ROLE_STAFF:
             case Role.ROLE_USER:
         }
     };

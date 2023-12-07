@@ -1,6 +1,6 @@
 import "./SignUp.scss";
 
-import { Button, Col, DatePicker, Form, Input, Row, Select, Spin } from "antd";
+import { Button, Col, DatePicker, Form, Input, Row, Select } from "antd";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -25,7 +25,7 @@ const SignUp = () => {
     const { isAuthenticated, loginError, loginSuccess } = useAppSelector(
         (state) => state.authentication
     );
-    const { loading, registrationSuccess, registrationFailure, errorMessage } =
+    const { registrationSuccess, registrationFailure, errorMessage } =
         useAppSelector((state) => state.register);
 
     const [validateStatusRePass, setValidateStatusRePass] =
@@ -86,243 +86,241 @@ const SignUp = () => {
             {isAuthenticated ? (
                 <Navigate replace to={from} />
             ) : (
-                <Spin spinning={loading}>
-                    <Row style={{ width: "100%", height: "100%" }}>
-                        <Col
-                            xxl={14}
-                            xl={14}
-                            lg={14}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            className="wrap-logo"
-                        >
-                            <img
-                                style={{ width: "400px", height: "400px" }}
-                                src={Images.ismart}
-                                alt="icon"
-                            />
-                            <h2 style={{ textAlign: "center" }}>
-                                Hệ thống sửa chữa điện lạnh ISmart
-                            </h2>
-                        </Col>
-                        <Col
-                            xxl={10}
-                            xl={10}
-                            lg={10}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            className="form-register-wrap"
-                        >
-                            <Form onFinish={onFinish} layout="vertical">
-                                <h1>Đăng ký</h1>
-                                <Row gutter={20}>
-                                    <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                    >
-                                        <Form.Item
-                                            label="Họ"
-                                            name="lastName"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        "Vui lòng nhập họ của bạn",
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Nhập họ của bạn" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                    >
-                                        <Form.Item
-                                            label="Tên"
-                                            name="firstName"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        "Vui lòng nhập tên của bạn",
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Nhập tên của bạn" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={20}>
-                                    <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                    >
-                                        <Form.Item
-                                            label="Số điện thoại"
-                                            name="phone"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        "Vui lòng nhập số điện thoại của bạn",
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Nhập số điện thoại của bạn" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                    >
-                                        <Form.Item
-                                            label="Email"
-                                            name="email"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        "Vui lòng nhập email của bạn",
-                                                },
-                                                {
-                                                    type: "email",
-                                                    message:
-                                                        "Không đúng định dang email!",
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder="Nhập email của bạn" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row gutter={20}>
-                                    <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                    >
-                                        <Form.Item
-                                            label="Giới tính"
-                                            name="gender"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        "Vui lòng chọn giới tính của bạn",
-                                                },
-                                            ]}
-                                        >
-                                            <Select placeholder="Chọn giới tính của bạn">
-                                                <Select.Option value={true}>
-                                                    Nam
-                                                </Select.Option>
-                                                <Select.Option value={false}>
-                                                    Nữ
-                                                </Select.Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col
-                                        xxl={12}
-                                        xl={12}
-                                        lg={12}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                    >
-                                        <Form.Item
-                                            label="Ngày tháng năm sinh"
-                                            name="dob"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        "Vui lòng chọn ngày tháng năm sinh của bạn",
-                                                },
-                                            ]}
-                                        >
-                                            <DatePicker
-                                                format={FORMAT_DATE}
-                                                placeholder="Chọn ngày tháng năm sinh"
-                                            />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Form.Item
-                                    label="Mật khẩu"
-                                    name="password"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập mật khẩu của bạn",
-                                        },
-                                    ]}
+                <Row style={{ width: "100%", height: "100%" }}>
+                    <Col
+                        xxl={14}
+                        xl={14}
+                        lg={14}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className="wrap-logo"
+                    >
+                        <img
+                            style={{ width: "400px", height: "400px" }}
+                            src={Images.ismart}
+                            alt="icon"
+                        />
+                        <h2 style={{ textAlign: "center" }}>
+                            Hệ thống sửa chữa điện lạnh ISmart
+                        </h2>
+                    </Col>
+                    <Col
+                        xxl={10}
+                        xl={10}
+                        lg={10}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className="form-register-wrap"
+                    >
+                        <Form onFinish={onFinish} layout="vertical">
+                            <h1>Đăng ký</h1>
+                            <Row gutter={20}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
                                 >
-                                    <Input.Password placeholder="Nhập mật khẩu của bạn" />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Nhập lại mật khẩu"
-                                    name="rePassword"
-                                    help={helpValidate}
-                                    validateStatus={validateStatusRePass}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập lại mật khẩu của bạn",
-                                        },
-                                    ]}
-                                >
-                                    <Input.Password
-                                        onChange={handleRePassChange}
-                                        placeholder="Nhập lại mật khẩu của bạn"
-                                    />
-                                </Form.Item>
-                                <Form.Item>
-                                    <Button type="primary" htmlType="submit">
-                                        Đăng ký
-                                    </Button>
-                                </Form.Item>
-                                {!isAuthenticated && loginError && (
-                                    <Form.Item>
-                                        <div className="error-message">
-                                            Số điện thoại hoặc mật khẩu không
-                                            chính xác
-                                        </div>
+                                    <Form.Item
+                                        label="Họ"
+                                        name="lastName"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng nhập họ của bạn",
+                                            },
+                                        ]}
+                                    >
+                                        <Input placeholder="Nhập họ của bạn" />
                                     </Form.Item>
-                                )}
+                                </Col>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Form.Item
+                                        label="Tên"
+                                        name="firstName"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng nhập tên của bạn",
+                                            },
+                                        ]}
+                                    >
+                                        <Input placeholder="Nhập tên của bạn" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={20}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Form.Item
+                                        label="Số điện thoại"
+                                        name="phone"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng nhập số điện thoại của bạn",
+                                            },
+                                        ]}
+                                    >
+                                        <Input placeholder="Nhập số điện thoại của bạn" />
+                                    </Form.Item>
+                                </Col>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Form.Item
+                                        label="Email"
+                                        name="email"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng nhập email của bạn",
+                                            },
+                                            {
+                                                type: "email",
+                                                message:
+                                                    "Không đúng định dang email!",
+                                            },
+                                        ]}
+                                    >
+                                        <Input placeholder="Nhập email của bạn" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={20}>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Form.Item
+                                        label="Giới tính"
+                                        name="gender"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng chọn giới tính của bạn",
+                                            },
+                                        ]}
+                                    >
+                                        <Select placeholder="Chọn giới tính của bạn">
+                                            <Select.Option value={true}>
+                                                Nam
+                                            </Select.Option>
+                                            <Select.Option value={false}>
+                                                Nữ
+                                            </Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                                <Col
+                                    xxl={12}
+                                    xl={12}
+                                    lg={12}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                >
+                                    <Form.Item
+                                        label="Ngày tháng năm sinh"
+                                        name="dob"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Vui lòng chọn ngày tháng năm sinh của bạn",
+                                            },
+                                        ]}
+                                    >
+                                        <DatePicker
+                                            format={FORMAT_DATE}
+                                            placeholder="Chọn ngày tháng năm sinh"
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Form.Item
+                                label="Mật khẩu"
+                                name="password"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message:
+                                            "Vui lòng nhập mật khẩu của bạn",
+                                    },
+                                ]}
+                            >
+                                <Input.Password placeholder="Nhập mật khẩu của bạn" />
+                            </Form.Item>
+                            <Form.Item
+                                label="Nhập lại mật khẩu"
+                                name="rePassword"
+                                help={helpValidate}
+                                validateStatus={validateStatusRePass}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message:
+                                            "Vui lòng nhập lại mật khẩu của bạn",
+                                    },
+                                ]}
+                            >
+                                <Input.Password
+                                    onChange={handleRePassChange}
+                                    placeholder="Nhập lại mật khẩu của bạn"
+                                />
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                    Đăng ký
+                                </Button>
+                            </Form.Item>
+                            {!isAuthenticated && loginError && (
                                 <Form.Item>
-                                    <Link to={RoutePath.Login}>
-                                        Đã có tài khoản ?
-                                    </Link>
+                                    <div className="error-message">
+                                        Số điện thoại hoặc mật khẩu không chính
+                                        xác
+                                    </div>
                                 </Form.Item>
-                            </Form>
-                        </Col>
-                    </Row>
-                </Spin>
+                            )}
+                            <Form.Item>
+                                <Link to={RoutePath.Login}>
+                                    Đã có tài khoản ?
+                                </Link>
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                </Row>
             )}
         </div>
     );

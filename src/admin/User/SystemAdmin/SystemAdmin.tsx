@@ -31,10 +31,8 @@ const SystemAdmin = () => {
     const [admins, setAdmins] = useState<IUser[]>([]);
 
     const dispatch = useAppDispatch();
-    const { loadingUser, adminList, user } = useAppSelector(
-        (state) => state.users
-    );
-    const { loadingUpdateUserStatus, updateStatusUserStatus } = useAppSelector(
+    const { adminList, user } = useAppSelector((state) => state.users);
+    const { updateStatusUserStatus } = useAppSelector(
         (state) => state.users.updateStatusUser
     );
 
@@ -200,60 +198,58 @@ const SystemAdmin = () => {
     };
 
     return (
-        <Spin spinning={loadingUser || loadingUpdateUserStatus}>
-            <div className="system-admin">
-                <h2>Danh sách quản lý</h2>
-                <div className="header-table-admin">
-                    <Button
-                        type="primary"
-                        onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
-                    >
-                        Thêm quản lý
-                    </Button>
-                    <Input
-                        addonBefore={
-                            <SearchOutlined style={{ fontSize: "20px" }} />
-                        }
-                        placeholder="Nhập tên quản lý cần tìm kiếm"
-                        onChange={handleFindAdmin}
-                    />
-                </div>
-                <Table
-                    columns={columns}
-                    dataSource={admins.map((c) => {
-                        return {
-                            ...c,
-                            key: c.userId,
-                            createdAt: formatDate(c.createdAt, FORMAT_DATETIME),
-                            updatedAt: formatDate(c.updatedAt, FORMAT_DATETIME),
-                        };
-                    })}
-                    pagination={{ pageSize: 7 }}
-                    scroll={{ x: 1300 }}
+        <div className="system-admin">
+            <h2>Danh sách quản lý</h2>
+            <div className="header-table-admin">
+                <Button
+                    type="primary"
+                    onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
+                >
+                    Thêm quản lý
+                </Button>
+                <Input
+                    addonBefore={
+                        <SearchOutlined style={{ fontSize: "20px" }} />
+                    }
+                    placeholder="Nhập tên quản lý cần tìm kiếm"
+                    onChange={handleFindAdmin}
                 />
-                {isOpenPanelUpdate && (
-                    <UpdateUser
-                        isOpenPanel={isOpenPanelUpdate}
-                        currentUser={adminUpdate}
-                        isCreate={!adminUpdate}
-                        close={() => {
-                            setAdminUpdate(null);
-                            setIsOpenPanelUpdate(!isOpenPanelUpdate);
-                        }}
-                        roleUpdate={Role.ROLE_STAFF}
-                        handleGetAllUser={handleGetAllAdminList}
-                    />
-                )}
-
-                {isOpenPanelUser && (
-                    <DetailUser
-                        isOpenPanel={isOpenPanelUser}
-                        handleConfirmPanel={handleConfirmPanel}
-                        info={user}
-                    />
-                )}
             </div>
-        </Spin>
+            <Table
+                columns={columns}
+                dataSource={admins.map((c) => {
+                    return {
+                        ...c,
+                        key: c.userId,
+                        createdAt: formatDate(c.createdAt, FORMAT_DATETIME),
+                        updatedAt: formatDate(c.updatedAt, FORMAT_DATETIME),
+                    };
+                })}
+                pagination={{ pageSize: 7 }}
+                scroll={{ x: 1300 }}
+            />
+            {isOpenPanelUpdate && (
+                <UpdateUser
+                    isOpenPanel={isOpenPanelUpdate}
+                    currentUser={adminUpdate}
+                    isCreate={!adminUpdate}
+                    close={() => {
+                        setAdminUpdate(null);
+                        setIsOpenPanelUpdate(!isOpenPanelUpdate);
+                    }}
+                    roleUpdate={Role.ROLE_STAFF}
+                    handleGetAllUser={handleGetAllAdminList}
+                />
+            )}
+
+            {isOpenPanelUser && (
+                <DetailUser
+                    isOpenPanel={isOpenPanelUser}
+                    handleConfirmPanel={handleConfirmPanel}
+                    info={user}
+                />
+            )}
+        </div>
     );
 };
 

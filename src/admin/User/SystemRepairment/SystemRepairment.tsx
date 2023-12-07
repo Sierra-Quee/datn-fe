@@ -34,11 +34,9 @@ const SystemRepairment = () => {
     const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
 
     const dispatch = useAppDispatch();
-    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
-    const { loadingUser, repairList, user } = useAppSelector(
-        (state) => state.users
-    );
-    const { loadingUpdateUserStatus, updateStatusUserStatus } = useAppSelector(
+    const { listSkill } = useAppSelector((state) => state.skill);
+    const { repairList, user } = useAppSelector((state) => state.users);
+    const { updateStatusUserStatus } = useAppSelector(
         (state) => state.users.updateStatusUser
     );
 
@@ -237,60 +235,58 @@ const SystemRepairment = () => {
     };
 
     return (
-        <Spin spinning={loadingUser || loadingSkill || loadingUpdateUserStatus}>
-            <div className="system-repair">
-                <h2>Danh sách thợ</h2>
-                <div className="header-table-repair">
-                    <Button
-                        type="primary"
-                        onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
-                    >
-                        Thêm nhân viên
-                    </Button>
-                    <Input
-                        addonBefore={
-                            <SearchOutlined style={{ fontSize: "20px" }} />
-                        }
-                        placeholder="Nhập tên thợ cần tìm kiếm"
-                        onChange={handleFindRepair}
-                    />
-                </div>
-                <Table
-                    columns={columns}
-                    dataSource={employees.map((e) => {
-                        return {
-                            ...e,
-                            key: e.userId,
-                            createdAt: formatDate(e.createdAt, FORMAT_DATETIME),
-                            updatedAt: formatDate(e.updatedAt, FORMAT_DATETIME),
-                        };
-                    })}
-                    pagination={{ pageSize: 7 }}
-                    scroll={{ x: 1300 }}
+        <div className="system-repair">
+            <h2>Danh sách thợ</h2>
+            <div className="header-table-repair">
+                <Button
+                    type="primary"
+                    onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
+                >
+                    Thêm nhân viên
+                </Button>
+                <Input
+                    addonBefore={
+                        <SearchOutlined style={{ fontSize: "20px" }} />
+                    }
+                    placeholder="Nhập tên thợ cần tìm kiếm"
+                    onChange={handleFindRepair}
                 />
-                {isOpenPanelUpdate && (
-                    <UpdateUser
-                        isOpenPanel={isOpenPanelUpdate}
-                        currentUser={employeeUpdate}
-                        isCreate={!employeeUpdate}
-                        close={() => {
-                            setEmployeeUpdate(null);
-                            setIsOpenPanelUpdate(!isOpenPanelUpdate);
-                        }}
-                        handleGetAllUser={handleGetAllRepairList}
-                        roleUpdate={Role.ROLE_REPAIRMAN}
-                    />
-                )}
-
-                {isOpenPanelUser && (
-                    <DetailUser
-                        isOpenPanel={isOpenPanelUser}
-                        handleConfirmPanel={handleConfirmPanel}
-                        info={user}
-                    />
-                )}
             </div>
-        </Spin>
+            <Table
+                columns={columns}
+                dataSource={employees.map((e) => {
+                    return {
+                        ...e,
+                        key: e.userId,
+                        createdAt: formatDate(e.createdAt, FORMAT_DATETIME),
+                        updatedAt: formatDate(e.updatedAt, FORMAT_DATETIME),
+                    };
+                })}
+                pagination={{ pageSize: 7 }}
+                scroll={{ x: 1300 }}
+            />
+            {isOpenPanelUpdate && (
+                <UpdateUser
+                    isOpenPanel={isOpenPanelUpdate}
+                    currentUser={employeeUpdate}
+                    isCreate={!employeeUpdate}
+                    close={() => {
+                        setEmployeeUpdate(null);
+                        setIsOpenPanelUpdate(!isOpenPanelUpdate);
+                    }}
+                    handleGetAllUser={handleGetAllRepairList}
+                    roleUpdate={Role.ROLE_REPAIRMAN}
+                />
+            )}
+
+            {isOpenPanelUser && (
+                <DetailUser
+                    isOpenPanel={isOpenPanelUser}
+                    handleConfirmPanel={handleConfirmPanel}
+                    info={user}
+                />
+            )}
+        </div>
     );
 };
 export default SystemRepairment;

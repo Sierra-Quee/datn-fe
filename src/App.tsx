@@ -7,7 +7,6 @@ import { ToastContainer } from "react-toastify";
 import AdminRoutes from "./admin/AdminRoutes";
 import Account from "./common/Account/Account";
 import CommonRoutes from "./common/CommonRoutes";
-import Home from "./common/Home/Home";
 import { PrivateRoute } from "./core/auth/private-route";
 import { Role } from "./core/auth/roles";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";

@@ -8,9 +8,7 @@ import Password from "./Password/Password";
 import Profile from "./Profile/Profile";
 
 const Account = () => {
-    const { account, loading } = useAppSelector(
-        (state) => state.authentication
-    );
+    const { account } = useAppSelector((state) => state.authentication);
     const itemTabs: TabsProps["items"] = [
         {
             key: "1",
@@ -27,9 +25,7 @@ const Account = () => {
     return (
         <div className="account">
             <ErrorBoundary>
-                <Spin spinning={loading}>
-                    <Tabs defaultActiveKey="1" items={itemTabs} />
-                </Spin>
+                <Tabs defaultActiveKey="1" items={itemTabs} />
             </ErrorBoundary>
         </div>
     );

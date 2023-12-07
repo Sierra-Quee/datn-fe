@@ -41,15 +41,13 @@ const UpdateService = ({
     const [serviceInfo, setServiceInfo] = useState<any>();
 
     const dispatch = useAppDispatch();
-    const { loadingUpdateService, updateServiceStatus } = useAppSelector(
+    const { updateServiceStatus } = useAppSelector(
         (state) => state.service.updateService
     );
 
-    const {
-        uploadSuccess,
-        loadingUploadImage,
-        image: imageCloudUpload,
-    } = useAppSelector((state) => state.imageCloud);
+    const { uploadSuccess, image: imageCloudUpload } = useAppSelector(
+        (state) => state.imageCloud
+    );
 
     useEffect(() => {
         if (serviceUpdate) {
@@ -150,12 +148,7 @@ const UpdateService = ({
 
     const buttonUpdate = () => {
         return (
-            <Button
-                key={2}
-                type="primary"
-                htmlType="submit"
-                loading={loadingUpdateService || loadingUploadImage}
-            >
+            <Button key={2} type="primary" htmlType="submit">
                 Cập nhật
             </Button>
         );
@@ -163,11 +156,7 @@ const UpdateService = ({
 
     const buttonCancel = () => {
         return (
-            <Button
-                key={1}
-                disabled={loadingUpdateService || loadingUploadImage}
-                onClick={close}
-            >
+            <Button key={1} onClick={close}>
                 Hủy bỏ
             </Button>
         );

@@ -35,12 +35,11 @@ const Service = () => {
 
     const params = useParams();
     const dispatch = useAppDispatch();
-    const { listService, isLoadingService, service } = useAppSelector(
-        (state) => state.service
+    const { listService, service } = useAppSelector((state) => state.service);
+    const { updateStatusServiceStatus } = useAppSelector(
+        (state) => state.service.updateStatusService
     );
-    const { loadingUpdateStatusService, updateStatusServiceStatus } =
-        useAppSelector((state) => state.service.updateStatusService);
-    const { skill, loadingSkill } = useAppSelector((state) => state.skill);
+    const { skill } = useAppSelector((state) => state.skill);
 
     const debounce = useDebounce(searchInput);
 
@@ -213,63 +212,57 @@ const Service = () => {
     };
 
     return (
-        <Spin
-            spinning={
-                loadingSkill || isLoadingService || loadingUpdateStatusService
-            }
-        >
-            <div className="service">
-                <h2>Danh sách các dịch vụ của {skill?.name}</h2>
-                <div className="header-table-service">
-                    <Button
-                        type="primary"
-                        onClick={() => setIsOpenModal(!isOpenModal)}
-                    >
-                        Thêm dịch vụ
-                    </Button>
-                    <Input
-                        addonBefore={
-                            <SearchOutlined style={{ fontSize: "20px" }} />
-                        }
-                        placeholder="Nhập tên dịch vụ cần tìm kiếm"
-                        onChange={handleFindService}
-                    />
-                </div>
-                <Table
-                    columns={columns}
-                    dataSource={services.map((d) => {
-                        return {
-                            ...d,
-                            key: d.serviceId,
-                            createdAt: formatDate(d.createdAt, FORMAT_DATETIME),
-                            updatedAt: formatDate(d.updatedAt, FORMAT_DATETIME),
-                        };
-                    })}
-                    pagination={{ pageSize: 7 }}
-                    scroll={{ x: 1300 }}
+        <div className="service">
+            <h2>Danh sách các dịch vụ của {skill?.name}</h2>
+            <div className="header-table-service">
+                <Button
+                    type="primary"
+                    onClick={() => setIsOpenModal(!isOpenModal)}
+                >
+                    Thêm dịch vụ
+                </Button>
+                <Input
+                    addonBefore={
+                        <SearchOutlined style={{ fontSize: "20px" }} />
+                    }
+                    placeholder="Nhập tên dịch vụ cần tìm kiếm"
+                    onChange={handleFindService}
                 />
-                {isOpenModal && (
-                    <UpdateService
-                        isOpen={isOpenModal}
-                        close={() => {
-                            setServiceUpdate(null);
-                            setIsOpenModal(!isOpenModal);
-                        }}
-                        serviceUpdate={serviceUpdate}
-                        isCreate={!serviceUpdate}
-                        handleGetAllServiceAsync={handleGetAllServiceAsync}
-                        skillId={skill?.skillId as number}
-                    />
-                )}
-                {isOpenPanelService && (
-                    <DetailService
-                        isOpenPanel={isOpenPanelService}
-                        handleConfirmPanel={handleConfirmPanel}
-                        info={service.detailService}
-                    />
-                )}
             </div>
-        </Spin>
+            <Table
+                columns={columns}
+                dataSource={services.map((d) => {
+                    return {
+                        ...d,
+                        key: d.serviceId,
+                        createdAt: formatDate(d.createdAt, FORMAT_DATETIME),
+                        updatedAt: formatDate(d.updatedAt, FORMAT_DATETIME),
+                    };
+                })}
+                pagination={{ pageSize: 7 }}
+                scroll={{ x: 1300 }}
+            />
+            {isOpenModal && (
+                <UpdateService
+                    isOpen={isOpenModal}
+                    close={() => {
+                        setServiceUpdate(null);
+                        setIsOpenModal(!isOpenModal);
+                    }}
+                    serviceUpdate={serviceUpdate}
+                    isCreate={!serviceUpdate}
+                    handleGetAllServiceAsync={handleGetAllServiceAsync}
+                    skillId={skill?.skillId as number}
+                />
+            )}
+            {isOpenPanelService && (
+                <DetailService
+                    isOpenPanel={isOpenPanelService}
+                    handleConfirmPanel={handleConfirmPanel}
+                    info={service.detailService}
+                />
+            )}
+        </div>
     );
 };
 

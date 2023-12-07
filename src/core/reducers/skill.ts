@@ -10,27 +10,21 @@ import {
 
 interface ISkillSlice {
     listSkill: ISkill[];
-    loadingSkill: boolean;
     skill?: ISkill | null | undefined;
     updateSkill: {
-        loadingUpdateSkill: boolean;
         updateSkillStatus: "success" | "failed" | "none";
     };
     updateStatusSkill: {
-        loadingUpdateStatusSkill: boolean;
         updateStatusSkillStatus: "success" | "failed" | "none";
     };
 }
 const initialState: ISkillSlice = {
     listSkill: [],
-    loadingSkill: false,
     skill: null,
     updateSkill: {
-        loadingUpdateSkill: false,
         updateSkillStatus: "none",
     },
     updateStatusSkill: {
-        loadingUpdateStatusSkill: false,
         updateStatusSkillStatus: "none",
     },
 };
@@ -96,71 +90,49 @@ export const skillSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getAllSkillAsync.pending, (state, action) => {
-                state.loadingSkill = true;
-            })
+            .addCase(getAllSkillAsync.pending, (state, action) => {})
             .addCase(getAllSkillAsync.fulfilled, (state, action) => {
                 state.listSkill = action.payload;
-                state.loadingSkill = false;
             })
             .addCase(
                 getAllSkillAsync.rejected,
-                (state, action: PayloadAction<any>) => {
-                    state.loadingSkill = false;
-                }
+                (state, action: PayloadAction<any>) => {}
             )
-            .addCase(getSkillByIdAsync.pending, (state, action) => {
-                state.loadingSkill = true;
-            })
+            .addCase(getSkillByIdAsync.pending, (state, action) => {})
             .addCase(getSkillByIdAsync.fulfilled, (state, action) => {
                 state.skill = action.payload;
-                state.loadingSkill = false;
             })
             .addCase(
                 getSkillByIdAsync.rejected,
-                (state, action: PayloadAction<any>) => {
-                    state.loadingSkill = false;
-                }
+                (state, action: PayloadAction<any>) => {}
             )
-            .addCase(createSkillAsync.pending, (state, action) => {
-                state.updateSkill.loadingUpdateSkill = true;
-            })
+            .addCase(createSkillAsync.pending, (state, action) => {})
             .addCase(createSkillAsync.fulfilled, (state, action) => {
-                state.updateSkill.loadingUpdateSkill = false;
                 state.updateSkill.updateSkillStatus = "success";
             })
             .addCase(
                 createSkillAsync.rejected,
                 (state, action: PayloadAction<any>) => {
-                    state.updateSkill.loadingUpdateSkill = false;
                     state.updateSkill.updateSkillStatus = "failed";
                 }
             )
-            .addCase(updateSkillAsync.pending, (state, action) => {
-                state.updateSkill.loadingUpdateSkill = true;
-            })
+            .addCase(updateSkillAsync.pending, (state, action) => {})
             .addCase(updateSkillAsync.fulfilled, (state, action) => {
-                state.updateSkill.loadingUpdateSkill = false;
                 state.updateSkill.updateSkillStatus = "success";
             })
             .addCase(
                 updateSkillAsync.rejected,
                 (state, action: PayloadAction<any>) => {
-                    state.updateSkill.loadingUpdateSkill = false;
                     state.updateSkill.updateSkillStatus = "failed";
                 }
             )
-            .addCase(updateStatusSkillAsync.pending, (state, action) => {
-                state.updateStatusSkill.loadingUpdateStatusSkill = true;
-            })
+            .addCase(updateStatusSkillAsync.pending, (state, action) => {})
             .addCase(updateStatusSkillAsync.fulfilled, (state, action) => {
-                state.updateStatusSkill.loadingUpdateStatusSkill = false;
                 state.updateStatusSkill.updateStatusSkillStatus = "success";
             })
             .addCase(
                 updateStatusSkillAsync.rejected,
                 (state, action: PayloadAction<any>) => {
-                    state.updateStatusSkill.loadingUpdateStatusSkill = false;
                     state.updateStatusSkill.updateStatusSkillStatus = "failed";
                 }
             );

@@ -27,10 +27,11 @@ const Skill = () => {
 
     const dispatch = useAppDispatch();
 
-    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
+    const { listSkill } = useAppSelector((state) => state.skill);
 
-    const { loadingUpdateStatusSkill, updateStatusSkillStatus } =
-        useAppSelector((state) => state.skill.updateStatusSkill);
+    const { updateStatusSkillStatus } = useAppSelector(
+        (state) => state.skill.updateStatusSkill
+    );
 
     const debounce = useDebounce(searchInput);
 
@@ -139,50 +140,48 @@ const Skill = () => {
     ];
 
     return (
-        <Spin spinning={loadingSkill || loadingUpdateStatusSkill}>
-            <div className="skill">
-                <h2>Danh sách loại dịch vụ</h2>
-                <div className="header-table-skill">
-                    <Button
-                        type="primary"
-                        onClick={() => setIsOpenModal(!isOpenModal)}
-                    >
-                        Thêm loại dịch vụ
-                    </Button>
-                    <Input
-                        addonBefore={
-                            <SearchOutlined style={{ fontSize: "20px" }} />
-                        }
-                        placeholder="Nhập tên loại cần tìm kiếm"
-                        onChange={handleFindSkill}
-                    />
-                </div>
-                <Table
-                    columns={columns}
-                    dataSource={skills.map((d: ISkill) => {
-                        return {
-                            ...d,
-                            key: d.skillId,
-                            createdAt: formatDate(d.createdAt, FORMAT_DATETIME),
-                            updatedAt: formatDate(d.updatedAt, FORMAT_DATETIME),
-                        };
-                    })}
-                    pagination={{ pageSize: 7 }}
+        <div className="skill">
+            <h2>Danh sách loại dịch vụ</h2>
+            <div className="header-table-skill">
+                <Button
+                    type="primary"
+                    onClick={() => setIsOpenModal(!isOpenModal)}
+                >
+                    Thêm loại dịch vụ
+                </Button>
+                <Input
+                    addonBefore={
+                        <SearchOutlined style={{ fontSize: "20px" }} />
+                    }
+                    placeholder="Nhập tên loại cần tìm kiếm"
+                    onChange={handleFindSkill}
                 />
-                {isOpenModal && (
-                    <UpdateSkill
-                        isOpen={isOpenModal}
-                        close={() => {
-                            setSkillUpdate(null);
-                            setIsOpenModal(!isOpenModal);
-                        }}
-                        skill={skillUpdate}
-                        isCreate={!skillUpdate}
-                        handleGetAllSkillAsync={handleGetAllSkillAsync}
-                    />
-                )}
             </div>
-        </Spin>
+            <Table
+                columns={columns}
+                dataSource={skills.map((d: ISkill) => {
+                    return {
+                        ...d,
+                        key: d.skillId,
+                        createdAt: formatDate(d.createdAt, FORMAT_DATETIME),
+                        updatedAt: formatDate(d.updatedAt, FORMAT_DATETIME),
+                    };
+                })}
+                pagination={{ pageSize: 7 }}
+            />
+            {isOpenModal && (
+                <UpdateSkill
+                    isOpen={isOpenModal}
+                    close={() => {
+                        setSkillUpdate(null);
+                        setIsOpenModal(!isOpenModal);
+                    }}
+                    skill={skillUpdate}
+                    isCreate={!skillUpdate}
+                    handleGetAllSkillAsync={handleGetAllSkillAsync}
+                />
+            )}
+        </div>
     );
 };
 

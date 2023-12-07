@@ -19,14 +19,10 @@ interface IUserSlice {
     repairList: IUser[];
     customerList: IUser[];
     adminList: IUser[];
-    loadingUser: boolean;
-    loadingDetailUser: boolean;
     updateUser: {
-        loadingUpdateUser: boolean;
         updateUserStatus: "success" | "failed" | "none";
     };
     updateStatusUser: {
-        loadingUpdateUserStatus: boolean;
         updateStatusUserStatus: "success" | "failed" | "none";
     };
     user: IUser;
@@ -35,14 +31,10 @@ const initialState: IUserSlice = {
     repairList: [],
     customerList: [],
     adminList: [],
-    loadingUser: false,
-    loadingDetailUser: false,
     updateUser: {
-        loadingUpdateUser: false,
         updateUserStatus: "none",
     },
     updateStatusUser: {
-        loadingUpdateUserStatus: false,
         updateStatusUserStatus: "none",
     },
     user: defaultUser,
@@ -116,11 +108,8 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getAllUserRoleAsync.pending, (state, action) => {
-                state.loadingUser = true;
-            })
+            .addCase(getAllUserRoleAsync.pending, (state, action) => {})
             .addCase(getAllUserRoleAsync.fulfilled, (state, action) => {
-                state.loadingUser = false;
                 if (action.payload.role === Role.ROLE_USER) {
                     state.customerList = action.payload.data;
                 } else if (action.payload.role === Role.ROLE_REPAIRMAN) {
@@ -129,50 +118,31 @@ export const userSlice = createSlice({
                     state.adminList = action.payload.data;
                 }
             })
-            .addCase(getAllUserRoleAsync.rejected, (state, action) => {
-                state.loadingUser = false;
-            })
-            .addCase(getDetailUserAsync.pending, (state, action) => {
-                state.loadingDetailUser = true;
-            })
+            .addCase(getAllUserRoleAsync.rejected, (state, action) => {})
+            .addCase(getDetailUserAsync.pending, (state, action) => {})
             .addCase(getDetailUserAsync.fulfilled, (state, action) => {
-                state.loadingDetailUser = false;
                 state.user = action.payload;
             })
-            .addCase(getDetailUserAsync.rejected, (state, action) => {
-                state.loadingDetailUser = false;
-            })
-            .addCase(createUserAsync.pending, (state, action) => {
-                state.updateUser.loadingUpdateUser = true;
-            })
+            .addCase(getDetailUserAsync.rejected, (state, action) => {})
+            .addCase(createUserAsync.pending, (state, action) => {})
             .addCase(createUserAsync.fulfilled, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "success";
             })
             .addCase(createUserAsync.rejected, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "failed";
             })
-            .addCase(updateUserAsync.pending, (state, action) => {
-                state.updateUser.loadingUpdateUser = true;
-            })
+            .addCase(updateUserAsync.pending, (state, action) => {})
             .addCase(updateUserAsync.fulfilled, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "success";
             })
             .addCase(updateUserAsync.rejected, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "failed";
             })
-            .addCase(updateStatusUserAsync.pending, (state, action) => {
-                state.updateStatusUser.loadingUpdateUserStatus = true;
-            })
+            .addCase(updateStatusUserAsync.pending, (state, action) => {})
             .addCase(updateStatusUserAsync.fulfilled, (state, action) => {
-                state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "success";
             })
             .addCase(updateStatusUserAsync.rejected, (state, action) => {
-                state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "failed";
             });
     },

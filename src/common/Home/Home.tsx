@@ -6,7 +6,6 @@ import {
     UsergroupAddOutlined,
     UsergroupDeleteOutlined,
 } from "@ant-design/icons";
-import { Spin } from "antd";
 import { useEffect } from "react";
 
 import {
@@ -19,10 +18,8 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 const Home = () => {
     const dispatch = useAppDispatch();
 
-    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
-    const { listService, isLoadingService } = useAppSelector(
-        (state) => state.service
-    );
+    const { listSkill } = useAppSelector((state) => state.skill);
+    const { listService } = useAppSelector((state) => state.service);
 
     useEffect(() => {
         handleGetAllSkillAsync();
@@ -43,44 +40,42 @@ const Home = () => {
     };
 
     return (
-        <Spin spinning={loadingSkill || isLoadingService}>
-            <div className="home">
-                <div className="home-statistic">
-                    <div className="home-statistic-item home-statistic-item-skill">
-                        <span className="home-statistic-item-title">
-                            <span>
-                                <UngroupOutlined /> Số loại dịch vụ:
-                            </span>
-                            <div>{listSkill.length}</div>
+        <div className="home">
+            <div className="home-statistic">
+                <div className="home-statistic-item home-statistic-item-skill">
+                    <span className="home-statistic-item-title">
+                        <span>
+                            <UngroupOutlined /> Số loại dịch vụ:
                         </span>
-                    </div>
-                    <div className="home-statistic-item home-statistic-item-service">
-                        <span className="home-statistic-item-title">
-                            <span>
-                                <GlobalOutlined /> Số dịch vụ:
-                            </span>
-                            <div>{listService.length}</div>
+                        <div>{listSkill.length}</div>
+                    </span>
+                </div>
+                <div className="home-statistic-item home-statistic-item-service">
+                    <span className="home-statistic-item-title">
+                        <span>
+                            <GlobalOutlined /> Số dịch vụ:
                         </span>
-                    </div>
-                    <div className="home-statistic-item home-statistic-item-customer">
-                        <span className="home-statistic-item-title">
-                            <span>
-                                <UsergroupAddOutlined /> Số khách hàng:
-                            </span>
-                            <div>1128</div>
+                        <div>{listService.length}</div>
+                    </span>
+                </div>
+                <div className="home-statistic-item home-statistic-item-customer">
+                    <span className="home-statistic-item-title">
+                        <span>
+                            <UsergroupAddOutlined /> Số khách hàng:
                         </span>
-                    </div>
-                    <div className="home-statistic-item home-statistic-item-employee">
-                        <span className="home-statistic-item-title">
-                            <span>
-                                <UsergroupDeleteOutlined /> Số thợ:
-                            </span>
-                            <div>1128</div>
+                        <div>1128</div>
+                    </span>
+                </div>
+                <div className="home-statistic-item home-statistic-item-employee">
+                    <span className="home-statistic-item-title">
+                        <span>
+                            <UsergroupDeleteOutlined /> Số thợ:
                         </span>
-                    </div>
+                        <div>1128</div>
+                    </span>
                 </div>
             </div>
-        </Spin>
+        </div>
     );
 };
 

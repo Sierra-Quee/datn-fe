@@ -37,14 +37,12 @@ const UpdateSkill = ({
     const [imageSkill, setImageSkill] = useState<string>("");
 
     const dispatch = useAppDispatch();
-    const { loadingUpdateSkill, updateSkillStatus } = useAppSelector(
+    const { updateSkillStatus } = useAppSelector(
         (state) => state.skill.updateSkill
     );
-    const {
-        uploadSuccess,
-        loadingUploadImage,
-        image: imageCloudUpload,
-    } = useAppSelector((state) => state.imageCloud);
+    const { uploadSuccess, image: imageCloudUpload } = useAppSelector(
+        (state) => state.imageCloud
+    );
 
     useEffect(() => {
         if (skill) {
@@ -116,12 +114,7 @@ const UpdateSkill = ({
 
     const buttonUpdate = () => {
         return (
-            <Button
-                key={2}
-                type="primary"
-                htmlType="submit"
-                loading={loadingUpdateSkill || loadingUploadImage}
-            >
+            <Button key={2} type="primary" htmlType="submit">
                 Cập nhật
             </Button>
         );
@@ -129,11 +122,7 @@ const UpdateSkill = ({
 
     const buttonCancel = () => {
         return (
-            <Button
-                key={1}
-                disabled={loadingUpdateSkill || loadingUploadImage}
-                onClick={close}
-            >
+            <Button key={1} onClick={close}>
                 Hủy bỏ
             </Button>
         );

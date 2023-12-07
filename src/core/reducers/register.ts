@@ -1,15 +1,13 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { signUpApi } from "../../api/auth/auth";
 
 export interface RegisterState {
-    loading: boolean;
     registrationSuccess: boolean;
     registrationFailure: boolean;
     errorMessage: string[];
 }
 
 export const initialState = {
-    loading: false,
     registrationSuccess: false,
     registrationFailure: false,
     errorMessage: [],
@@ -45,12 +43,9 @@ export const registerSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(signUp.pending, (state, action) => {
-                state.loading = true;
-            })
+            .addCase(signUp.pending, (state, action) => {})
             .addCase(signUp.fulfilled, (state, action) => {
                 return {
-                    loading: false,
                     registrationSuccess: true,
                     registrationFailure: false,
                     errorMessage: [],
@@ -60,7 +55,6 @@ export const registerSlice = createSlice({
                 console.log(action);
 
                 return {
-                    loading: false,
                     registrationSuccess: false,
                     registrationFailure: true,
                     errorMessage: [],

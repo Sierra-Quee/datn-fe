@@ -47,16 +47,14 @@ const UpdateUser = ({
     const [userInfo, setUserInfo] = useState<any>();
 
     const dispatch = useAppDispatch();
-    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
-    const { loadingUpdateUser, updateUserStatus } = useAppSelector(
+    const { listSkill } = useAppSelector((state) => state.skill);
+    const { updateUserStatus } = useAppSelector(
         (state) => state.users.updateUser
     );
 
-    const {
-        uploadSuccess,
-        loadingUploadImage,
-        image: imageCloudUpload,
-    } = useAppSelector((state) => state.imageCloud);
+    const { uploadSuccess, image: imageCloudUpload } = useAppSelector(
+        (state) => state.imageCloud
+    );
 
     useEffect(() => {
         if (currentUser) {
@@ -128,12 +126,7 @@ const UpdateUser = ({
 
     const buttonUpdate = () => {
         return (
-            <Button
-                key={2}
-                type="primary"
-                htmlType="submit"
-                loading={loadingUpdateUser || loadingUploadImage}
-            >
+            <Button key={2} type="primary" htmlType="submit">
                 {isCreate ? "Thêm thông tin" : "Cập nhật"}
             </Button>
         );
@@ -141,11 +134,7 @@ const UpdateUser = ({
 
     const buttonCancel = () => {
         return (
-            <Button
-                key={1}
-                disabled={loadingUpdateUser || loadingUploadImage}
-                onClick={close}
-            >
+            <Button key={1} onClick={close}>
                 Hủy bỏ
             </Button>
         );
@@ -399,8 +388,6 @@ const UpdateUser = ({
                                     };
                                 })}
                                 optionFilterProp="label"
-                                loading={loadingSkill}
-                                disabled={loadingSkill}
                             />
                         </Form.Item>
                     )}

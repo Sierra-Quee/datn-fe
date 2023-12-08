@@ -1,24 +1,24 @@
 .home {
     &-statistic {
         display: flex;
-        column-gap: 30px;
+        column-gap: 10px;
         row-gap: 30px;
         justify-content: center;
         flex-wrap: wrap;
+        padding: 0px;
 
         &-item {
-            width: 300px;
-            height: 200px;
-            border-radius: 8px;
+            width: 220px;
+            height: 100px;
             display: flex;
             justify-content: center;
             align-items: center;
 
             &-title {
-                font-size: 23px;
+                font-size: 20px;
                 font-weight: 500;
                 text-transform: uppercase;
-                color: white;
+                color: black;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -27,19 +27,25 @@
         }
 
         &-item-skill {
-            background-color: #76bb68;
+
+            border-bottom: 3px solid #76bb68;
         }
 
         &-item-service {
-            background-color: #f29388;
+            border-bottom: 3px solid #f29388;
         }
 
         &-item-customer {
-            background-color: #5aa8f2;
+            border-bottom: 3px solid #5aa8f2;
         }
 
         &-item-employee {
-            background-color: #b6977d;
+            border-bottom: 3px solid #b6977d;
         }
+    }
+
+    &-chart {
+        width: 100% !important;
+        margin-right: 20px;
     }
 }

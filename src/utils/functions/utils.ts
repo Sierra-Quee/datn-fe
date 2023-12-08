@@ -79,3 +79,20 @@ export const convertServiceType = (type: ITypeService): string => {
 //     }
 //     return "";
 // };
+export const getMonthsBetweenDates = (startDate: string, endDate: string) => {
+    let result = [];
+
+    let currentDate = new Date(startDate);
+    let endDateObj = new Date(endDate);
+
+    while (currentDate <= endDateObj) {
+        let month = currentDate.getMonth() + 1; // Months are zero-based
+        let year = currentDate.getFullYear();
+
+        result.push(`${month.toString().padStart(2, "0")}/${year}`);
+
+        currentDate.setMonth(month);
+    }
+
+    return result;
+};

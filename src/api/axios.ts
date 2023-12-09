@@ -27,6 +27,8 @@ fetchHandler.interceptors.request.use(
     },
     (err) => {
         console.log(err);
+
+        return Promise.reject(err);
     }
 );
 export default fetchHandler;
@@ -43,10 +45,10 @@ fetchHandler.interceptors.response.use(
         // UPDATE: Add this code to hide global loading indicator
         document.body.classList.remove("loading-indicator");
 
-        if (err.response.status === 500) {
+        if (err.response.status === 401) {
             clearCookie();
         }
-        if (err.response.status !== 500 && err.response.status !== 401) {
+        if (err.response.status !== 401) {
             toast.error(err.message);
             if (err.response.data && err.response.data.message) {
                 if (Array.isArray(err.response.data.message)) {
@@ -58,7 +60,7 @@ fetchHandler.interceptors.response.use(
                 }
             }
         }
-
+        return Promise.reject(err);
         // return err;
     }
 );

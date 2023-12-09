@@ -1,10 +1,11 @@
 import "./SystemAdmin.scss";
 
-import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Switch } from "antd";
+import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Switch } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { read, utils, writeFile } from "xlsx";
 
 import { Role } from "../../../core/auth/roles";
 import {
@@ -17,13 +18,22 @@ import {
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { FORMAT_DATETIME } from "../../../utils/constants";
-import { formatDate } from "../../../utils/functions/utils";
+import {
+    FORMAT_DATE,
+    FORMAT_DATETIME,
+    XLS_TYPE,
+    XLSX_TYPE,
+} from "../../../utils/constants";
+import { formatDate, getStatusUser } from "../../../utils/functions/utils";
 import { IUser } from "../../../utils/model";
+import AddListUser from "../AddListUser/AddListUser";
 import DetailUser from "../DetailUser/DetailUser";
 import UpdateUser from "../UpdateUser/UpdateUser";
 
 const SystemAdmin = () => {
+    const [fileName, setFileName] = useState<string>("");
+    const [listAdExport, setListAdExport] = useState<any>(null);
+    const [listAdAdd, setListAdAdd] = useState<any[] | null>(null);
     const [searchInput, setSearchInput] = useState<string>("");
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
     const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
@@ -52,6 +62,23 @@ const SystemAdmin = () => {
 
     useEffect(() => {
         setAdmins(adminList);
+        setListAdExport(
+            adminList.map((cus) => {
+                return {
+                    id: cus.userId,
+                    accountName: cus.accountName,
+                    firstName: cus.firstName,
+                    lastName: cus.lastName,
+                    gender: cus.gender ? "Nam" : "Nữ",
+                    phone: cus.phone,
+                    email: cus.email,
+                    dob: formatDate(cus.dob, FORMAT_DATE),
+                    createdDate: formatDate(cus.createdAt, FORMAT_DATETIME),
+                    updatedDate: formatDate(cus.updatedAt, FORMAT_DATETIME),
+                    status: getStatusUser(cus.status),
+                };
+            })
+        );
     }, [adminList]);
 
     useEffect(() => {
@@ -197,23 +224,133 @@ const SystemAdmin = () => {
         setSearchInput(e.target.value);
     };
 
+    const handleExport = () => {
+        const headings = [
+            [
+                "Mã khách hàng",
+                "Tên tài khoản",
+                "Họ",
+                "Tên",
+                "Giới tính",
+                "Số điện thoại",
+                "Email",
+                "Ngày tháng năm sinh",
+                "Thời gian tạo",
+                "Thời gian cập nhật",
+                "Trạng thái",
+            ],
+        ];
+        const wb = utils.book_new();
+        const ws = utils.json_to_sheet([]);
+        ws["!cols"] = [
+            { wch: 15 },
+            { wch: 18 },
+            { wch: 10 },
+            { wch: 15 },
+            { wch: 10 },
+            { wch: 12 },
+            { wch: 20 },
+            { wch: 18 },
+            { wch: 20 },
+            { wch: 20 },
+            { wch: 15 },
+        ]; // set column A width to 10 characters
+        utils.sheet_add_aoa(ws, headings);
+        utils.sheet_add_json(ws, listAdExport, {
+            origin: "A2",
+            skipHeader: true,
+        });
+        utils.book_append_sheet(wb, ws, "Report");
+        writeFile(wb, "Danh sách quản lý.xlsx");
+        toast.success("Xuất file thành công");
+    };
+
+    const handleAddByImport = ($event: any) => {
+        const files = $event.target.files;
+
+        if (files && files.length) {
+            const file = files[0];
+
+            if (file.type !== XLSX_TYPE && file.type !== XLS_TYPE) {
+                toast.error("File phải có định dạng xlsx, xls");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const wb = read(event.target!.result);
+                const sheets = wb.SheetNames;
+
+                if (sheets.length) {
+                    const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+                    console.log(rows);
+                    const listAddImport = rows.map((item: any) => {
+                        return {
+                            firstName: item["Tên"],
+                            lastName: item["Họ"],
+                            dob: item["Ngày tháng năm sinh"],
+                            phone: item["Số điện thoại"],
+                            email: item["Email"],
+                            role: Role.ROLE_STAFF,
+                            gender: item["Giới tính"],
+                            password: item["Mật khẩu"],
+                            imageUrl: null,
+                        };
+                    });
+                    setListAdAdd(listAddImport);
+                    setFileName(file.name);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    };
+
     return (
         <div className="system-admin">
             <h2>Danh sách quản lý</h2>
             <div className="header-table-admin">
-                <Button
-                    type="primary"
-                    onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
-                >
-                    Thêm quản lý
-                </Button>
-                <Input
-                    addonBefore={
-                        <SearchOutlined style={{ fontSize: "20px" }} />
-                    }
-                    placeholder="Nhập tên quản lý cần tìm kiếm"
-                    onChange={handleFindAdmin}
-                />
+                <div className="header-table-admin-wrap">
+                    <Button
+                        type="primary"
+                        onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
+                    >
+                        Thêm quản lý
+                    </Button>
+                    <div className="button-upload">
+                        <input
+                            type="file"
+                            name="file"
+                            className="custom-file-input"
+                            id="inputGroupFile"
+                            required
+                            hidden
+                            onClick={(e: any) => (e.target.value = null)}
+                            onChange={handleAddByImport}
+                        />
+                        <label
+                            className="custom-file-label"
+                            htmlFor="inputGroupFile"
+                        >
+                            Thêm bằng file excel
+                        </label>
+                    </div>
+                </div>
+                <div className="header-table-admin-wrap">
+                    <Button
+                        type="primary"
+                        onClick={handleExport}
+                        icon={<DownloadOutlined />}
+                    >
+                        Xuất file excel
+                    </Button>
+                    <Input
+                        addonBefore={
+                            <SearchOutlined style={{ fontSize: "20px" }} />
+                        }
+                        placeholder="Nhập tên quản lý cần tìm kiếm"
+                        onChange={handleFindAdmin}
+                    />
+                </div>
             </div>
             <Table
                 columns={columns}
@@ -225,7 +362,7 @@ const SystemAdmin = () => {
                         updatedAt: formatDate(c.updatedAt, FORMAT_DATETIME),
                     };
                 })}
-                pagination={{ pageSize: 7 }}
+                pagination={{ pageSize: 6 }}
                 scroll={{ x: 1300 }}
             />
             {isOpenPanelUpdate && (
@@ -247,6 +384,17 @@ const SystemAdmin = () => {
                     isOpenPanel={isOpenPanelUser}
                     handleConfirmPanel={handleConfirmPanel}
                     info={user}
+                />
+            )}
+
+            {listAdAdd && listAdAdd.length && (
+                <AddListUser
+                    handleGetAllUser={handleGetAllAdminList}
+                    listUserAdd={listAdAdd}
+                    close={() => {
+                        setListAdAdd(null);
+                    }}
+                    fileName={fileName}
                 />
             )}
         </div>

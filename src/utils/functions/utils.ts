@@ -1,7 +1,8 @@
 import moment from "moment";
+import { Role } from "../../core/auth/roles";
+import { UserStatus } from "../../core/reducers/users";
 import { FORMAT_DATE } from "../constants";
 import { ITypeService } from "../model";
-// import { OrderStatus } from "../../core/reducers/order";
 
 export const isNullOrEmpty = (value: any): boolean => {
     return value === null || value === "";
@@ -79,6 +80,24 @@ export const convertServiceType = (type: ITypeService): string => {
 //     }
 //     return "";
 // };
+export const getTitleRole = (role: Role): string => {
+    if (role === Role.ROLE_STAFF) {
+        return "quản lý";
+    } else if (role === Role.ROLE_REPAIRMAN) {
+        return "thợ";
+    }
+    return "khách hàng";
+};
+
+export const getStatusUser = (status: UserStatus): string => {
+    if (status === UserStatus.ACTIVE) {
+        return "Hoạt động";
+    } else if (status === UserStatus.INACTIVE) {
+        return "Ngừng hoạt động";
+    } else {
+        return "Đang bận";
+    }
+};
 export const getMonthsBetweenDates = (startDate: string, endDate: string) => {
     let result = [];
 

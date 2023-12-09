@@ -50,3 +50,6 @@ export enum OrderStatus {
     UNPAID,
     COMPLETE,
 }
+export const XLSX_TYPE =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+export const XLS_TYPE = "application/vnd.ms-excel";

@@ -77,7 +77,7 @@ export interface IUser {
     email: string;
     imageUrl: string;
     role: number;
-    gender: boolean;
+    gender: boolean | string;
     createdAt: string;
     updatedAt: string;
     status: UserStatus;

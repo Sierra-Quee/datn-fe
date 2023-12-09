@@ -27,3 +27,7 @@ export const updateUserAPI = (user: IUser) => {
 export const updateStatusCustomerAPI = (userId: string) => {
     return fetchHandler.patch(`user/switchUserActiveStatus/${userId}`);
 };
+
+export const createListUserAPI = (users: IUser[]) => {
+    return fetchHandler.post("user/createMultiUser", users);
+};

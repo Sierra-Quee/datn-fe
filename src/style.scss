@@ -184,8 +184,9 @@ button.ant-btn:disabled {
     background-color: rgba(0, 0, 0, 0.04) !important;
 }
 .ant-modal-footer {
-    justify-content: flex-end;
     display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
     .button-detail {
         width: 100px;
     }

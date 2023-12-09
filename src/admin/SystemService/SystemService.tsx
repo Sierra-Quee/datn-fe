@@ -50,6 +50,7 @@ const SystemService = () => {
 
     return (
         <div className="system-service">
+            <h2>Danh sách các loại dịch vụ</h2>
             <div className="wrap-input-find">
                 <Input
                     addonBefore={
@@ -59,9 +60,21 @@ const SystemService = () => {
                     onChange={handleFindSkill}
                 />
             </div>
-            <div className="system-service-content">
+            <div
+                style={{
+                    flex: 1,
+                    height: "100%",
+                    marginTop: "40px",
+                    paddingLeft: "20px",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    columnGap: "50px",
+                    rowGap: "20px",
+                    overflow: "auto",
+                }}
+            >
                 {(skills && skills.length === 0) || !skills ? (
-                    <div>Không có dữ liệu nào</div>
+                    <div style={{ marginTop: 20 }}>Không có dữ liệu nào</div>
                 ) : (
                     skills.map((skill) => {
                         return (

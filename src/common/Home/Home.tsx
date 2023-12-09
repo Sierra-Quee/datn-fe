@@ -19,6 +19,8 @@ import {
 import { clearListSkill, getAllSkillAsync } from "../../core/reducers/skill";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import LineChartHome from "./LineChartHome";
+import { getAllUserRoleAsync } from "../../core/reducers/users";
+import { Role } from "../../core/auth/roles";
 
 const Home = () => {
     dayjs.extend(customParseFormat);
@@ -28,12 +30,15 @@ const Home = () => {
 
     const { listSkill } = useAppSelector((state) => state.skill);
     const { listService } = useAppSelector((state) => state.service);
+    const { repairList, customerList } = useAppSelector((state) => state.users);
     const [titleChart, setTitleChart] = useState<string>("");
     const [timeRange, setTimeRange] = useState<[string, string] | string>("");
 
     useEffect(() => {
         handleGetAllSkillAsync();
         handleGetAllServiceAsync();
+        handleGetAllCustomerAsync();
+        handleGetAllRepairAsync();
 
         return () => {
             dispatch(clearListService());
@@ -61,6 +66,13 @@ const Home = () => {
     const handleGetAllServiceAsync = async () => {
         await dispatch(getAllServiceAsync());
     };
+    const handleGetAllCustomerAsync = async () => {
+        await dispatch(getAllUserRoleAsync(Role.ROLE_USER));
+    };
+
+    const handleGetAllRepairAsync = async () => {
+        await dispatch(getAllUserRoleAsync(Role.ROLE_REPAIRMAN));
+    };
     const handleChange = (value: string) => {
         setTitleChart(value);
     };
@@ -68,8 +80,6 @@ const Home = () => {
         value: DatePickerProps["value"] | RangePickerProps["value"],
         dateString: [string, string] | string
     ) => {
-        console.log("Selected Time: ", value);
-        console.log("Formatted Selected Time: ", dateString);
         setTimeRange(dateString);
     };
 
@@ -98,7 +108,7 @@ const Home = () => {
                         <span>
                             <UsergroupAddOutlined /> Số khách hàng
                         </span>
-                        <div>1128</div>
+                        <div>{customerList.length}</div>
                     </span>
                 </div>
                 <div className="home-statistic-item home-statistic-item-employee">
@@ -106,7 +116,7 @@ const Home = () => {
                         <span>
                             <UsergroupDeleteOutlined /> Số thợ
                         </span>
-                        <div>1128</div>
+                        <div>{repairList.length}</div>
                     </span>
                 </div>
             </div>

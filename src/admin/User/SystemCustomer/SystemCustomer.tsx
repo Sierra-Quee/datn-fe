@@ -1,29 +1,39 @@
 import "./SystemCustomer.scss";
 
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Switch, Table } from "antd";
+import { Button, Input, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { read, utils, writeFile } from "xlsx";
 
 import { Role } from "../../../core/auth/roles";
 import {
-    UserStatus,
     clearListCustomer,
     clearUpdateStatusUser,
     getAllUserRoleAsync,
     getDetailUserAsync,
     updateStatusUserAsync,
+    UserStatus,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import {
+    FORMAT_DATE,
+    FORMAT_DATETIME,
+    XLS_TYPE,
+    XLSX_TYPE,
+} from "../../../utils/constants";
+import { formatDate, getStatusUser } from "../../../utils/functions/utils";
 import { IUser } from "../../../utils/model";
-import { formatDate } from "../../../utils/functions/utils";
-import { FORMAT_DATETIME } from "../../../utils/constants";
-import { toast } from "react-toastify";
-import UpdateUser from "../UpdateUser/UpdateUser";
+import AddListUser from "../AddListUser/AddListUser";
 import DetailUser from "../DetailUser/DetailUser";
+import UpdateUser from "../UpdateUser/UpdateUser";
 
 const SystemCustomer = () => {
+    const [fileName, setFileName] = useState<string>("");
+    const [listCusExport, setListCusExport] = useState<any>(null);
+    const [listCusAdd, setListCusAdd] = useState<any[] | null>(null);
     const [searchInput, setSearchInput] = useState<string>("");
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
     const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
@@ -62,6 +72,23 @@ const SystemCustomer = () => {
 
     useEffect(() => {
         setCustomers(customerList);
+        setListCusExport(
+            customerList.map((cus) => {
+                return {
+                    id: cus.userId,
+                    accountName: cus.accountName,
+                    firstName: cus.firstName,
+                    lastName: cus.lastName,
+                    gender: cus.gender ? "Nam" : "Nữ",
+                    phone: cus.phone,
+                    email: cus.email,
+                    dob: formatDate(cus.dob, FORMAT_DATE),
+                    createdDate: formatDate(cus.createdAt, FORMAT_DATETIME),
+                    updatedDate: formatDate(cus.updatedAt, FORMAT_DATETIME),
+                    status: getStatusUser(cus.status),
+                };
+            })
+        );
     }, [customerList]);
 
     useEffect(() => {
@@ -199,7 +226,86 @@ const SystemCustomer = () => {
         setSearchInput(e.target.value);
     };
 
-    const handleAddByImport = () => {};
+    const handleExport = () => {
+        const headings = [
+            [
+                "Mã khách hàng",
+                "Tên tài khoản",
+                "Họ",
+                "Tên",
+                "Giới tính",
+                "Số điện thoại",
+                "Email",
+                "Ngày tháng năm sinh",
+                "Thời gian tạo",
+                "Thời gian cập nhật",
+                "Trạng thái",
+            ],
+        ];
+        const wb = utils.book_new();
+        const ws = utils.json_to_sheet([]);
+        ws["!cols"] = [
+            { wch: 15 },
+            { wch: 18 },
+            { wch: 10 },
+            { wch: 15 },
+            { wch: 10 },
+            { wch: 12 },
+            { wch: 20 },
+            { wch: 18 },
+            { wch: 20 },
+            { wch: 20 },
+            { wch: 15 },
+        ]; // set column A width to 10 characters
+        utils.sheet_add_aoa(ws, headings);
+        utils.sheet_add_json(ws, listCusExport, {
+            origin: "A2",
+            skipHeader: true,
+        });
+        utils.book_append_sheet(wb, ws, "Report");
+        writeFile(wb, "Danh sách khách hàng.xlsx");
+        toast.success("Xuất file thành công");
+    };
+
+    const handleAddByImport = ($event: any) => {
+        const files = $event.target.files;
+
+        if (files && files.length) {
+            const file = files[0];
+
+            if (file.type !== XLSX_TYPE && file.type !== XLS_TYPE) {
+                toast.error("File phải có định dạng xlsx, xls");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const wb = read(event.target!.result);
+                const sheets = wb.SheetNames;
+
+                if (sheets.length) {
+                    const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+                    console.log(rows);
+                    const listAddImport = rows.map((item: any) => {
+                        return {
+                            firstName: item["Tên"],
+                            lastName: item["Họ"],
+                            dob: item["Ngày tháng năm sinh"],
+                            phone: item["Số điện thoại"],
+                            email: item["Email"],
+                            role: Role.ROLE_USER,
+                            gender: item["Giới tính"],
+                            password: item["Mật khẩu"],
+                            imageUrl: null,
+                        };
+                    });
+                    setListCusAdd(listAddImport);
+                    setFileName(file.name);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    };
 
     return (
         <div className="system-customer">
@@ -220,8 +326,8 @@ const SystemCustomer = () => {
                             id="inputGroupFile"
                             required
                             hidden
+                            onClick={(e: any) => (e.target.value = null)}
                             onChange={handleAddByImport}
-                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                         />
                         <label
                             className="custom-file-label"
@@ -234,9 +340,7 @@ const SystemCustomer = () => {
                 <div className="header-table-customer-wrap">
                     <Button
                         type="primary"
-                        // onClick={() =>
-                        //     setIsOpenPanelUpdate(!isOpenPanelUpdate)
-                        // }
+                        onClick={handleExport}
                         icon={<DownloadOutlined />}
                     >
                         Xuất file excel
@@ -260,7 +364,7 @@ const SystemCustomer = () => {
                         updatedAt: formatDate(c.updatedAt, FORMAT_DATETIME),
                     };
                 })}
-                pagination={{ pageSize: 7 }}
+                pagination={{ pageSize: 6 }}
                 scroll={{ x: 1300 }}
             />
 
@@ -283,6 +387,17 @@ const SystemCustomer = () => {
                     isOpenPanel={isOpenPanelUser}
                     handleConfirmPanel={handleConfirmPanel}
                     info={user}
+                />
+            )}
+
+            {listCusAdd && listCusAdd.length && (
+                <AddListUser
+                    handleGetAllUser={handleGetAllCustomerList}
+                    listUserAdd={listCusAdd}
+                    close={() => {
+                        setListCusAdd(null);
+                    }}
+                    fileName={fileName}
                 />
             )}
         </div>

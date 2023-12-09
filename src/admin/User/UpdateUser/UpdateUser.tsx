@@ -19,7 +19,7 @@ import {
 } from "../../../core/reducers/users";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { FORMAT_DATE } from "../../../utils/constants";
-import { formatDate } from "../../../utils/functions/utils";
+import { formatDate, getTitleRole } from "../../../utils/functions/utils";
 import { IUser } from "../../../utils/model";
 
 interface IUpdateUserProps {
@@ -92,7 +92,7 @@ const UpdateUser = ({
                     await dispatch(
                         createUserAsync({
                             ...userInfo,
-                            image: imageCloudUpload || imageUser || "",
+                            imageUrl: imageCloudUpload || imageUser || "",
                             role: roleUpdate,
                         } as IUser)
                     );
@@ -100,7 +100,7 @@ const UpdateUser = ({
                     await dispatch(
                         updateUserAsync({
                             ...userInfo,
-                            image: imageCloudUpload || imageUser || "",
+                            imageUrl: imageCloudUpload || imageUser || "",
                             role: roleUpdate,
                             userId: currentUser?.userId,
                         })
@@ -160,15 +160,6 @@ const UpdateUser = ({
         );
         data.append("folder", "DATN-FE");
         await dispatch(uploadImageCloud(data));
-    };
-
-    const getTitleRole = (role: Role) => {
-        if (role === Role.ROLE_STAFF) {
-            return "quản lý";
-        } else if (role === Role.ROLE_REPAIRMAN) {
-            return "thợ";
-        }
-        return "khách hàng";
     };
 
     const buttonUploadImage = () => {

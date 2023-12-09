@@ -262,7 +262,7 @@ const SystemRepairment = () => {
                         updatedAt: formatDate(e.updatedAt, FORMAT_DATETIME),
                     };
                 })}
-                pagination={{ pageSize: 7 }}
+                pagination={{ pageSize: 6 }}
                 scroll={{ x: 1300 }}
             />
             {isOpenPanelUpdate && (

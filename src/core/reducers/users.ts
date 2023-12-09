@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+    createListUserAPI,
     createUserAPI,
     getAllUsersRole,
     getDetailUserAPI,
@@ -25,6 +26,9 @@ interface IUserSlice {
     updateStatusUser: {
         updateStatusUserStatus: "success" | "failed" | "none";
     };
+    updateListUser: {
+        updateListUserStatus: "success" | "failed" | "none";
+    };
     user: IUser;
 }
 const initialState: IUserSlice = {
@@ -36,6 +40,9 @@ const initialState: IUserSlice = {
     },
     updateStatusUser: {
         updateStatusUserStatus: "none",
+    },
+    updateListUser: {
+        updateListUserStatus: "none",
     },
     user: defaultUser,
 };
@@ -54,6 +61,7 @@ export const getDetailUserAsync = createAsyncThunk(
         return res.data;
     }
 );
+
 export const createUserAsync = createAsyncThunk(
     "createUser",
     async (user: IUser) => {
@@ -61,6 +69,14 @@ export const createUserAsync = createAsyncThunk(
         return res.data;
     }
 );
+
+export const createMultiUserAsync = createAsyncThunk(
+    "createMultiUser",
+    async (users: IUser[]) => {
+        return (await createListUserAPI(users)).data;
+    }
+);
+
 export const updateUserAsync = createAsyncThunk(
     "updateUser",
     async (user: IUser) => {
@@ -99,6 +115,9 @@ export const userSlice = createSlice({
         clearUpdateUser: (state) => {
             return { ...state, updateUser: initialState.updateUser };
         },
+        clearUpdateListUser: (state) => {
+            return { ...state, updateListUser: initialState.updateListUser };
+        },
         clearUpdateStatusUser: (state) => {
             return {
                 ...state,
@@ -131,6 +150,13 @@ export const userSlice = createSlice({
             .addCase(createUserAsync.rejected, (state, action) => {
                 state.updateUser.updateUserStatus = "failed";
             })
+            .addCase(createMultiUserAsync.pending, (state, action) => {})
+            .addCase(createMultiUserAsync.fulfilled, (state, action) => {
+                state.updateListUser.updateListUserStatus = "success";
+            })
+            .addCase(createMultiUserAsync.rejected, (state, action) => {
+                state.updateListUser.updateListUserStatus = "failed";
+            })
             .addCase(updateUserAsync.pending, (state, action) => {})
             .addCase(updateUserAsync.fulfilled, (state, action) => {
                 state.updateUser.updateUserStatus = "success";
@@ -155,5 +181,6 @@ export const {
     clearListCustomer,
     clearListAdmin,
     clearUpdateUser,
+    clearUpdateListUser,
     clearUpdateStatusUser,
 } = userSlice.actions;

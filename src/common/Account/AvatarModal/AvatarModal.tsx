@@ -75,7 +75,7 @@ const AvatarModal = ({ isOpen, close, account }: AvatarModalProps) => {
 
     const buttonChangeAvatar = () => {
         return (
-            <span key={2}>
+            <span key={2} style={{ display: "flex" }}>
                 <label className="btn-upload-image" htmlFor="btn-upload-image">
                     Thay đổi
                 </label>

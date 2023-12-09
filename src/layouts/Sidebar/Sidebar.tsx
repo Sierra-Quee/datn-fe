@@ -52,7 +52,7 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
 
     const defaultOpenKeys = useRef(
         ["manage-order", "manage-service", "manage-user"].filter((s) =>
-            defaultSelectedKeys.current[0].includes(s)
+            defaultSelectedKeys?.current[0]?.includes(s)
         )
     );
 
@@ -74,7 +74,7 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
 
     const items: MenuItem[] = [
         getItem(
-            <Link to={RoutePath.Home}>Trang chủ</Link>,
+            <Link to={`/admin${RoutePath.Home}`}>Trang chủ</Link>,
             "home",
             <HomeOutlined />
         ),
@@ -83,12 +83,12 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
                 <Link to={`/admin${RoutePath.Order}`}>Danh sách đơn hàng</Link>,
                 "manage-order-list-order"
             ),
-            getItem(
-                <Link to={`/admin${RoutePath.Comment}`}>
-                    Các nhận xét về đơn hàng
-                </Link>,
-                "manage-order-list-order-comment"
-            ),
+            // getItem(
+            //     <Link to={`/admin${RoutePath.Comment}`}>
+            //         Các nhận xét về đơn hàng
+            //     </Link>,
+            //     "manage-order-list-order-comment"
+            // ),
         ]),
         getItem("Quản lý dịch vụ", "manage-service", <GlobalOutlined />, [
             getItem(

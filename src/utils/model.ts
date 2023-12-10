@@ -134,6 +134,7 @@ export interface IDetailOrder {
     serviceId: string;
     desc?: string;
     media?: IOrderMedia[];
+    service?: IService;
 }
 export interface IOrder {
     orderId?: number | string;
@@ -144,5 +145,9 @@ export interface IOrder {
     addressId: number;
     inccuredCost?: number;
     inccuredCostReason?: string;
+    orderDetails?: IDetailOrder[];
     orderDetail?: IDetailOrder[];
+    createdAt?: string;
+    updatedAt?: string;
+    address?: IAddress;
 }

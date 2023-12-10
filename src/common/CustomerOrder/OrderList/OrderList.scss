@@ -1,0 +1,39 @@
+.ant-spin-nested-loading {
+    height: 100%;
+
+    .ant-spin-container {
+        height: 100%;
+
+        .orderList-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            justify-content: space-between;
+            padding: 0 10px;
+
+            .orderList-list {
+                height: 90%;
+                width: 100%;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                .orderListItem {
+                    h5 {
+                        font-size: 15px;
+                        margin: 0;
+                    }
+                    padding: 12px;
+                    border: dashed 1px gainsboro;
+                    border-radius: 5px;
+
+                    .ant-divider {
+                        margin: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

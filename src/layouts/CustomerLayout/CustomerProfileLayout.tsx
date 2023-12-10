@@ -52,33 +52,30 @@ const CustomerProfileLayout = ({ children, breadcrumb }: IChildRoutePath) => {
     } = theme.useToken();
     return (
         <Public>
-            <Layout style={{ height: "100%" }}>
-                <Breadcrumb style={{ margin: "16px 0" }}>
-                    {breadcrumb?.map((value) => (
-                        <Breadcrumb.Item>{value}</Breadcrumb.Item>
-                    ))}
-                </Breadcrumb>
-                <Layout
-                    style={{
-                        padding: "24px 0",
-                        background: colorBgContainer,
-                        width: "80%",
-                        margin: "auto",
-                        borderRadius: "5px",
-                    }}
-                >
-                    <Sider style={{ background: colorBgContainer }} width={250}>
-                        <Menu
-                            mode="inline"
-                            items={menuItems}
-                            inlineCollapsed={true}
-                            style={{ height: "100%" }}
-                        />
-                    </Sider>
-                    <Content style={{ padding: "0 24px", minHeight: 280 }}>
-                        {children}
-                    </Content>
-                </Layout>
+            <Breadcrumb style={{ margin: "16px 0" }}>
+                {breadcrumb?.map((value) => (
+                    <Breadcrumb.Item>{value}</Breadcrumb.Item>
+                ))}
+            </Breadcrumb>
+            <Layout
+                style={{
+                    padding: "24px 0",
+                    background: colorBgContainer,
+                    width: "80%",
+                    margin: "auto",
+                    marginBottom: "24px",
+                    borderRadius: "5px",
+                }}
+            >
+                <Sider style={{ background: colorBgContainer }} width={250}>
+                    <Menu
+                        mode="inline"
+                        items={menuItems}
+                        inlineCollapsed={true}
+                        style={{ height: "100%" }}
+                    />
+                </Sider>
+                <Content style={{ height: "80vh" }}>{children}</Content>
             </Layout>
         </Public>
     );

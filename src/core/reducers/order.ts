@@ -28,7 +28,7 @@ const initialState: IOrderSlice = {
     },
     order: {
         orderId: 0,
-        orderDetail: [],
+        orderDetails: [],
         code: "",
         status: 0,
         addressId: 0,
@@ -82,6 +82,9 @@ export const orderSlice = createSlice({
         clearOrderList: (state, action) => {
             state.orderList = [];
         },
+        clearOrder: (state, action) => {
+            state.order = initialState.order;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -131,4 +134,4 @@ export const orderSlice = createSlice({
 
 export default orderSlice.reducer;
 
-export const { setAllOrder, clearOrderList } = orderSlice.actions;
+export const { setAllOrder, clearOrderList, clearOrder } = orderSlice.actions;

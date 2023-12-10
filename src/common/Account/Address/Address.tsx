@@ -37,7 +37,6 @@ const Address = (props: Props) => {
     const handleAddAddress = () => {};
 
     const { account } = useAppSelector((state) => state.authentication);
-    console.log({ account });
 
     const handleGetAllAddress = async (userId: string) => {
         await dispatch(getAllAddressAsync(userId));

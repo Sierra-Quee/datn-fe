@@ -14,9 +14,7 @@ export const getAllOrderApi = (query: IGetAllOrderQuery) => {
 };
 
 export const getAllOrderByUserIdApi = (userId: string, status?: number) => {
-    return fetchHandler.get(
-        `/order/getAllByUserId?id=${userId}&status=${status}`
-    );
+    return fetchHandler.get(`/order/getAllByUserId/${userId}?status=${status}`);
 };
 
 export const createOrderApi = (order: IOrder) => {

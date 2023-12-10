@@ -41,3 +41,11 @@ export const SIDEBAR = [
     },
 ];
 export const ADDRESS_API = "https://vapi.vnappmob.com/api";
+export enum OrderStatus {
+    PENDING,
+    REJECTED,
+    FINDING,
+    ACCEPTED,
+    CHECKEDIN,
+    COMPLETE,
+}

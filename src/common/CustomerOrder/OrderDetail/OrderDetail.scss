@@ -1,0 +1,23 @@
+.orderDetailLayout {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    .orderStatus {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        h5 {
+            margin: 0;
+        }
+    }
+    .orderProgress {
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px;
+
+        .ant-space-item {
+            width: 100%;
+        }
+    }
+}

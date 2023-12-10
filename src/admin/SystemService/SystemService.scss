@@ -4,30 +4,19 @@
     flex-direction: column;
     height: 100%;
 
-    .ant-spin-nested-loading {
-        height: 100%;
+    .wrap-input-find {
+        margin-top: 20px;
 
-        .ant-spin-container {
-            height: 100%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
+        .ant-input-group-wrapper {
+            width: unset;
+            margin-left: 20px;
 
-            .wrap-input-find {
-                margin-top: 20px;
+            .ant-input-group-addon {
+                padding: 9px 11px;
+            }
 
-                .ant-input-group-wrapper {
-                    width: unset;
-                    margin-left: 20px;
-
-                    .ant-input-group-addon {
-                        padding: 9px 11px;
-                    }
-
-                    .ant-input {
-                        padding: 9px 11px;
-                    }
-                }
+            .ant-input {
+                padding: 9px 11px;
             }
 
             .system-service-content {

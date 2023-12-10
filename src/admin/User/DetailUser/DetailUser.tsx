@@ -40,7 +40,7 @@ const DetailUser = (props: IDetailUserProps) => {
                 >
                     {info?.role === Role.ROLE_USER
                         ? "Khách hàng"
-                        : info?.skills.join(" ,")}
+                        : info?.skills?.join(" ,")}
                 </div>
             </div>
             <img src={info?.imageUrl} alt="Not image" />

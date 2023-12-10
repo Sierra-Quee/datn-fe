@@ -46,7 +46,6 @@ const LogIn = () => {
             {isAuthenticated && !checkNullObj(account) ? (
                 <Navigate replace to={from} />
             ) : (
-                // <Spin spinning={loading}>
                 <Row style={{ width: "100%", height: "100%" }}>
                     <Col
                         xxl={14}
@@ -122,7 +121,6 @@ const LogIn = () => {
                         </Form>
                     </Col>
                 </Row>
-                // </Spin>
             )}
         </div>
     );

@@ -58,7 +58,7 @@ const UpdateUser = ({
 
     useEffect(() => {
         if (currentUser) {
-            setImageUser(currentUser.imageUrl);
+            setImageUser(currentUser?.imageUrl as string);
         }
     }, [currentUser]);
 
@@ -363,7 +363,7 @@ const UpdateUser = ({
                                 },
                             ]}
                             initialValue={
-                                currentUser?.skills.map(
+                                currentUser?.skills?.map(
                                     (skills) =>
                                         (skills as { skillId: number }).skillId
                                 ) || []

@@ -416,7 +416,7 @@ const SignUp = () => {
                                     value={otp}
                                     onChange={setOtp}
                                     numInputs={6}
-                                    renderInput={(props) => (
+                                    renderInput={(props: any) => (
                                         <input {...props} />
                                     )}
                                     containerStyle={"otp-input-wrap"}

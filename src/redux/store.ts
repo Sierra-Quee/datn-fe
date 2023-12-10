@@ -4,6 +4,7 @@ import registerReducer from "../core/reducers/register";
 import skillReducer from "../core/reducers/skill";
 import serviceReducer from "../core/reducers/service";
 import usersReducer from "../core/reducers/users";
+import malfunctionReducer from "../core/reducers/malfunction";
 import imageCloudReducer from "../core/reducers/image_cloud";
 import addressReducer from "../core/reducers/address";
 import cartReducer from "../core/reducers/cart";
@@ -25,7 +26,7 @@ export const store = configureStore({
         imageCloud: imageCloudReducer,
         users: usersReducer,
         orders: orderReducer,
-        // malfunction: malfunctionReducer,
+        malfunction: malfunctionReducer,
     },
 });
 

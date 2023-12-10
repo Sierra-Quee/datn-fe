@@ -122,3 +122,11 @@ export const defaultOrder = {
     incurredCostReason: "",
     orderDetail: [],
 };
+
+export interface IMalfunction {
+    malFuncId: number;
+    name: string;
+    price: number;
+    serviceId: number;
+    service: any;
+}

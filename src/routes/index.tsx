@@ -1,5 +1,6 @@
 import Order from "../admin/Order/Order";
 import Skill from "../admin/Skill/Skill";
+import Malfunction from "../admin/SystemService/Malfunction/Malfunction";
 import SystemCustomer from "../admin/User/SystemCustomer/SystemCustomer";
 import SystemRepairment from "../admin/User/SystemRepairment/SystemRepairment";
 import Contact from "../common/Contact/Contact";
@@ -22,6 +23,7 @@ export enum RoutePath {
     Comment = "/list-order-comment",
     Skill = "/skill",
     Service = "/services",
+    Malfunction = "/malfunction",
     Employee = "/list-employee",
     Customer = "/list-customer",
     Admin = "/list-admin",
@@ -74,6 +76,10 @@ export const AdminAccessRoutes: IRoutePath[] = [
     { path: `${RoutePath.Service}/*`, component: AdminServiceRoute },
     { path: RoutePath.Employee, component: SystemRepairment },
     { path: RoutePath.Customer, component: SystemCustomer },
+    {
+        path: `${RoutePath.Malfunction}/:serviceId`,
+        component: Malfunction,
+    },
 ];
 
 export const EmployeeRoutes = [];

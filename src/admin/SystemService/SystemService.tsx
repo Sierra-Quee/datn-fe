@@ -78,7 +78,10 @@ const SystemService = () => {
                 ) : (
                     skills.map((skill) => {
                         return (
-                            <Link key={skill.skillId} to={`${skill.skillId}`}>
+                            <Link
+                                key={skill.skillId}
+                                to={`skill?skillId=${skill.skillId}`}
+                            >
                                 <Card
                                     hoverable
                                     style={{ width: 250 }}

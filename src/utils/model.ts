@@ -75,14 +75,14 @@ export interface IUser {
     dob: string;
     phone: string;
     email: string;
-    imageUrl: string;
+    imageUrl?: string;
     role: number;
     gender: boolean | string;
     createdAt: string;
     updatedAt: string;
     status: UserStatus;
     // address: IAddress[];
-    skills: string[] | { skillId: number }[];
+    skills?: string[] | { skillId: number }[];
 }
 export const defaultUser = {
     userId: "",

@@ -13,8 +13,26 @@ export const logInApi = (body: ILoginParams) => {
     return fetchHandler.post("/auth/signin", body);
 };
 
-export const updateToken = () => {
+export const updateTokenAPI = () => {
     return fetchHandler.post("/auth/updateRefreshToken");
+};
+
+export const resendOtpAPI = (phone: string, email: string) => {
+    return fetchHandler.post("/auth/resendOtp", null, {
+        params: {
+            phone,
+            email,
+        },
+    });
+};
+
+export const verifyOtpAPI = (otp: string, userId: string) => {
+    return fetchHandler.post("/auth/verifyOtp", null, {
+        params: {
+            otp,
+            userId,
+        },
+    });
 };
 
 export const getAccountAPI = () => {

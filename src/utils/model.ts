@@ -101,13 +101,6 @@ export const defaultUser = {
     skills: [],
     address: [],
 };
-export interface IMalfunction {
-    malFuncId: number;
-    name: string;
-    price: number;
-    serviceId: number;
-    service?: any;
-}
 export const defaultMalfunction = {
     malFuncId: -1,
     name: "",
@@ -195,4 +188,12 @@ export interface INotification {
     content: string;
     notificationId: string;
     createdAt: string;
+}
+
+export interface IMalfunction {
+    malFuncId: number;
+    name: string;
+    price: number;
+    serviceId: number;
+    service: any;
 }

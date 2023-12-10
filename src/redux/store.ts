@@ -25,6 +25,7 @@ export const store = configureStore({
         imageCloud: imageCloudReducer,
         users: usersReducer,
         orders: orderReducer,
+        // malfunction: malfunctionReducer,
     },
 });
 

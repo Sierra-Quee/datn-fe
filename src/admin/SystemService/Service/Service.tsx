@@ -1,10 +1,10 @@
 import "./Service.scss";
 
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Switch, Table } from "antd";
+import { Button, Input, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import {
@@ -17,6 +17,7 @@ import {
 import { clearSkill, getSkillByIdAsync } from "../../../core/reducers/skill";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { RoutePath } from "../../../routes";
 import { FORMAT_DATETIME } from "../../../utils/constants";
 import { convertServiceType, formatDate } from "../../../utils/functions/utils";
 import { IService, ITypeService } from "../../../utils/model";
@@ -33,7 +34,9 @@ const Service = () => {
     const [searchInput, setSearchInput] = useState<string>("");
     const [services, setServices] = useState<IService[]>([]);
 
-    const params = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [query, setQuery] = useState(searchParams.get("skillId"));
+
     const dispatch = useAppDispatch();
     const { listService, service } = useAppSelector((state) => state.service);
     const { updateStatusServiceStatus } = useAppSelector(
@@ -74,11 +77,11 @@ const Service = () => {
     }, [debounce]);
 
     const handleGetAllServiceAsync = async () => {
-        await dispatch(getServiceBySkillIdAsync(+(params.skillId as string)));
+        await dispatch(getServiceBySkillIdAsync(+(query as string)));
     };
 
     const handleGetSkillSkillByIdAsync = async () => {
-        await dispatch(getSkillByIdAsync(+(params.skillId as string)));
+        await dispatch(getSkillByIdAsync(+(query as string)));
     };
 
     const openUpdateModal = (data: IService) => {
@@ -159,7 +162,27 @@ const Service = () => {
             title: "Mô tả",
             dataIndex: "desc",
             key: "desc",
-            width: 300,
+            width: 200,
+        },
+        {
+            title: "Danh mục chi tiết",
+            key: "desc",
+            width: 100,
+            render: (_: any, record: any) => {
+                return (
+                    <Link
+                        style={{
+                            textDecoration: "solid underline",
+                            cursor: "pointer",
+                            width: "fit-content",
+                        }}
+                        key={record.serviceId}
+                        to={`/admin/malfunction/service?serviceId=${record.serviceId}`}
+                    >
+                        Danh mục chi tiết
+                    </Link>
+                );
+            },
         },
         {
             title: "Thời gian tạo",

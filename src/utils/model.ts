@@ -128,5 +128,12 @@ export interface IMalfunction {
     name: string;
     price: number;
     serviceId: number;
-    service: any;
+    service?: any;
 }
+export const defaultMalfunction = {
+    malFuncId: -1,
+    name: "",
+    price: -1,
+    serviceId: -1,
+    service: {},
+};

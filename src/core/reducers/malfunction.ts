@@ -1,68 +1,56 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { IMalfunction, defaultMalfunction } from "../../utils/model";
 import {
-    AssignRepair,
-    assignRepair,
-    getAllByUserIdOrder,
-    getAllOrder,
-    getDetailOrderById,
-} from "../../api/order/orderAPI";
-import { IOrder, defaultOrder } from "../../utils/model";
+    createMalfunction,
+    getAllMalfunction,
+} from "../../api/malfunction/malfunctionAPI";
 
-// export interface  {}
-const initialState = {};
+export interface IMalfunctionSlice {
+    malfunctionList: IMalfunction[];
+    malfunction: IMalfunction;
+}
+export const getAllMalfunctionAsync = createAsyncThunk(
+    "getAllMalfunction",
+    async () => {
+        var response = await getAllMalfunction();
+        return response.data;
+    }
+);
+
+export const createMalfunctionAsync = createAsyncThunk(
+    "createMalfunction",
+    async (body: IMalfunction) => {
+        return (await createMalfunction(body)).data;
+    }
+);
+const initialState: IMalfunctionSlice = {
+    malfunctionList: [],
+    malfunction: defaultMalfunction,
+};
 export const malfunctionSlice = createSlice({
     name: "malfunctionAll",
     initialState,
     reducers: {
-        // clearListOrder: (state) => {
-        //     state.orderList = [];
-        // },
-        // clearListOrderByUser: (state) => {
-        //     state.orderUser = [];
-        // },
+        clearListMalfunction: (state) => {
+            state.malfunctionList = [];
+        },
+        clearMalfunction: (state) => {
+            state.malfunction = defaultMalfunction;
+        },
+        setMalfunction: (state, action) => {
+            state.malfunction = action.payload;
+        },
     },
-    // extraReducers: (builder) => {
-    //     builder
-    //         .addCase(getAllOrderAsync.pending, (state, action) => {
-    //             state.loadingListOrder = true;
-    //         })
-    //         .addCase(getAllOrderAsync.fulfilled, (state, action) => {
-    //             state.loadingListOrder = false;
-    //             state.orderList = action.payload;
-    //         })
-    //         .addCase(getAllOrderAsync.rejected, (state, action) => {
-    //             state.loadingListOrder = false;
-    //         })
-    //         .addCase(getAllByUserIdOrderAsync.pending, (state, action) => {
-    //             state.loadingGetOrderByUserId = true;
-    //         })
-    //         .addCase(getAllByUserIdOrderAsync.fulfilled, (state, action) => {
-    //             state.loadingGetOrderByUserId = false;
-    //             state.orderUser = action.payload;
-    //         })
-    //         .addCase(getAllByUserIdOrderAsync.rejected, (state, action) => {
-    //             state.loadingGetOrderByUserId = false;
-    //         })
-    //         .addCase(getDetailOrderAsync.pending, (state, action) => {
-    //             state.loadingDetailOrder = true;
-    //         })
-    //         .addCase(getDetailOrderAsync.fulfilled, (state, action) => {
-    //             state.loadingDetailOrder = false;
-    //             state.detailOrder = action.payload;
-    //         })
-    //         .addCase(getDetailOrderAsync.rejected, (state, action) => {
-    //             state.loadingDetailOrder = false;
-    //         })
-    //         .addCase(assignRepairAsync.pending, (state, action) => {
-    //             state.loadingAssignOrder = true;
-    //         })
-    //         .addCase(assignRepairAsync.fulfilled, (state, action) => {
-    //             state.loadingAssignOrder = false;
-    //         })
-    //         .addCase(assignRepairAsync.rejected, (state, action) => {
-    //             state.loadingAssignOrder = false;
-    //         });
-    // },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getAllMalfunctionAsync.fulfilled, (state, action) => {
+                state.malfunctionList = action.payload;
+            })
+            .addCase(createMalfunctionAsync.fulfilled, (state, action) => {
+                state.malfunction = action.payload;
+            });
+    },
 });
 export default malfunctionSlice.reducer;
-export const {} = malfunctionSlice.actions;
+export const { setMalfunction, clearListMalfunction, clearMalfunction } =
+    malfunctionSlice.actions;

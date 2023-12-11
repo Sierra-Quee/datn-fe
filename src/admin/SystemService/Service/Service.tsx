@@ -1,12 +1,13 @@
 import "./Service.scss";
 
-import { SearchOutlined } from "@ant-design/icons";
+import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import { read, utils, writeFile } from "xlsx";
 import {
     clearListService,
     clearUpdateStatusService,
@@ -17,12 +18,12 @@ import {
 import { clearSkill, getSkillByIdAsync } from "../../../core/reducers/skill";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { RoutePath } from "../../../routes";
-import { FORMAT_DATETIME } from "../../../utils/constants";
+import { FORMAT_DATETIME, XLSX_TYPE, XLS_TYPE } from "../../../utils/constants";
 import { convertServiceType, formatDate } from "../../../utils/functions/utils";
 import { IService, ITypeService } from "../../../utils/model";
 import DetailService from "./DetailService/DetailService";
 import UpdateService from "./UpdateService/UpdateService";
+import AddListServices from "./AddListServices/AddListServices";
 
 const Service = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -33,6 +34,9 @@ const Service = () => {
     >();
     const [searchInput, setSearchInput] = useState<string>("");
     const [services, setServices] = useState<IService[]>([]);
+    const [fileName, setFileName] = useState<string>("");
+    const [listServiceExport, setListServiceExport] = useState<any>(null);
+    const [listServiceAdd, setListServiceAdd] = useState<any[] | null>(null);
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [query, setQuery] = useState(searchParams.get("skillId"));
@@ -66,6 +70,22 @@ const Service = () => {
 
     useEffect(() => {
         setServices(listService);
+        setListServiceExport(
+            listService.map((ser) => {
+                return {
+                    id: ser.serviceId,
+                    name: ser.name,
+                    type: ser.type,
+                    price: ser.price,
+                    rate: ser.rate,
+                    desc: ser.desc,
+                    image: ser.image,
+                    createdDate: formatDate(ser.createdAt, FORMAT_DATETIME),
+                    updatedDate: formatDate(ser.updatedAt, FORMAT_DATETIME),
+                    isActive: ser.isActive,
+                };
+            })
+        );
     }, [listService]);
 
     useEffect(() => {
@@ -75,6 +95,84 @@ const Service = () => {
             )
         );
     }, [debounce]);
+    const handleExport = () => {
+        const headings = [
+            [
+                "Mã dịch vụ",
+                "Tên dịch vụ",
+                "Loại dịch vụ",
+                "Giá",
+                "Đánh giá",
+                "Hình ảnh",
+                "Mô tả",
+                "Thời gian tạo",
+                "Thời gian cập nhật",
+                "Trạng thái",
+            ],
+        ];
+        const wb = utils.book_new();
+        const ws = utils.json_to_sheet([]);
+        ws["!cols"] = [
+            { wch: 15 },
+            { wch: 18 },
+            { wch: 10 },
+            { wch: 15 },
+            { wch: 10 },
+            { wch: 12 },
+            { wch: 20 },
+            { wch: 18 },
+            { wch: 20 },
+            { wch: 15 },
+        ]; // set column A width to 10 characters
+        utils.sheet_add_aoa(ws, headings);
+        utils.sheet_add_json(ws, listServiceExport, {
+            origin: "A2",
+            skipHeader: true,
+        });
+        utils.book_append_sheet(wb, ws, "Report");
+        writeFile(wb, "Danh sách dịch vụ.xlsx");
+        toast.success("Xuất file thành công");
+    };
+    const handleAddByImport = ($event: any) => {
+        const files = $event.target.files;
+
+        if (files && files.length) {
+            const file = files[0];
+
+            if (file.type !== XLSX_TYPE && file.type !== XLS_TYPE) {
+                toast.error("File phải có định dạng xlsx, xls");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const wb = read(event.target!.result);
+                const sheets = wb.SheetNames;
+
+                if (sheets.length) {
+                    const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+                    // console.log(rows);
+                    const listAddImport = rows.map((item: any) => {
+                        return {
+                            name: item["Tên dịch vụ"],
+                            type: item["Loại dịch vụ"],
+                            price: item["Giá"],
+                            rate: item["Đánh giá"],
+                            desc: item["Mô tả"] || "",
+                            detailList: "Danh mục chi tiết",
+                            createdAt: item["Thời gian tạo"],
+                            updatedAt: item["Thời gian cập nhật"],
+                            isActive: item["Trạng thái"],
+                            image: "",
+                        };
+                    });
+                    setListServiceAdd(listAddImport);
+                    setFileName(file.name);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    };
 
     const handleGetAllServiceAsync = async () => {
         await dispatch(getServiceBySkillIdAsync(+(query as string)));
@@ -141,7 +239,7 @@ const Service = () => {
             },
         },
         {
-            title: "Loại",
+            title: "Loại dịch vụ",
             dataIndex: "type",
             key: "type",
             render: (_: any, record: IService) => (
@@ -166,7 +264,7 @@ const Service = () => {
         },
         {
             title: "Danh mục chi tiết",
-            key: "desc",
+            key: "detailList",
             width: 100,
             render: (_: any, record: any) => {
                 return (
@@ -191,8 +289,8 @@ const Service = () => {
         },
         {
             title: "Thời gian cập nhật",
-            key: "createdAt",
-            dataIndex: "createdAt",
+            key: "updatedAt",
+            dataIndex: "updatedAt",
         },
         {
             title: "Trạng thái",
@@ -244,13 +342,40 @@ const Service = () => {
                 >
                     Thêm dịch vụ
                 </Button>
-                <Input
-                    addonBefore={
-                        <SearchOutlined style={{ fontSize: "20px" }} />
-                    }
-                    placeholder="Nhập tên dịch vụ cần tìm kiếm"
-                    onChange={handleFindService}
-                />
+                <div className="button-upload">
+                    <input
+                        type="file"
+                        name="file"
+                        className="custom-file-input"
+                        id="inputGroupFile"
+                        required
+                        hidden
+                        onClick={(e: any) => (e.target.value = null)}
+                        onChange={handleAddByImport}
+                    />
+                    <label
+                        className="custom-file-label"
+                        htmlFor="inputGroupFile"
+                    >
+                        Thêm bằng file excel
+                    </label>
+                </div>
+                <div className="header-table-customer-wrap">
+                    <Button
+                        type="primary"
+                        onClick={handleExport}
+                        icon={<DownloadOutlined />}
+                    >
+                        Xuất file excel
+                    </Button>
+                    <Input
+                        addonBefore={
+                            <SearchOutlined style={{ fontSize: "20px" }} />
+                        }
+                        placeholder="Nhập tên dịch vụ cần tìm kiếm"
+                        onChange={handleFindService}
+                    />
+                </div>
             </div>
             <Table
                 columns={columns}
@@ -283,6 +408,17 @@ const Service = () => {
                     isOpenPanel={isOpenPanelService}
                     handleConfirmPanel={handleConfirmPanel}
                     info={service.detailService}
+                />
+            )}
+            {listServiceAdd && listServiceAdd.length && (
+                <AddListServices
+                    handleGetAllUser={handleGetAllServiceAsync}
+                    listAdd={listServiceAdd}
+                    close={() => {
+                        setListServiceAdd(null);
+                    }}
+                    fileName={fileName}
+                    skillId={skill?.skillId as number}
                 />
             )}
         </div>

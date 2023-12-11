@@ -1,26 +1,33 @@
 import "./SystemRepairment.scss";
 
-import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Switch, Table } from "antd";
+import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+import { read, utils, writeFile } from "xlsx";
 import { Role } from "../../../core/auth/roles";
 import { clearListSkill, getAllSkillAsync } from "../../../core/reducers/skill";
 import {
+    UserStatus,
     clearListRepair,
     clearUpdateStatusUser,
     getAllUserRoleAsync,
     getDetailUserAsync,
     updateStatusUserAsync,
-    UserStatus,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { FORMAT_DATETIME } from "../../../utils/constants";
-import { formatDate } from "../../../utils/functions/utils";
+import {
+    FORMAT_DATE,
+    FORMAT_DATETIME,
+    XLSX_TYPE,
+    XLS_TYPE,
+} from "../../../utils/constants";
+import { formatDate, getStatusUser } from "../../../utils/functions/utils";
 import { IUser } from "../../../utils/model";
+import AddListUser from "../AddListUser/AddListUser";
 import DetailUser from "../DetailUser/DetailUser";
 import UpdateUser from "../UpdateUser/UpdateUser";
 
@@ -29,7 +36,10 @@ const SystemRepairment = () => {
     const [employeeUpdate, setEmployeeUpdate] = useState<
         IUser | null | undefined
     >();
+    const [fileName, setFileName] = useState<string>("");
     const [employees, setEmployees] = useState<IUser[]>([]);
+    const [listRepExport, setListRepExport] = useState<any>(null);
+    const [listRepAdd, setListRepAdd] = useState<any[] | null>(null);
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
     const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
 
@@ -70,6 +80,23 @@ const SystemRepairment = () => {
 
     useEffect(() => {
         setEmployees(repairList);
+        setListRepExport(
+            repairList.map((rep) => {
+                return {
+                    id: rep.userId,
+                    accountName: rep.accountName,
+                    firstName: rep.firstName,
+                    lastName: rep.lastName,
+                    gender: rep.gender ? "Nam" : "Nữ",
+                    phone: rep.phone,
+                    email: rep.email,
+                    dob: formatDate(rep.dob, FORMAT_DATE),
+                    createdDate: formatDate(rep.createdAt, FORMAT_DATETIME),
+                    updatedDate: formatDate(rep.updatedAt, FORMAT_DATETIME),
+                    status: getStatusUser(rep.status),
+                };
+            })
+        );
     }, [repairList]);
 
     useEffect(() => {
@@ -233,6 +260,85 @@ const SystemRepairment = () => {
     const handleFindRepair = (e: any) => {
         setSearchInput(e.target.value);
     };
+    const handleExport = () => {
+        const headings = [
+            [
+                "Mã thợ ",
+                "Tên tài khoản",
+                "Họ",
+                "Tên",
+                "Giới tính",
+                "Số điện thoại",
+                "Email",
+                "Ngày tháng năm sinh",
+                "Thời gian tạo",
+                "Thời gian cập nhật",
+                "Trạng thái",
+            ],
+        ];
+        const wb = utils.book_new();
+        const ws = utils.json_to_sheet([]);
+        ws["!cols"] = [
+            { wch: 15 },
+            { wch: 18 },
+            { wch: 10 },
+            { wch: 15 },
+            { wch: 10 },
+            { wch: 12 },
+            { wch: 20 },
+            { wch: 18 },
+            { wch: 20 },
+            { wch: 20 },
+            { wch: 15 },
+        ]; // set column A width to 10 characters
+        utils.sheet_add_aoa(ws, headings);
+        utils.sheet_add_json(ws, listRepExport, {
+            origin: "A2",
+            skipHeader: true,
+        });
+        utils.book_append_sheet(wb, ws, "Report");
+        writeFile(wb, "Danh sách thợ sửa chữa.xlsx");
+        toast.success("Xuất file thành công");
+    };
+    const handleAddByImport = ($event: any) => {
+        const files = $event.target.files;
+
+        if (files && files.length) {
+            const file = files[0];
+
+            if (file.type !== XLSX_TYPE && file.type !== XLS_TYPE) {
+                toast.error("File phải có định dạng xlsx, xls");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const wb = read(event.target!.result);
+                const sheets = wb.SheetNames;
+
+                if (sheets.length) {
+                    const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+                    console.log(rows);
+                    const listAddImport = rows.map((item: any) => {
+                        return {
+                            firstName: item["Tên"],
+                            lastName: item["Họ"],
+                            dob: item["Ngày tháng năm sinh"],
+                            phone: item["Số điện thoại"],
+                            email: item["Email"],
+                            role: Role.ROLE_USER,
+                            gender: item["Giới tính"],
+                            password: item["Mật khẩu"],
+                            imageUrl: null,
+                        };
+                    });
+                    setListRepAdd(listAddImport);
+                    setFileName(file.name);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    };
 
     return (
         <div className="system-repair">
@@ -244,13 +350,40 @@ const SystemRepairment = () => {
                 >
                     Thêm nhân viên
                 </Button>
-                <Input
-                    addonBefore={
-                        <SearchOutlined style={{ fontSize: "20px" }} />
-                    }
-                    placeholder="Nhập tên thợ cần tìm kiếm"
-                    onChange={handleFindRepair}
-                />
+                <div className="button-upload">
+                    <input
+                        type="file"
+                        name="file"
+                        className="custom-file-input"
+                        id="inputGroupFile"
+                        required
+                        hidden
+                        onClick={(e: any) => (e.target.value = null)}
+                        onChange={handleAddByImport}
+                    />
+                    <label
+                        className="custom-file-label"
+                        htmlFor="inputGroupFile"
+                    >
+                        Thêm bằng file excel
+                    </label>
+                </div>
+                <div className="header-table-customer-wrap">
+                    <Button
+                        type="primary"
+                        onClick={handleExport}
+                        icon={<DownloadOutlined />}
+                    >
+                        Xuất file excel
+                    </Button>
+                    <Input
+                        addonBefore={
+                            <SearchOutlined style={{ fontSize: "20px" }} />
+                        }
+                        placeholder="Nhập tên thợ cần tìm kiếm"
+                        onChange={handleFindRepair}
+                    />
+                </div>
             </div>
             <Table
                 columns={columns}
@@ -284,6 +417,16 @@ const SystemRepairment = () => {
                     isOpenPanel={isOpenPanelUser}
                     handleConfirmPanel={handleConfirmPanel}
                     info={user}
+                />
+            )}
+            {listRepAdd && listRepAdd.length && (
+                <AddListUser
+                    handleGetAllUser={handleGetAllRepairList}
+                    listUserAdd={listRepAdd}
+                    close={() => {
+                        setListRepAdd(null);
+                    }}
+                    fileName={fileName}
                 />
             )}
         </div>

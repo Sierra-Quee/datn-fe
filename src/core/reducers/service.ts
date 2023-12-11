@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ICreateService, IService } from "../../utils/model";
 import {
+    createMultiServiceAPI,
     createServiceAPI,
     deleteServiceAPI,
     getAllServiceAPI,
@@ -13,6 +14,7 @@ interface IServiceSlice {
     listService: IService[];
     updateService: {
         updateServiceStatus: "success" | "failed" | "none";
+        createListServiceStatus: "success" | "failed" | "none";
     };
     updateStatusService: {
         updateStatusServiceStatus: "success" | "failed" | "none";
@@ -25,6 +27,7 @@ const initialState: IServiceSlice = {
     listService: [],
     updateService: {
         updateServiceStatus: "none",
+        createListServiceStatus: "none",
     },
     updateStatusService: {
         updateStatusServiceStatus: "none",
@@ -85,6 +88,12 @@ export const getDetailServiceAsync = createAsyncThunk(
     "detailService",
     async (id: number) => {
         return (await getDetailServiceAPI(id)).data;
+    }
+);
+export const createMultiServiceAsync = createAsyncThunk(
+    "createMulti",
+    async (body: IService[]) => {
+        return (await createMultiServiceAPI(body)).data;
     }
 );
 
@@ -166,6 +175,16 @@ export const ServiceSlice = createSlice({
                 (state, action: PayloadAction<any>) => {
                     state.updateStatusService.updateStatusServiceStatus =
                         "failed";
+                }
+            )
+
+            .addCase(createMultiServiceAsync.fulfilled, (state, action) => {
+                state.updateService.createListServiceStatus = "success";
+            })
+            .addCase(
+                createMultiServiceAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateService.createListServiceStatus = "failed";
                 }
             );
     },

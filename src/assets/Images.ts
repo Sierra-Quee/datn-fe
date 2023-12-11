@@ -3,7 +3,7 @@ import fridge from "./images/install-fridge.jpg";
 import sun_battery from "./images/install-sun-battery.jpg";
 import washing_machine from "./images/install-washing-machine.png";
 import logo from "./images/ismart-logo.png";
-import Ismart from "./images/Ismart.png";
+import Ismart from "./images/ismart.png";
 import five_water_machine from "./images/nguyennhanmaylocnuocbirori.png";
 import heater from "./images/machbancachbaoduongbinhnonglanh.png";
 import fix_water_machine from "./images/washing-machine.png";

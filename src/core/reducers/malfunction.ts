@@ -8,6 +8,7 @@ import {
 export interface IMalfunctionSlice {
     malfunctionList: IMalfunction[];
     malfunction: IMalfunction;
+    updateMalfunctionStatus: "success" | "failed" | "none";
 }
 export const getAllMalfunctionAsync = createAsyncThunk(
     "getAllMalfunction",
@@ -26,6 +27,7 @@ export const createMalfunctionAsync = createAsyncThunk(
 const initialState: IMalfunctionSlice = {
     malfunctionList: [],
     malfunction: defaultMalfunction,
+    updateMalfunctionStatus: "none",
 };
 export const malfunctionSlice = createSlice({
     name: "malfunctionAll",
@@ -48,6 +50,7 @@ export const malfunctionSlice = createSlice({
             })
             .addCase(createMalfunctionAsync.fulfilled, (state, action) => {
                 state.malfunction = action.payload;
+                state.updateMalfunctionStatus = "success";
             });
     },
 });

@@ -179,7 +179,7 @@ const SignUp = () => {
                     >
                         <img
                             style={{ width: "400px", height: "400px" }}
-                            src={Images.ismart}
+                            src={Images.Ismart}
                             alt="icon"
                         />
                         <h2 style={{ textAlign: "center" }}>

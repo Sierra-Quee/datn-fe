@@ -2,6 +2,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
     clearListMalfunction,
     clearMalfunction,
@@ -22,6 +23,8 @@ const Malfunction = () => {
     const debounce = useDebounce(searchInput);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const { malfunctionList } = useAppSelector((state) => state.malfunction);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [query, setQuery] = useState(searchParams.get("serviceId"));
     const columns: ColumnsType<IMalfunction> = [
         {
             title: "Mã",
@@ -88,7 +91,7 @@ const Malfunction = () => {
                     malfunctionUpdate={malfunctionUpdate}
                     isCreate={!malfunctionUpdate}
                     handleGetAllMalfuntionAsync={handleGetAllMalfunction}
-                    serviceId={service.detailService.serviceId}
+                    serviceId={query ?? ""}
                 />
             )}
         </div>

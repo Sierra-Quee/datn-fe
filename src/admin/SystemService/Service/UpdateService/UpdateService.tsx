@@ -149,7 +149,7 @@ const UpdateService = ({
     const buttonUpdate = () => {
         return (
             <Button key={2} type="primary" htmlType="submit">
-                Cập nhật
+                {isCreate ? "Thêm dịch vụ" : "Cập nhật"}
             </Button>
         );
     };

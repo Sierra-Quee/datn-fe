@@ -37,7 +37,8 @@ const UpdateMalfunction = (props: IUpdateMalfunctionProps) => {
             await dispatch(
                 createMalfunctionAsync({
                     ...value,
-                    serviceId: serviceId,
+                    price: Number(value.price),
+                    serviceId: Number(serviceId),
                 })
             );
         }

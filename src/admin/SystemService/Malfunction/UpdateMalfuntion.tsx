@@ -33,16 +33,16 @@ const UpdateMalfunction = (props: IUpdateMalfunctionProps) => {
     );
     const updateMalfunctionModalAsync = async (value: any) => {
         setMalfunctionInfo({ ...value });
-    };
-    const handleUpdate = async () => {
         if (isCreate) {
             await dispatch(
                 createMalfunctionAsync({
-                    ...malfunctionInfo,
+                    ...value,
                     serviceId: serviceId,
                 })
             );
         }
+    };
+    const handleUpdate = async () => {
         //  else
         //     await dispatch(updateMalfunctionAsync({ ...malfunctionInfo }));
     };

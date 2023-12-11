@@ -135,7 +135,7 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
         >
             <div className="sidebar-logo">
                 <img
-                    src={Images.ismart}
+                    src={Images.Ismart}
                     className="sidebar-logo-image"
                     style={{ width: collapsed ? "0px" : "150px" }}
                     alt="logo"

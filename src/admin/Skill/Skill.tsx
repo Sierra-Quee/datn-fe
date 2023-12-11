@@ -1,6 +1,6 @@
 import "./Skill.scss";
 
-import { SearchOutlined } from "@ant-design/icons";
+import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Spin, Switch } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
@@ -14,17 +14,21 @@ import {
 } from "../../core/reducers/skill";
 import useDebounce from "../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { FORMAT_DATETIME } from "../../utils/constants";
+import { FORMAT_DATETIME, XLSX_TYPE, XLS_TYPE } from "../../utils/constants";
 import { formatDate } from "../../utils/functions/utils";
 import { ISkill } from "../../utils/model";
 import UpdateSkill from "./UpdateSkill/UpdateSkill";
+import AddListSkills from "./AddListSkill/AddListSkill";
+import { read, utils, writeFile } from "xlsx";
 
 const Skill = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [skillUpdate, setSkillUpdate] = useState<ISkill | null | undefined>();
     const [searchInput, setSearchInput] = useState<string>("");
     const [skills, setSkills] = useState<ISkill[]>([]);
-
+    const [fileName, setFileName] = useState<string>("");
+    const [listSkillExport, setListSkillExport] = useState<any>(null);
+    const [listSkillAdd, setListSkillAdd] = useState<any[] | null>(null);
     const dispatch = useAppDispatch();
 
     const { listSkill } = useAppSelector((state) => state.skill);
@@ -53,6 +57,18 @@ const Skill = () => {
 
     useEffect(() => {
         setSkills(listSkill);
+        setListSkillExport(
+            listSkill.map((skill) => {
+                return {
+                    id: skill.skillId,
+                    name: skill.name,
+                    image: skill.image,
+                    createdDate: formatDate(skill.createdAt, FORMAT_DATETIME),
+                    updatedDate: formatDate(skill.updatedAt, FORMAT_DATETIME),
+                    isActive: skill.isActive,
+                };
+            })
+        );
     }, [listSkill]);
 
     useEffect(() => {
@@ -138,6 +154,63 @@ const Skill = () => {
             ),
         },
     ];
+    const handleExport = () => {
+        const headings = [
+            [
+                "Mã dịch vụ",
+                "Tên dịch vụ",
+                "Hình ảnh",
+                "Thời gian tạo",
+                "Thời gian cập nhật",
+                "Trạng thái",
+            ],
+        ];
+        const wb = utils.book_new();
+        const ws = utils.json_to_sheet([]);
+        ws["!cols"] = [{ wch: 15 }, { wch: 18 }, { wch: 18 }, { wch: 15 }]; // set column A width to 10 characters
+        utils.sheet_add_aoa(ws, headings);
+        utils.sheet_add_json(ws, listSkillExport, {
+            origin: "A2",
+            skipHeader: true,
+        });
+        utils.book_append_sheet(wb, ws, "Report");
+        writeFile(wb, "Danh sách loại dịch vụ.xlsx");
+        toast.success("Xuất file thành công");
+    };
+    const handleAddByImport = ($event: any) => {
+        const files = $event.target.files;
+
+        if (files && files.length) {
+            const file = files[0];
+
+            if (file.type !== XLSX_TYPE && file.type !== XLS_TYPE) {
+                toast.error("File phải có định dạng xlsx, xls");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const wb = read(event.target!.result);
+                const sheets = wb.SheetNames;
+
+                if (sheets.length) {
+                    const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+                    const listAddImport = rows.map((item: any) => {
+                        return {
+                            name: item["Tên loại dịch vụ"],
+                            createdAt: item["Thời gian tạo"],
+                            updatedAt: item["Thời gian cập nhật"],
+                            isActive: item["Trạng thái"] === "Đang hoạt động",
+                            image: "",
+                        };
+                    });
+                    setListSkillAdd(listAddImport);
+                    setFileName(file.name);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    };
 
     return (
         <div className="skill">
@@ -149,13 +222,40 @@ const Skill = () => {
                 >
                     Thêm loại dịch vụ
                 </Button>
-                <Input
-                    addonBefore={
-                        <SearchOutlined style={{ fontSize: "20px" }} />
-                    }
-                    placeholder="Nhập tên loại cần tìm kiếm"
-                    onChange={handleFindSkill}
-                />
+                <div className="button-upload">
+                    <input
+                        type="file"
+                        name="file"
+                        className="custom-file-input"
+                        id="inputGroupFile"
+                        required
+                        hidden
+                        onClick={(e: any) => (e.target.value = null)}
+                        onChange={handleAddByImport}
+                    />
+                    <label
+                        className="custom-file-label"
+                        htmlFor="inputGroupFile"
+                    >
+                        Thêm bằng file excel
+                    </label>
+                </div>
+                <div className="header-table-customer-wrap">
+                    <Button
+                        type="primary"
+                        onClick={handleExport}
+                        icon={<DownloadOutlined />}
+                    >
+                        Xuất file excel
+                    </Button>
+                    <Input
+                        addonBefore={
+                            <SearchOutlined style={{ fontSize: "20px" }} />
+                        }
+                        placeholder="Nhập tên loại cần tìm kiếm"
+                        onChange={handleFindSkill}
+                    />
+                </div>
             </div>
             <Table
                 columns={columns}
@@ -179,6 +279,16 @@ const Skill = () => {
                     skill={skillUpdate}
                     isCreate={!skillUpdate}
                     handleGetAllSkillAsync={handleGetAllSkillAsync}
+                />
+            )}
+            {listSkillAdd && listSkillAdd.length && (
+                <AddListSkills
+                    handleGetAllUser={handleGetAllSkillAsync}
+                    listAdd={listSkillAdd}
+                    close={() => {
+                        setListSkillAdd(null);
+                    }}
+                    fileName={fileName}
                 />
             )}
         </div>

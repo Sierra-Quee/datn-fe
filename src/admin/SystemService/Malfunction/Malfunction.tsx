@@ -35,8 +35,8 @@ const Malfunction = () => {
     const columns: ColumnsType<IMalfunction> = [
         {
             title: "Mã",
-            dataIndex: "malFuncId",
-            key: "malFuncId",
+            dataIndex: "malfuncId",
+            key: "malfuncId",
         },
         {
             title: "Sản phẩm",

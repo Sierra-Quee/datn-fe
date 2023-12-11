@@ -159,7 +159,6 @@ const Service = () => {
                             price: item["Giá"],
                             rate: item["Đánh giá"],
                             desc: item["Mô tả"] || "",
-                            detailList: "Danh mục chi tiết",
                             createdAt: item["Thời gian tạo"],
                             updatedAt: item["Thời gian cập nhật"],
                             isActive: item["Trạng thái"],

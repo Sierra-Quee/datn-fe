@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hook";
 import { IService, ITypeService } from "../../../../utils/model";
 
 interface IAddListUserProps {
-    handleGetAllUser: () => void;
+    handleGetAllService: () => void;
     listAdd: IService[];
     close: () => void;
     fileName: string;
@@ -20,7 +20,7 @@ interface IAddListUserProps {
 }
 
 const AddListServices = ({
-    handleGetAllUser,
+    handleGetAllService,
     listAdd,
     close,
     fileName,
@@ -33,7 +33,7 @@ const AddListServices = ({
         if (updateService?.createListServiceStatus === "success") {
             toast.success("Thêm thông tin thành công");
             dispatch(clearListService());
-            handleGetAllUser();
+            handleGetAllService();
             close();
         }
     }, [updateService?.createListServiceStatus, dispatch]);
@@ -59,6 +59,7 @@ const AddListServices = ({
                             (item.type as string).toUpperCase() === "BẢO DƯỠNG"
                                 ? ITypeService.MainTain
                                 : ITypeService.Repair,
+                        desc: String(item.desc),
                     };
                 })
             )

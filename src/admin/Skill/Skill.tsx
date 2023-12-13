@@ -283,7 +283,7 @@ const Skill = () => {
             )}
             {listSkillAdd && listSkillAdd.length && (
                 <AddListSkills
-                    handleGetAllUser={handleGetAllSkillAsync}
+                    handleGetAllSkill={handleGetAllSkillAsync}
                     listAdd={listSkillAdd}
                     close={() => {
                         setListSkillAdd(null);

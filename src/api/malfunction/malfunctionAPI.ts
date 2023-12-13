@@ -10,3 +10,6 @@ export const createMalfunction = (body: IMalfunction) => {
 export const updateMalfunction = () => {
     return fetchHandler.get(`/malfunction/updateMalfunction`);
 };
+export const createMultiMalfunctionAPI = (body: IMalfunction[]) => {
+    return fetchHandler.post(`/malfunction/createMultiMalfunction`, body);
+};

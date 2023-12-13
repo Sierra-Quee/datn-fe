@@ -1,18 +1,20 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ISkill } from "../../utils/model";
 import {
+    createMultiSkillAPI,
     createSkillAPI,
     getAllSkillAPI,
     getSkillByIdAPI,
     updateSkillAPI,
     updateStatusSkillAPI,
 } from "../../api/skill/skillAPI";
+import { ISkill } from "../../utils/model";
 
 interface ISkillSlice {
     listSkill: ISkill[];
     skill?: ISkill | null | undefined;
     updateSkill: {
         updateSkillStatus: "success" | "failed" | "none";
+        createMulSkillStatus: "success" | "failed" | "none";
     };
     updateStatusSkill: {
         updateStatusSkillStatus: "success" | "failed" | "none";
@@ -23,6 +25,7 @@ const initialState: ISkillSlice = {
     skill: null,
     updateSkill: {
         updateSkillStatus: "none",
+        createMulSkillStatus: "none",
     },
     updateStatusSkill: {
         updateStatusSkillStatus: "none",
@@ -59,6 +62,12 @@ export const getSkillByIdAsync = createAsyncThunk(
     "getSkillById",
     async (skillId: number) => {
         return (await getSkillByIdAPI(skillId)).data;
+    }
+);
+export const createMultiSkillAsync = createAsyncThunk(
+    "skill/createMulti",
+    async (body: ISkill[]) => {
+        return (await createMultiSkillAPI(body)).data;
     }
 );
 
@@ -134,6 +143,15 @@ export const skillSlice = createSlice({
                 updateStatusSkillAsync.rejected,
                 (state, action: PayloadAction<any>) => {
                     state.updateStatusSkill.updateStatusSkillStatus = "failed";
+                }
+            )
+            .addCase(createMultiSkillAsync.fulfilled, (state, action) => {
+                state.updateSkill.createMulSkillStatus = "success";
+            })
+            .addCase(
+                createMultiSkillAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateSkill.createMulSkillStatus = "failed";
                 }
             );
     },

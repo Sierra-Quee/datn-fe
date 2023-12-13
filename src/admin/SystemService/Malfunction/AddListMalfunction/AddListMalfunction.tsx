@@ -1,40 +1,44 @@
 import { Button, Modal, Table } from "antd";
+
 import { ColumnsType } from "antd/es/table";
+
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import {
-    clearSkill,
-    createMultiSkillAsync,
-} from "../../../core/reducers/skill";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { ISkill } from "../../../utils/model";
+    clearListMalfunction,
+    createMultiMalfunctionAsync,
+} from "../../../../core/reducers/malfunction";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hook";
+import { IService } from "../../../../utils/model";
 
 interface IAddListUserProps {
-    handleGetAllSkill: () => void;
+    handleGetAllMalfunction: () => void;
     listAdd: any[];
     close: () => void;
     fileName: string;
-    skillId?: string | number;
+    serviceId: string | number;
 }
 
-const AddListSkills = ({
-    handleGetAllSkill,
+const AddListMalfunction = ({
+    handleGetAllMalfunction,
     listAdd,
     close,
     fileName,
-    skillId,
+    serviceId,
 }: IAddListUserProps) => {
     const dispatch = useAppDispatch();
-    const { updateSkill } = useAppSelector((state) => state.skill);
+    const { createMulMalfunctionStatus } = useAppSelector(
+        (state) => state.malfunction
+    );
 
     useEffect(() => {
-        if (updateSkill?.createMulSkillStatus === "success") {
+        if (createMulMalfunctionStatus === "success") {
             toast.success("Thêm thông tin thành công");
-            dispatch(clearSkill());
-            handleGetAllSkill();
+            dispatch(clearListMalfunction());
+            handleGetAllMalfunction();
             close();
         }
-    }, [updateSkill?.createMulSkillStatus, dispatch]);
+    }, [createMulMalfunctionStatus, dispatch]);
 
     const buttonCancel = () => {
         return (
@@ -47,11 +51,12 @@ const AddListSkills = ({
 
     const addList = async () => {
         await dispatch(
-            createMultiSkillAsync(
+            createMultiMalfunctionAsync(
                 listAdd.map((item) => {
                     return {
                         ...item,
                         name: String(item.name),
+                        serviceId: +(serviceId as number),
                     };
                 })
             )
@@ -67,37 +72,25 @@ const AddListSkills = ({
         );
     };
 
-    const columns: ColumnsType<ISkill> = [
+    const columns: ColumnsType<IService> = [
         {
             title: "Mã",
-            dataIndex: "skillId",
-            key: "skillId",
+            dataIndex: "serviceId",
+            key: "serviceId",
             fixed: "left",
             width: 80,
         },
         {
-            title: "Tên loại dịch vụ",
+            title: "Tên dịch vụ",
             dataIndex: "name",
             key: "name",
             fixed: "left",
             width: 150,
         },
         {
-            title: "Thời gian tạo",
-            key: "createdAt",
-            dataIndex: "createdAt",
-        },
-        {
-            title: "Thời gian cập nhật",
-            key: "updatedAt",
-            dataIndex: "updatedAt",
-        },
-        {
-            title: "Trạng thái",
-            key: "isActive",
-            dataIndex: "isActive",
-            fixed: "right",
-            width: 100,
+            title: "Giá",
+            dataIndex: "price",
+            key: "price",
         },
     ];
 
@@ -128,12 +121,13 @@ const AddListSkills = ({
                     }}
                 ></Table>{" "}
                 <div className="button-wrap">
+                    {" "}
                     {buttonCancel()}
                     {buttonAdd()}
-                </div>
-            </div>
+                </div>{" "}
+            </div>{" "}
         </Modal>
     );
 };
 
-export default AddListSkills;
+export default AddListMalfunction;

@@ -25,4 +25,6 @@ export const getOrderByIdApi = (orderId: number | string) => {
     return fetchHandler.get(`/order/${orderId}`);
 };
 
-// TO DO
+export const getOrderQrTokenApi = (orderId: number | string) => {
+    return fetchHandler.get(`/order/generateQrInfo/${orderId}`);
+};

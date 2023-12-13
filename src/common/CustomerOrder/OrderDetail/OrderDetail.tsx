@@ -4,6 +4,8 @@ import {
     Empty,
     Flex,
     Layout,
+    Modal,
+    QRCode,
     Space,
     Spin,
     Steps,
@@ -14,7 +16,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IOrder } from "../../../utils/model";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { clearOrder, getOrderByIdAsync } from "../../../core/reducers/order";
+import {
+    clearOrder,
+    getOrderByIdAsync,
+    getQrTokenAsync,
+} from "../../../core/reducers/order";
 import { formatOrderStatusName } from "../../../utils/functions/formation";
 import "./OrderDetail.scss";
 import {
@@ -23,6 +29,7 @@ import {
     SolutionOutlined,
     UserOutlined,
 } from "@ant-design/icons";
+import { toast } from "react-toastify";
 const { Title, Text } = Typography;
 type Props = {};
 
@@ -33,7 +40,11 @@ const OrderDetail = (props: Props) => {
     const { orderId } = useParams();
     const dispatch = useAppDispatch();
     const [orderData, setOrderData] = useState<IOrder>();
-    const { order, loadingOrder } = useAppSelector((state) => state.order);
+    const [openQrModal, setOpenQrModal] = useState<boolean>(false);
+    const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
+    const { order, loadingOrder, qrToken, isGettingQrToken } = useAppSelector(
+        (state) => state.order
+    );
     const handleGetOrder = async () => {
         if (orderId) await dispatch(getOrderByIdAsync(parseInt(orderId)));
     };
@@ -50,6 +61,46 @@ const OrderDetail = (props: Props) => {
             setOrderData(order);
         }
     }, [order]);
+    const handleOpenQrModal = async () => {
+        setOpenQrModal(true);
+        try {
+            if (order.orderId) {
+                await dispatch(getQrTokenAsync(order.orderId));
+            }
+        } catch (error: any) {
+            toast.error("Đã có lỗi xảy ra: " + error.message);
+        }
+    };
+
+    const handleCloseQrModal = () => {
+        setOpenQrModal(false);
+    };
+
+    const handleDownloadQr = () => {
+        const canvas = document
+            .getElementById("myqrcode")
+            ?.querySelector<HTMLCanvasElement>("canvas");
+        if (canvas) {
+            const url = canvas.toDataURL();
+            const a = document.createElement("a");
+            a.download = "QRCode.png";
+            a.href = url;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        // handleCloseQrModal();
+    };
+
+    const handleOpenCancelOrderModal = () => {
+        setOpenCancelModal(true);
+    };
+
+    const handleCloseCancelOrderModal = () => {
+        setOpenCancelModal(false);
+    };
+
+    const handleCancelOrder = async () => {};
 
     return (
         <Spin spinning={loadingOrder}>
@@ -113,20 +164,66 @@ const OrderDetail = (props: Props) => {
                                         Ngày dự kiến thực hiện dịch vụ:{" "}
                                         {order.expectedDate}
                                     </Text>
-                                    <Button>Hủy đơn</Button>
-                                    <Button>Lấy mã QR</Button>
+                                    <Button
+                                        onClick={handleOpenCancelOrderModal}
+                                    >
+                                        Hủy đơn
+                                    </Button>
+                                    <Button onClick={handleOpenQrModal}>
+                                        Lấy mã QR
+                                    </Button>
                                 </Space>
                             </Flex>
                         </Flex>
-                        <Flex>
-                            <Title level={5}>ĐỊA CHỈ ĐẶT DỊCH VỤ</Title>
-                            <Text>{orderData.address?.address}</Text>
+                        <Flex vertical className="orderInfo">
+                            <Flex vertical>
+                                <Title level={5}>ĐỊA CHỈ ĐẶT DỊCH VỤ</Title>
+                                <Text>{orderData.address?.address}</Text>
+                            </Flex>
+                            <Flex>
+                                <Title level={5}>DỊCH VỤ</Title>
+                            </Flex>
+                            <Flex>
+                                <Title level={5}>DANH SÁCH LINH KIỆN</Title>
+                            </Flex>
                         </Flex>
                     </>
                 ) : (
                     <Empty />
                 )}
             </Layout>
+            <Modal
+                open={openQrModal}
+                onCancel={handleCloseQrModal}
+                onOk={handleDownloadQr}
+                cancelText="Quay lại"
+                okText="Tải xuống"
+            >
+                <Flex vertical align="center">
+                    <Title level={4}>
+                        Mã QR đơn đặt dịch vụ <strong>{order.code}</strong>
+                    </Title>
+                    <Spin spinning={isGettingQrToken}>
+                        <div id="myqrcode">
+                            <QRCode
+                                value={qrToken}
+                                bgColor="#fff"
+                                style={{ marginBottom: 16 }}
+                                size={300}
+                            />
+                        </div>
+                    </Spin>
+                </Flex>
+            </Modal>
+            <Modal
+                open={openCancelModal}
+                onCancel={handleCloseCancelOrderModal}
+                onOk={handleCancelOrder}
+                okText="Đồng ý"
+                cancelText="Quay lại"
+            >
+                <Title level={4}>Bạn muốn hủy đơn này?</Title>
+            </Modal>
         </Spin>
     );
 };

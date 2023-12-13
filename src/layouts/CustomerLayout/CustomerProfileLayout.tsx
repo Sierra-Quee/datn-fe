@@ -39,7 +39,11 @@ const menuItems: MenuItem[] = [
         getItem(<Link to={"/user/password"}>Mật khẩu</Link>, "password"),
         getItem(<Link to={"/user/address"}>Địa chỉ</Link>, "address"),
     ]),
-    getItem(<Link to={"/"}>Đơn sửa chữa</Link>, "order", <LaptopOutlined />),
+    getItem(
+        <Link to={"/user/order"}>Đơn sửa chữa</Link>,
+        "order",
+        <LaptopOutlined />
+    ),
     getItem(
         <Link to={"/"}>Thông báo</Link>,
         "notifications",

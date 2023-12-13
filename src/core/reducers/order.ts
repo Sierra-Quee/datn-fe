@@ -6,6 +6,7 @@ import {
     createOrderApi,
     getAllOrderByUserIdApi,
     IGetAllOrderQuery,
+    getOrderQrTokenApi,
 } from "../../api/order/orderApi";
 
 interface IOrderSlice {
@@ -17,6 +18,8 @@ interface IOrderSlice {
     };
     order: IOrder;
     loadingOrder: boolean;
+    qrToken: string;
+    isGettingQrToken: boolean;
 }
 
 const initialState: IOrderSlice = {
@@ -35,6 +38,8 @@ const initialState: IOrderSlice = {
         expectedDate: "",
     },
     loadingOrder: false,
+    qrToken: "",
+    isGettingQrToken: false,
 };
 
 export const getAllOrderAsync = createAsyncThunk(
@@ -65,6 +70,14 @@ export const createOrderAsync = createAsyncThunk(
     "createOrder",
     async (order: IOrder) => {
         const response = await createOrderApi(order);
+        return response.data;
+    }
+);
+
+export const getQrTokenAsync = createAsyncThunk(
+    "getQrToken",
+    async (orderId: number | string) => {
+        const response = await getOrderQrTokenApi(orderId);
         return response.data;
     }
 );
@@ -128,6 +141,16 @@ export const orderSlice = createSlice({
             .addCase(createOrderAsync.rejected, (state, action) => {
                 state.createOrder.loadingcreateOrder = false;
                 state.createOrder.createOrderStatus = "failed";
+            })
+            .addCase(getQrTokenAsync.pending, (state, action) => {
+                state.isGettingQrToken = true;
+            })
+            .addCase(getQrTokenAsync.fulfilled, (state, action) => {
+                state.isGettingQrToken = false;
+                state.qrToken = action.payload;
+            })
+            .addCase(getQrTokenAsync.rejected, (state, action) => {
+                state.isGettingQrToken = false;
             });
     },
 });

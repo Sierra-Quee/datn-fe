@@ -15,6 +15,7 @@ import { IMalfunction } from "../../../utils/model";
 import UpdateMalfunction from "./UpdateMalfuntion";
 import { toast } from "react-toastify";
 import { XLSX_TYPE, XLS_TYPE } from "../../../utils/constants";
+import AddListMalfunction from "./AddListMalfunction/AddListMalfunction";
 
 const Malfunction = () => {
     const dispatch = useAppDispatch();
@@ -39,7 +40,7 @@ const Malfunction = () => {
             key: "malfuncId",
         },
         {
-            title: "Sản phẩm",
+            title: "Tên danh mục",
             dataIndex: "name",
             key: "name",
         },
@@ -111,7 +112,7 @@ const Malfunction = () => {
                     // console.log(rows);
                     const listAddImport = rows.map((item: any) => {
                         return {
-                            name: item["Tên"],
+                            name: item["Tên danh mục"],
                             price: item["Giá"],
                         };
                     });
@@ -186,16 +187,17 @@ const Malfunction = () => {
                     serviceId={query ?? ""}
                 />
             )}
-            {/* {listMalAdd && listMalAdd.length && (
-                <AddListUser
-                    handleGetAllUser={handleGetAllRepairList}
-                    listUserAdd={listMalAdd}
+            {listMalAdd && listMalAdd.length && (
+                <AddListMalfunction
+                    handleGetAllMalfunction={handleGetAllMalfunction}
+                    listAdd={listMalAdd}
                     close={() => {
                         setListMalAdd(null);
                     }}
                     fileName={fileName}
+                    serviceId={query ?? ""}
                 />
-            )} */}
+            )}
         </div>
     );
 };

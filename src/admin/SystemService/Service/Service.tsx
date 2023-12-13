@@ -411,7 +411,7 @@ const Service = () => {
             )}
             {listServiceAdd && listServiceAdd.length && (
                 <AddListServices
-                    handleGetAllUser={handleGetAllServiceAsync}
+                    handleGetAllService={handleGetAllServiceAsync}
                     listAdd={listServiceAdd}
                     close={() => {
                         setListServiceAdd(null);

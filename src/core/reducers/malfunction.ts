@@ -1,14 +1,16 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IMalfunction, defaultMalfunction } from "../../utils/model";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
     createMalfunction,
+    createMultiMalfunctionAPI,
     getAllMalfunction,
 } from "../../api/malfunction/malfunctionAPI";
+import { IMalfunction, defaultMalfunction } from "../../utils/model";
 
 export interface IMalfunctionSlice {
     malfunctionList: IMalfunction[];
     malfunction: IMalfunction;
     updateMalfunctionStatus: "success" | "failed" | "none";
+    createMulMalfunctionStatus: "success" | "failed" | "none";
 }
 export const getAllMalfunctionAsync = createAsyncThunk(
     "getAllMalfunction",
@@ -24,10 +26,17 @@ export const createMalfunctionAsync = createAsyncThunk(
         return (await createMalfunction(body)).data;
     }
 );
+export const createMultiMalfunctionAsync = createAsyncThunk(
+    "createMultiMal",
+    async (body: IMalfunction[]) => {
+        return (await createMultiMalfunctionAPI(body)).data;
+    }
+);
 const initialState: IMalfunctionSlice = {
     malfunctionList: [],
     malfunction: defaultMalfunction,
     updateMalfunctionStatus: "none",
+    createMulMalfunctionStatus: "none",
 };
 export const malfunctionSlice = createSlice({
     name: "malfunctionAll",
@@ -51,7 +60,16 @@ export const malfunctionSlice = createSlice({
             .addCase(createMalfunctionAsync.fulfilled, (state, action) => {
                 state.malfunction = action.payload;
                 state.updateMalfunctionStatus = "success";
-            });
+            })
+            .addCase(createMultiMalfunctionAsync.fulfilled, (state, action) => {
+                state.createMulMalfunctionStatus = "success";
+            })
+            .addCase(
+                createMultiMalfunctionAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.createMulMalfunctionStatus = "failed";
+                }
+            );
     },
 });
 export default malfunctionSlice.reducer;

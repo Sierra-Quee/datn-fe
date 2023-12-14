@@ -100,7 +100,20 @@ export const defaultUser = {
     skills: [],
     address: [],
 };
-
+export interface IMalfunction {
+    malFuncId: number;
+    name: string;
+    price: number;
+    serviceId: number;
+    service?: any;
+}
+export const defaultMalfunction = {
+    malFuncId: -1,
+    name: "",
+    price: -1,
+    serviceId: -1,
+    service: {},
+};
 export interface IAddress {
     addressId?: number;
     userId: string;
@@ -135,6 +148,7 @@ export interface IDetailOrder {
     desc?: string;
     media?: IOrderMedia[];
     service?: IService;
+    diagnosis?: IDiagnosis[];
 }
 export interface IOrder {
     orderId?: number | string;
@@ -150,4 +164,25 @@ export interface IOrder {
     createdAt?: string;
     updatedAt?: string;
     address?: IAddress;
+    components?: IComponent;
+}
+
+export interface IDiagnosis {
+    diagnosisId: string;
+    orderDetailId: string;
+    malfuncId: string;
+    isAccepted: boolean;
+    malfunction: IMalfunction;
+}
+
+export interface IComponent {
+    componentId: string;
+    name: string;
+    quantity: number;
+    unit: string;
+    pricePerUnit: number;
+    brand: string;
+    model: string;
+    supplier: string;
+    orderId: string;
 }

@@ -25,3 +25,18 @@ export const formatOrderStatusName = (status?: number) => {
 
     return statusName.toUpperCase();
 };
+
+export const formatOrderStatusProgress = (
+    currentStatus: OrderStatus | undefined,
+    progressStatus: OrderStatus
+) => {
+    console.log({ currentStatus, progressStatus });
+    if (currentStatus === undefined) return "wait";
+    if (currentStatus === progressStatus) return "process";
+    if (
+        currentStatus > progressStatus &&
+        currentStatus !== OrderStatus.REJECTED
+    )
+        return "finish";
+    return "wait";
+};

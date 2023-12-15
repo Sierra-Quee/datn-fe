@@ -1,6 +1,15 @@
 import "./Public.scss";
 
-import { Avatar, Badge, Dropdown, Input, Layout, Menu, MenuProps } from "antd";
+import {
+    Avatar,
+    Badge,
+    Dropdown,
+    Input,
+    Layout,
+    Menu,
+    MenuProps,
+    QRCode,
+} from "antd";
 import { Content, Header, Footer } from "antd/es/layout/layout";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +21,10 @@ import { RoutePath } from "../../routes";
 import { IChildRoutePath, ISkill } from "../../utils/model";
 import {
     BellOutlined,
+    HomeFilled,
+    MailFilled,
+    PhoneFilled,
+    PushpinFilled,
     SearchOutlined,
     ShoppingCartOutlined,
 } from "@ant-design/icons";
@@ -244,7 +257,120 @@ const Public = ({ children }: IChildRoutePath) => {
                 >
                     <div className="public-content">{children}</div>
                 </Content>
-                <Footer>hello</Footer>
+                <Footer className="footer">
+                    <div className="right-footer">
+                        <h2>ISmart</h2>
+                        <div className="item-footer">
+                            <HomeFilled />
+                            <span className="contact-content-title">
+                                <b>Tổng Công ty Cổ phần Công trình ISmart</b>
+                            </span>
+                        </div>
+                        <div className="item-footer">
+                            <PhoneFilled />
+                            <span className="contact-content-title">
+                                <b>Hotline:</b> 0123456789
+                            </span>
+                        </div>
+                        <div className="item-footer">
+                            <MailFilled />
+                            <span className="contact-content-title">
+                                <b>Email: congtrinhviettel@viettel.com.vn</b>
+                            </span>
+                        </div>
+                    </div>
+                    <div className="between-footer">
+                        <h2>CHÍNH SÁCH VÀ QUY ĐỊNH</h2>
+                        <div className="item-footer">
+                            <Link
+                                style={{
+                                    color: "white",
+                                }}
+                                to="https://aioservice.com.vn/cam-ket-va-quy-dinh-ve-dich-vu"
+                            >
+                                <PushpinFilled
+                                    style={{ marginRight: "10px" }}
+                                />
+                                Cam kết và quy định về dịch vụ
+                            </Link>
+                        </div>
+                        <div>
+                            <Link
+                                style={{
+                                    color: "white",
+                                }}
+                                to="https://aioservice.com.vn/chinh-sach-va-quy-dinh"
+                            >
+                                <PushpinFilled
+                                    style={{ marginRight: "10px" }}
+                                />
+                                Chính sách và quy định
+                            </Link>
+                        </div>
+                        <div>
+                            <Link
+                                style={{
+                                    color: "white",
+                                }}
+                                to="https://aioservice.com.vn/chinh-sach-bao-mat"
+                            >
+                                <PushpinFilled
+                                    style={{ marginRight: "10px" }}
+                                />
+                                Chính sách bảo mật
+                            </Link>
+                        </div>
+                        <div>
+                            <Link
+                                style={{
+                                    color: "white",
+                                }}
+                                to="https://aioservice.com.vn/phuong-thuc-thanh-toan"
+                            >
+                                <PushpinFilled
+                                    style={{ marginRight: "10px" }}
+                                />
+                                Phương thức thanh toán
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="left-footer">
+                        <h2 className="title-left-footer">Tải ứng dụng</h2>
+                        <div>
+                            <Link
+                                style={{
+                                    color: "white",
+                                }}
+                                to="https://play.google.com/store/apps/details?id=com.vcc.homeservicesuser&pli=1"
+                            >
+                                <PushpinFilled
+                                    style={{ marginRight: "10px" }}
+                                />
+                                Android
+                            </Link>
+                        </div>
+                        <div>
+                            <Link
+                                style={{
+                                    color: "white",
+                                }}
+                                to="https://apps.apple.com/vn/app/home-services-d%E1%BB%8Bch-v%E1%BB%A5-t%E1%BA%A1i-nh%C3%A0/id1556454387?l=vi?l=vi"
+                            >
+                                <PushpinFilled
+                                    style={{ marginRight: "10px" }}
+                                />
+                                IOS
+                            </Link>
+                        </div>
+                        <div
+                            style={{
+                                backgroundColor: "white",
+                            }}
+                        >
+                            <QRCode value="http://localhost:4000/" />
+                        </div>
+                    </div>
+                </Footer>
             </Layout>
         </div>
     );

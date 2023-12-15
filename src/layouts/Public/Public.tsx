@@ -147,6 +147,7 @@ const Public = ({ children }: IChildRoutePath) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
+                        background: "#363062",
                     }}
                 >
                     <div style={{ width: "20%" }}>

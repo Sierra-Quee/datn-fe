@@ -1,4 +1,14 @@
-import { Button, Checkbox, Flex, Form, Input, Layout, Modal, Spin } from "antd";
+import {
+    Button,
+    Checkbox,
+    Empty,
+    Flex,
+    Form,
+    Input,
+    Layout,
+    Modal,
+    Spin,
+} from "antd";
 import "./Address.scss";
 import { Typography, Select } from "antd";
 import { useEffect, useState } from "react";
@@ -52,7 +62,7 @@ const Address = (props: Props) => {
             <Header className="address-header">
                 <Flex
                     className="address-header__content"
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", padding: "0 20px" }}
                 >
                     <Title level={3}>Quản lý địa điểm</Title>
                     <div>
@@ -61,6 +71,7 @@ const Address = (props: Props) => {
                             type="primary"
                             onClick={handleOpenModal}
                             icon={<PlusOutlined />}
+                            style={{ background: "#435585" }}
                         >
                             Thêm địa chỉ
                         </Button>
@@ -75,13 +86,16 @@ const Address = (props: Props) => {
                     maxHeight: "450px",
                 }}
             >
-                {addressList &&
+                {addressList.length ? (
                     addressList.map((address) => (
                         <AddressCard
                             key={address.addressId}
                             address={address}
                         />
-                    ))}
+                    ))
+                ) : (
+                    <Empty />
+                )}
             </Content>
             <AddAddressPopup
                 isOpen={isOpenModal}

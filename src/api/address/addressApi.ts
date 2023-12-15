@@ -14,5 +14,5 @@ export const updateAddress = (address: IAddress) => {
 };
 
 export const deleteAddress = (addressId: number) => {
-    return fetchHandler.delete(`address/deleteAddress/${addressId}`);
+    return fetchHandler.patch(`address/deleteAddress/${addressId}`);
 };

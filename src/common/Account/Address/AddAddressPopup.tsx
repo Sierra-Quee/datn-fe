@@ -40,8 +40,8 @@ const AddAddressPopup = (props: Props) => {
     const [districtList, setDistrictList] = useState([]);
     const [wardList, setWardList] = useState([]);
     const [isMainAddress, setIsMainAddress] = useState<boolean>(false);
-    const [longitude, setLongitude] = useState<number>(0);
-    const [latitude, setLatitude] = useState<number>(0);
+    const [longitude, setLongitude] = useState<number>();
+    const [latitude, setLatitude] = useState<number>();
     const { account } = useAppSelector((state) => state.authentication);
     useEffect(() => {
         const getProvinceData = async () => {
@@ -105,19 +105,34 @@ const AddAddressPopup = (props: Props) => {
 
     const handleSubmitForm = useCallback(async () => {
         const data: IAddress = {
-            address: `${detailAddress}/${selectedWard}, ${selectedDistrict}, ${selectedProvince}`,
-            latitude: 0,
-            longitude: 0,
+            address: `${detailAddress}/${selectedWard.split("/")[1]}, ${
+                selectedDistrict.split("/")[1]
+            }, ${selectedProvince.split("/")[1]}`,
+            latitude: latitude,
+            longitude: longitude,
             userId: account.userId,
             isMainAddress,
         };
 
         try {
             await dispatch(createAddressAsync(data));
+            setDetailAddress("");
+            setLatitude(undefined);
+            setLongitude(undefined);
+            setSelectedDistrict("");
+            setSelectedProvince("");
+            setSelectedWard("");
             props.close();
             await dispatch(getAllAddressAsync(account.userId));
         } catch (error) {}
-    }, [selectedProvince, selectedDistrict, selectedWard, detailAddress]);
+    }, [
+        selectedProvince,
+        selectedDistrict,
+        selectedWard,
+        detailAddress,
+        latitude,
+        longitude,
+    ]);
 
     const handleGetCordinate = () => {
         if ("geolocation" in navigator) {
@@ -134,6 +149,14 @@ const AddAddressPopup = (props: Props) => {
         } else {
             toast.error("Trình duyệt không hỗ trợ Geolocation.");
         }
+    };
+    const handleClearData = () => {
+        setDetailAddress("");
+        setLatitude(undefined);
+        setLongitude(undefined);
+        setSelectedDistrict("");
+        setSelectedProvince("");
+        setSelectedWard("");
     };
     return (
         <Modal
@@ -210,17 +233,12 @@ const AddAddressPopup = (props: Props) => {
                     />
                 </Form.Item>
                 <Form.Item name="isDefault" label="Địa chỉ mặc định">
-                    <Checkbox checked={isMainAddress} />
+                    <Checkbox
+                        checked={isMainAddress}
+                        onChange={(e) => setIsMainAddress(e.target.checked)}
+                    />
                 </Form.Item>
                 <Form.Item name="cordinate" label="Bản đồ">
-                    {/* <iframe
-                        title="google-map"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.631019022368!2d105.83993977498018!3d21.007422880636508!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab8a922653a9%3A0x6c2ec19683313eab!2zMSDEkOG6oWkgQ-G7kyBWaeG7h3QsIELDoWNoIEtob2EsIEhhaSBCw6AgVHLGsG5nLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1699550440346!5m2!1svi!2s"
-                        style={{ border: 0, height: 200, width: "100%" }}
-                        allowFullScreen={true}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe> */}
                     <Flex vertical>
                         <Button onClick={handleGetCordinate}>Lấy tọa độ</Button>
                         <Text>Kinh độ: {longitude}</Text>

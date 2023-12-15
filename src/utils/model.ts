@@ -121,6 +121,7 @@ export interface IAddress {
     isMainAddress: boolean;
     longitude?: number;
     latitude?: number;
+    isActive?: boolean;
 }
 
 export interface IReview {

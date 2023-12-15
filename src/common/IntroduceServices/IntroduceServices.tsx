@@ -56,15 +56,10 @@ const IntroduceServices = () => {
                     ) : (
                         services.map((service) => {
                             return (
-                                // <Link
-                                //     key={service.serviceId}
-                                //     to={`service/${service.serviceId}`}
-                                // >
                                 <ServiceCard
                                     service={service}
                                     key={service.serviceId}
                                 />
-                                // </Link>
                             );
                         })
                     )}

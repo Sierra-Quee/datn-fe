@@ -156,8 +156,8 @@ const Cart = (props: Props) => {
             style={{
                 padding: "24px 0",
                 background: colorBgContainer,
-                width: "60%",
-                margin: "auto",
+                width: "80%",
+                margin: "50px auto",
                 borderRadius: "5px",
                 minHeight: "80vh",
             }}
@@ -178,9 +178,9 @@ const Cart = (props: Props) => {
                         Giá từ: <Text className="priceValue">{"1120000"}</Text>
                     </Text>
                     <Button
-                        style={{ maxWidth: "200px" }}
                         type="primary"
                         onClick={handleForwardToCheckout}
+                        style={{ background: "#435585", maxWidth: "200px" }}
                     >
                         Đặt dịch vụ
                     </Button>

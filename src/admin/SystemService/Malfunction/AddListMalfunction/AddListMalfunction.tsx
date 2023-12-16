@@ -81,7 +81,7 @@ const AddListMalfunction = ({
             width: 80,
         },
         {
-            title: "Tên dịch vụ",
+            title: "Tên danh mục",
             dataIndex: "name",
             key: "name",
             fixed: "left",

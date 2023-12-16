@@ -407,9 +407,8 @@ const SignUp = () => {
                                 <div className="otp-title">
                                     Mã OTP đã được gửi đến email{" "}
                                     <span className="otp-title-email">
-                                        {" "}
                                         {user?.email}{" "}
-                                    </span>{" "}
+                                    </span>
                                     của bạn
                                 </div>
                                 <OTPInput

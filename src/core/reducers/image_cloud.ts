@@ -4,14 +4,12 @@ import { uploadImageCloudAPI } from "../../api/cloud-dictionary/cloud";
 export interface UploadImage {
     uploadSuccess: boolean;
     uploadFailed: boolean;
-    loadingUploadImage: boolean;
     image: string;
 }
 
 export const initialState: UploadImage = {
     uploadFailed: false,
     uploadSuccess: false,
-    loadingUploadImage: false,
     image: "",
 };
 
@@ -33,22 +31,18 @@ export const imageCloudSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(uploadImageCloud.pending, (state, action) => {
-                state.loadingUploadImage = true;
-            })
+            .addCase(uploadImageCloud.pending, (state, action) => {})
             .addCase(uploadImageCloud.fulfilled, (state, action) => {
                 return {
                     image: action.payload.url,
                     uploadFailed: false,
                     uploadSuccess: true,
-                    loadingUploadImage: false,
                 };
             })
             .addCase(uploadImageCloud.rejected, (state, action) => {
                 return {
                     ...state,
                     uploadFailed: true,
-                    loadingUploadImage: false,
                 };
             });
     },

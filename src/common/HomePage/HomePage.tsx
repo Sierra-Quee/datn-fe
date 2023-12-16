@@ -15,10 +15,8 @@ const HomePage = () => {
 
     const dispatch = useAppDispatch();
 
-    const { listSkill, loadingSkill } = useAppSelector((state) => state.skill);
-    const { listService, isLoadingService } = useAppSelector(
-        (state) => state.service
-    );
+    const { listSkill } = useAppSelector((state) => state.skill);
+    const { listService } = useAppSelector((state) => state.service);
 
     useEffect(() => {
         handleGetAllSkillAsync();
@@ -39,92 +37,82 @@ const HomePage = () => {
     };
 
     return (
-        <Spin spinning={loadingSkill || isLoadingService}>
-            <div className="home-page">
-                <Carousel autoplay className="carousel">
-                    <img src={Images.cold_machine} height={400} alt="" />
-                    <img src={Images.fridge} height={400} alt="" />
-                    <img src={Images.sun_battery} height={400} alt="" />
-                    <img src={Images.washing_machine} height={400} alt="" />
-                </Carousel>
-                <div className="home-page-content">
-                    {skills.map((skill) => (
-                        <div
-                            className="home-page-content-item"
-                            key={skill.skillId}
-                        >
-                            <h2 className="home-page-content-item-title">
-                                {skill.name}
-                            </h2>
-                            {services.filter((s) => s.skillId === skill.skillId)
-                                .length ? (
-                                <div className="home-page-content-item-child">
-                                    {services
-                                        .filter(
-                                            (s) => s.skillId === skill.skillId
-                                        )
-                                        .sort((a, b) => b.rate - a.rate)
-                                        .slice(0, 4)
-                                        .map((s) => (
-                                            <Card
-                                                hoverable
-                                                style={{ width: 250 }}
-                                                key={s.serviceId}
-                                                cover={
-                                                    <img
-                                                        alt="card"
+        <div className="home-page">
+            <Carousel autoplay className="carousel">
+                <img src={Images.cold_machine} height={400} alt="" />
+                <img src={Images.fridge} height={400} alt="" />
+                <img src={Images.sun_battery} height={400} alt="" />
+                <img src={Images.washing_machine} height={400} alt="" />
+            </Carousel>
+            <div className="home-page-content">
+                {skills.map((skill) => (
+                    <div className="home-page-content-item" key={skill.skillId}>
+                        <h2 className="home-page-content-item-title">
+                            {skill.name}
+                        </h2>
+                        {services.filter((s) => s.skillId === skill.skillId)
+                            .length ? (
+                            <div className="home-page-content-item-child">
+                                {services
+                                    .filter((s) => s.skillId === skill.skillId)
+                                    .sort((a, b) => b.rate - a.rate)
+                                    .slice(0, 4)
+                                    .map((s) => (
+                                        <Card
+                                            hoverable
+                                            style={{ width: 250 }}
+                                            key={s.serviceId}
+                                            cover={
+                                                <img
+                                                    alt="card"
+                                                    style={{
+                                                        height: 250,
+                                                        backgroundColor: "#ccc",
+                                                    }}
+                                                    src={
+                                                        s.image ||
+                                                        Images.no_image
+                                                    }
+                                                />
+                                            }
+                                        >
+                                            <div className="card-title">
+                                                {s?.name}
+                                            </div>
+                                            <div className="card-value">
+                                                <div
+                                                    style={{
+                                                        marginBottom: 5,
+                                                    }}
+                                                >
+                                                    Giá:{" "}
+                                                    <span
                                                         style={{
-                                                            height: 250,
-                                                            backgroundColor:
-                                                                "#ccc",
-                                                        }}
-                                                        src={
-                                                            s.image ||
-                                                            Images.no_image
-                                                        }
-                                                    />
-                                                }
-                                            >
-                                                <div className="card-title">
-                                                    {s?.name}
-                                                </div>
-                                                <div className="card-value">
-                                                    <div
-                                                        style={{
-                                                            marginBottom: 5,
+                                                            fontWeight: 600,
                                                         }}
                                                     >
-                                                        Giá:{" "}
-                                                        <span
-                                                            style={{
-                                                                fontWeight: 600,
-                                                            }}
-                                                        >
-                                                            {s.price} đ
-                                                        </span>
-                                                    </div>
-                                                    {s.rate ? (
-                                                        <Rate
-                                                            value={s.rate}
-                                                            disabled
-                                                        />
-                                                    ) : (
-                                                        <div>
-                                                            Không có đánh giá
-                                                        </div>
-                                                    )}
+                                                        {s.price} đ
+                                                    </span>
                                                 </div>
-                                            </Card>
-                                        ))}
-                                </div>
-                            ) : (
-                                <Empty />
-                            )}
-                        </div>
-                    ))}
-                </div>
+                                                {s.rate ? (
+                                                    <Rate
+                                                        value={s.rate}
+                                                        disabled
+                                                    />
+                                                ) : (
+                                                    <div>Không có đánh giá</div>
+                                                )}
+                                            </div>
+                                        </Card>
+                                    ))}
+                            </div>
+                        ) : (
+                            <Empty />
+                        )}
+                    </div>
+                ))}
             </div>
-        </Spin>
+        </div>
     );
 };
 

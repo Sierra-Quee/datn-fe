@@ -23,3 +23,6 @@ export const getServiceBySkillIdAPI = (skillId: number) => {
 export const getDetailServiceAPI = (serviceId: number) => {
     return fetchHandler.get(`/service/${serviceId}`);
 };
+export const createMultiServiceAPI = (body: IService[]) => {
+    return fetchHandler.post(`/service/createMultiServices`, body);
+};

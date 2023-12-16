@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ICreateService, IService } from "../../utils/model";
 import {
+    createMultiServiceAPI,
     createServiceAPI,
     deleteServiceAPI,
     getAllServiceAPI,
@@ -11,29 +12,24 @@ import {
 
 interface IServiceSlice {
     listService: IService[];
-    isLoadingService: boolean;
     updateService: {
-        loadingUpdateService: boolean;
         updateServiceStatus: "success" | "failed" | "none";
+        createListServiceStatus: "success" | "failed" | "none";
     };
     updateStatusService: {
-        loadingUpdateStatusService: boolean;
         updateStatusServiceStatus: "success" | "failed" | "none";
     };
     service: {
         detailService: IService;
-        isLoadingDetailService: boolean;
     };
 }
 const initialState: IServiceSlice = {
     listService: [],
-    isLoadingService: false,
     updateService: {
-        loadingUpdateService: false,
         updateServiceStatus: "none",
+        createListServiceStatus: "none",
     },
     updateStatusService: {
-        loadingUpdateStatusService: false,
         updateStatusServiceStatus: "none",
     },
     service: {
@@ -50,7 +46,6 @@ const initialState: IServiceSlice = {
             image: "",
             isActive: false,
         },
-        isLoadingDetailService: false,
     },
 };
 
@@ -95,6 +90,12 @@ export const getDetailServiceAsync = createAsyncThunk(
         return (await getDetailServiceAPI(id)).data;
     }
 );
+export const createMultiServiceAsync = createAsyncThunk(
+    "createMulti",
+    async (body: IService[]) => {
+        return (await createMultiServiceAPI(body)).data;
+    }
+);
 
 export const ServiceSlice = createSlice({
     name: "serviceAll",
@@ -121,87 +122,69 @@ export const ServiceSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getAllServiceAsync.pending, (state, action) => {
-                state.isLoadingService = true;
-            })
+            .addCase(getAllServiceAsync.pending, (state, action) => {})
             .addCase(getAllServiceAsync.fulfilled, (state, action) => {
                 state.listService = action.payload;
-                state.isLoadingService = false;
             })
             .addCase(
                 getAllServiceAsync.rejected,
-                (state, action: PayloadAction<any>) => {
-                    state.isLoadingService = false;
-                }
+                (state, action: PayloadAction<any>) => {}
             )
-            .addCase(getServiceBySkillIdAsync.pending, (state, action) => {
-                state.isLoadingService = true;
-            })
+            .addCase(getServiceBySkillIdAsync.pending, (state, action) => {})
             .addCase(getServiceBySkillIdAsync.fulfilled, (state, action) => {
                 state.listService = action.payload;
-                state.isLoadingService = false;
             })
             .addCase(
                 getServiceBySkillIdAsync.rejected,
-                (state, action: PayloadAction<any>) => {
-                    state.isLoadingService = false;
-                }
+                (state, action: PayloadAction<any>) => {}
             )
-            .addCase(getDetailServiceAsync.pending, (state, action) => {
-                state.service.isLoadingDetailService = true;
-            })
+            .addCase(getDetailServiceAsync.pending, (state, action) => {})
             .addCase(getDetailServiceAsync.fulfilled, (state, action) => {
                 state.service.detailService = action.payload;
-                state.service.isLoadingDetailService = false;
             })
             .addCase(
                 getDetailServiceAsync.rejected,
-                (state, action: PayloadAction<any>) => {
-                    state.service.isLoadingDetailService = false;
-                }
+                (state, action: PayloadAction<any>) => {}
             )
-            .addCase(createServiceAsync.pending, (state, action) => {
-                state.updateService.loadingUpdateService = true;
-            })
+            .addCase(createServiceAsync.pending, (state, action) => {})
             .addCase(createServiceAsync.fulfilled, (state, action) => {
                 state.updateService.updateServiceStatus = "success";
-                state.updateService.loadingUpdateService = false;
             })
             .addCase(
                 createServiceAsync.rejected,
                 (state, action: PayloadAction<any>) => {
                     state.updateService.updateServiceStatus = "failed";
-                    state.updateService.loadingUpdateService = false;
                 }
             )
-            .addCase(updateServiceAsync.pending, (state, action) => {
-                state.updateService.loadingUpdateService = true;
-            })
+            .addCase(updateServiceAsync.pending, (state, action) => {})
             .addCase(updateServiceAsync.fulfilled, (state, action) => {
                 state.updateService.updateServiceStatus = "success";
-                state.updateService.loadingUpdateService = false;
             })
             .addCase(
                 updateServiceAsync.rejected,
                 (state, action: PayloadAction<any>) => {
                     state.updateService.updateServiceStatus = "failed";
-                    state.updateService.loadingUpdateService = false;
                 }
             )
-            .addCase(deleteServiceAsync.pending, (state, action) => {
-                state.updateStatusService.loadingUpdateStatusService = true;
-            })
+            .addCase(deleteServiceAsync.pending, (state, action) => {})
             .addCase(deleteServiceAsync.fulfilled, (state, action) => {
                 state.updateStatusService.updateStatusServiceStatus = "success";
-                state.updateStatusService.loadingUpdateStatusService = false;
             })
             .addCase(
                 deleteServiceAsync.rejected,
                 (state, action: PayloadAction<any>) => {
                     state.updateStatusService.updateStatusServiceStatus =
                         "failed";
-                    state.updateStatusService.loadingUpdateStatusService =
-                        false;
+                }
+            )
+
+            .addCase(createMultiServiceAsync.fulfilled, (state, action) => {
+                state.updateService.createListServiceStatus = "success";
+            })
+            .addCase(
+                createMultiServiceAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateService.createListServiceStatus = "failed";
                 }
             );
     },

@@ -1,5 +1,6 @@
 :root {
     --primary: #8b53f8;
+    --info-color-info: #366ae2;
     --sidebar-color: #001529;
 
     --font-family: "ProximaNova", sans-serif;
@@ -184,9 +185,38 @@ button.ant-btn:disabled {
     background-color: rgba(0, 0, 0, 0.04) !important;
 }
 .ant-modal-footer {
-    justify-content: flex-end;
     display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
     .button-detail {
         width: 100px;
     }
+}
+
+/* Define css class for global loading message to cover 
+   screen during axios operations */
+
+.loading-indicator:before {
+    content: "";
+    background: #000000cc;
+    opacity: 0.2;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999999999;
+}
+
+.loading-indicator:after {
+    content: "Loading ...";
+    position: fixed;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    z-index: 1000000001;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
 }

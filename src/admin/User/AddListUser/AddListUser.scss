@@ -1,0 +1,33 @@
+.update-list-user-modal {
+    button.ant-btn.ant-btn-default {
+        width: unset;
+        background-color: #ffffff;
+        border: 1px solid #d9d9d9;
+        padding: 5px 11px;
+
+        &:hover,
+        &:focus {
+            background-color: #ffffff !important;
+        }
+    }
+
+    button.ant-btn.ant-btn-primary {
+        width: unset;
+        background-color: var(--primary);
+        border: 1px solid transparent;
+        padding: 5px 11px;
+
+        &:hover,
+        &:focus {
+            background-color: var(--primary) !important;
+        }
+    }
+
+    .modal-add-list-user-wrap {
+        .button-wrap {
+            display: flex;
+            column-gap: 20px;
+            justify-content: flex-end;
+        }
+    }
+}

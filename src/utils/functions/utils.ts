@@ -1,4 +1,6 @@
 import moment from "moment";
+import { Role } from "../../core/auth/roles";
+import { UserStatus } from "../../core/reducers/users";
 import { FORMAT_DATE } from "../constants";
 import { ITypeService } from "../model";
 
@@ -35,4 +37,81 @@ export const convertServiceType = (type: ITypeService): string => {
     } else {
         return "";
     }
+};
+// export const colorOrderStatus = (status: OrderStatus): string => {
+//     if (status === OrderStatus.PENDING) {
+//         return "ffaa56";
+//     }
+//     if (status === OrderStatus.REJECTED) {
+//         return "ff0000";
+//     }
+//     if (status === OrderStatus.FINDING) {
+//         return "b2b2b2";
+//     }
+//     if (status === OrderStatus.ACCEPTED) {
+//         return "aad4ff";
+//     }
+//     if (status === OrderStatus.CHECKEDIN) {
+//         return "ffffaa";
+//     }
+//     if (status === OrderStatus.COMPLETE) {
+//         return "56ff56";
+//     }
+//     return "";
+// };
+// export const convertOrderStatus = (status: OrderStatus): string => {
+//     if (status === OrderStatus.PENDING) {
+//         return "Đang chờ xác nhận";
+//     }
+//     if (status === OrderStatus.REJECTED) {
+//         return "Đơn hàng bị hủy";
+//     }
+//     if (status === OrderStatus.FINDING) {
+//         return "Đang tìm kiếm thợ";
+//     }
+//     if (status === OrderStatus.ACCEPTED) {
+//         return "Đơn hàng xác nhận";
+//     }
+//     if (status === OrderStatus.CHECKEDIN) {
+//         return "Đơn hàng đang xử lí";
+//     }
+//     if (status === OrderStatus.COMPLETE) {
+//         return "Đơn hàng hoàn thành";
+//     }
+//     return "";
+// };
+export const getTitleRole = (role: Role): string => {
+    if (role === Role.ROLE_STAFF) {
+        return "quản lý";
+    } else if (role === Role.ROLE_REPAIRMAN) {
+        return "thợ";
+    }
+    return "khách hàng";
+};
+
+export const getStatusUser = (status: UserStatus): string => {
+    if (status === UserStatus.ACTIVE) {
+        return "Hoạt động";
+    } else if (status === UserStatus.INACTIVE) {
+        return "Ngừng hoạt động";
+    } else {
+        return "Đang bận";
+    }
+};
+export const getMonthsBetweenDates = (startDate: string, endDate: string) => {
+    let result = [];
+
+    let currentDate = new Date(startDate);
+    let endDateObj = new Date(endDate);
+
+    while (currentDate <= endDateObj) {
+        let month = currentDate.getMonth() + 1; // Months are zero-based
+        let year = currentDate.getFullYear();
+
+        result.push(`${month.toString().padStart(2, "0")}/${year}`);
+
+        currentDate.setMonth(month);
+    }
+
+    return result;
 };

@@ -1,13 +1,21 @@
 import "./SignUp.scss";
 
-import { Button, Col, DatePicker, Form, Input, Row, Select, Spin } from "antd";
+import { Button, Col, DatePicker, Form, Input, Row, Select } from "antd";
 import { useEffect, useState } from "react";
+import OTPInput from "react-otp-input";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import Images from "../../assets/Images";
-import { getAccount } from "../../core/reducers/authentication";
-import { reset, signUp } from "../../core/reducers/register";
+import { Role } from "../../core/auth/roles";
+import {
+    clearResend,
+    clearVerify,
+    resendOtp,
+    reset,
+    signUp,
+    verifyOtp,
+} from "../../core/reducers/register";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { RoutePath } from "../../routes";
 import { FORMAT_DATE } from "../../utils/constants";
@@ -22,44 +30,117 @@ type ValidateStatus =
     | undefined;
 
 const SignUp = () => {
-    const { isAuthenticated, loginError, loginSuccess } = useAppSelector(
+    const { isAuthenticated, loginError, account } = useAppSelector(
         (state) => state.authentication
     );
-    const { loading, registrationSuccess, registrationFailure, errorMessage } =
+    const { registrationSuccess, user, verifyOtpStatus, resendOtpStatus } =
         useAppSelector((state) => state.register);
 
     const [validateStatusRePass, setValidateStatusRePass] =
         useState<ValidateStatus>();
     const [helpValidate, setHelpValidate] = useState<string | null>();
+    const [step, setStep] = useState<number>(1);
+    const [otp, setOtp] = useState<string>("");
+
     const dispatch = useAppDispatch();
     const location = useLocation();
     const navigate = useNavigate();
-    const { from } = location.state || { from: "/" };
+    const [time, setTime] = useState({ minute: 1, second: 0 });
+    const { from } = location.state || {
+        from:
+            account.role === Role.ROLE_ADMIN || account.role === Role.ROLE_STAFF
+                ? "/admin/home"
+                : "/",
+    };
 
-    useEffect(() => {
-        if (isAuthenticated && loginSuccess) {
-            dispatch(getAccount());
-        }
-    }, [isAuthenticated, loginSuccess, dispatch]);
+    // useEffect(() => {
+    //     if (isAuthenticated && loginSuccess) {
+    //         dispatch(getAccount());
+    //     }
+    // }, [isAuthenticated, loginSuccess, dispatch]);
 
     useEffect(() => {
         if (registrationSuccess) {
-            toast.success("Đăng ký tài khoản thành công", { autoClose: 2000 });
-            navigate("/login");
-        } else if (registrationFailure) {
-            errorMessage.forEach((mess: string) => toast.error(mess));
+            toast.success(
+                "Đăng ký tài khoản thành công. Mã OTP đã được gửi đến email của bạn",
+                { autoClose: 3000 }
+            );
+            setStep(2);
         }
+    }, [navigate, registrationSuccess, dispatch]);
 
-        return (): void => {
+    useEffect(() => {
+        return () => {
             dispatch(reset());
         };
-    }, [
-        navigate,
-        registrationSuccess,
-        registrationFailure,
-        errorMessage,
-        dispatch,
-    ]);
+    }, [dispatch]);
+
+    useEffect(() => {
+        let interval: NodeJS.Timer | number | undefined;
+        if (step === 2) {
+            interval = setInterval(() => {
+                if (time.second === 0) {
+                    if (time.minute === 0) {
+                        clearInterval(interval);
+                    } else {
+                        setTime({
+                            minute: time.minute - 1,
+                            second: 59,
+                        });
+                    }
+                } else {
+                    setTime({ ...time, second: time.second - 1 });
+                }
+            }, 1000);
+        }
+
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        };
+    }, [time, step]);
+
+    useEffect(() => {
+        if (otp && otp.length === 6) {
+            verifyOtpFunc();
+        }
+
+        async function verifyOtpFunc() {
+            console.log(user);
+
+            await dispatch(verifyOtp({ otp, userId: user.userId }));
+        }
+    }, [otp]);
+
+    useEffect(() => {
+        if (verifyOtpStatus === "success") {
+            toast.success("Xác thực tài khoản thành công");
+            navigate("/login");
+        } else if (verifyOtpStatus === "failed") {
+            toast.error("Xác thực tài khoản thất bại");
+            setOtp("");
+            dispatch(clearVerify());
+        }
+    }, [verifyOtpStatus, dispatch]);
+
+    useEffect(() => {
+        if (resendOtpStatus === "success") {
+            toast.success("Gửi lại mã OTP thành công");
+            setTime({
+                minute: 1,
+                second: 0,
+            });
+            dispatch(clearResend());
+        } else if (resendOtpStatus === "failed") {
+            toast.error("Gửi lại mã OTP thất bại");
+            dispatch(clearResend());
+        }
+    }, [resendOtpStatus, dispatch]);
+
+    const resendOtpFunc = async () => {
+        await dispatch(resendOtp({ phone: user.phone, email: user.email }));
+    };
 
     const onFinish = async (values: any) => {
         if (
@@ -86,37 +167,37 @@ const SignUp = () => {
             {isAuthenticated ? (
                 <Navigate replace to={from} />
             ) : (
-                <Spin spinning={loading}>
-                    <Row style={{ width: "100%", height: "100%" }}>
-                        <Col
-                            xxl={14}
-                            xl={14}
-                            lg={14}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            className="wrap-logo"
-                        >
-                            <img
-                                style={{ width: "400px", height: "400px" }}
-                                src={Images.ismart}
-                                alt="icon"
-                            />
-                            <h2 style={{ textAlign: "center" }}>
-                                Hệ thống sửa chữa điện lạnh ISmart
-                            </h2>
-                        </Col>
-                        <Col
-                            xxl={10}
-                            xl={10}
-                            lg={10}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            className="form-register-wrap"
-                        >
+                <Row style={{ width: "100%", height: "100%" }}>
+                    <Col
+                        xxl={14}
+                        xl={14}
+                        lg={14}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className="wrap-logo"
+                    >
+                        <img
+                            style={{ width: "400px", height: "400px" }}
+                            src={Images.Ismart}
+                            alt="icon"
+                        />
+                        <h2 style={{ textAlign: "center" }}>
+                            Hệ thống sửa chữa điện lạnh ISmart
+                        </h2>
+                    </Col>
+                    <Col
+                        xxl={10}
+                        xl={10}
+                        lg={10}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className="form-register-wrap"
+                    >
+                        <h1>Đăng ký</h1>
+                        {step === 1 && (
                             <Form onFinish={onFinish} layout="vertical">
-                                <h1>Đăng ký</h1>
                                 <Row gutter={20}>
                                     <Col
                                         xxl={12}
@@ -320,9 +401,53 @@ const SignUp = () => {
                                     </Link>
                                 </Form.Item>
                             </Form>
-                        </Col>
-                    </Row>
-                </Spin>
+                        )}
+                        {step === 2 && (
+                            <div className="otp-wrap">
+                                <div className="otp-title">
+                                    Mã OTP đã được gửi đến email{" "}
+                                    <span className="otp-title-email">
+                                        {user?.email}{" "}
+                                    </span>
+                                    của bạn
+                                </div>
+                                <OTPInput
+                                    value={otp}
+                                    onChange={setOtp}
+                                    numInputs={6}
+                                    renderInput={(props: any) => (
+                                        <input {...props} />
+                                    )}
+                                    containerStyle={"otp-input-wrap"}
+                                    inputStyle={"otp-input"}
+                                />
+                                <div className="otp-time">
+                                    <span
+                                        className="otp-link"
+                                        onClick={resendOtpFunc}
+                                    >
+                                        Không nhận được OTP?
+                                    </span>
+                                    <div>
+                                        Mã OTP hết hạn sau 0{time.minute}:
+                                        {time.second < 10
+                                            ? `0${time.second}`
+                                            : time.second}
+                                    </div>
+                                </div>
+                                <div className="otp-login">
+                                    <Link
+                                        to={"/login"}
+                                        className="otp-link"
+                                        style={{ marginTop: "20px" }}
+                                    >
+                                        Quay lại trang đăng nhập
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
+                    </Col>
+                </Row>
             )}
         </div>
     );

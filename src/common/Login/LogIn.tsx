@@ -15,12 +15,15 @@ import { checkNullObj } from "../../utils/functions/utils";
 import { Role } from "../../core/auth/roles";
 
 const LogIn = () => {
-    const { isAuthenticated, loginError, loginSuccess, loading, account } =
+    const { isAuthenticated, loginError, loginSuccess, account } =
         useAppSelector((state) => state.authentication);
     const dispatch = useAppDispatch();
     const location = useLocation();
     const { from } = location.state || {
-        from: account.role === Role.ROLE_ADMIN ? "/home" : "/",
+        from:
+            account.role === Role.ROLE_ADMIN || account.role === Role.ROLE_STAFF
+                ? "/admin/home"
+                : "/",
     };
 
     useEffect(() => {
@@ -43,84 +46,81 @@ const LogIn = () => {
             {isAuthenticated && !checkNullObj(account) ? (
                 <Navigate replace to={from} />
             ) : (
-                <Spin spinning={loading}>
-                    <Row style={{ width: "100%", height: "100%" }}>
-                        <Col
-                            xxl={14}
-                            xl={14}
-                            lg={14}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            className="wrap-logo"
-                        >
-                            <img
-                                style={{ width: "400px", height: "400px" }}
-                                src={Images.ismart}
-                                alt="icon"
-                            />
-                            <h2 style={{ textAlign: "center" }}>
-                                Hệ thống sửa chữa điện lạnh ISmart
-                            </h2>
-                        </Col>
-                        <Col
-                            xxl={10}
-                            xl={10}
-                            lg={10}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            className="form-login-wrap"
-                        >
-                            <Form onFinish={onFinish} layout="vertical">
-                                <h1>Đăng nhập</h1>
-                                <Form.Item<ILoginParams>
-                                    label="Số điện thoại"
-                                    name="phone"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Vui lòng nhập số điện thoại",
-                                        },
-                                    ]}
-                                >
-                                    <Input placeholder="Nhập số điện thoại của bạn" />
-                                </Form.Item>
-                                <Form.Item<ILoginParams>
-                                    label="Mật khẩu"
-                                    name="password"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Vui lòng nhập mật khẩu",
-                                        },
-                                    ]}
-                                >
-                                    <Input.Password placeholder="Nhập số điện thoại của bạn" />
-                                </Form.Item>
+                <Row style={{ width: "100%", height: "100%" }}>
+                    <Col
+                        xxl={14}
+                        xl={14}
+                        lg={14}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className="wrap-logo"
+                    >
+                        <img
+                            style={{ width: "400px", height: "400px" }}
+                            src={Images.Ismart}
+                            alt="icon"
+                        />
+                        <h2 style={{ textAlign: "center" }}>
+                            Hệ thống sửa chữa điện lạnh ISmart
+                        </h2>
+                    </Col>
+                    <Col
+                        xxl={10}
+                        xl={10}
+                        lg={10}
+                        md={24}
+                        sm={24}
+                        xs={24}
+                        className="form-login-wrap"
+                    >
+                        <Form onFinish={onFinish} layout="vertical">
+                            <h1>Đăng nhập</h1>
+                            <Form.Item<ILoginParams>
+                                label="Số điện thoại"
+                                name="phone"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng nhập số điện thoại",
+                                    },
+                                ]}
+                            >
+                                <Input placeholder="Nhập số điện thoại của bạn" />
+                            </Form.Item>
+                            <Form.Item<ILoginParams>
+                                label="Mật khẩu"
+                                name="password"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng nhập mật khẩu",
+                                    },
+                                ]}
+                            >
+                                <Input.Password placeholder="Nhập số điện thoại của bạn" />
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                    Đăng nhập
+                                </Button>
+                            </Form.Item>
+                            {!isAuthenticated && loginError && (
                                 <Form.Item>
-                                    <Button type="primary" htmlType="submit">
-                                        Đăng nhập
-                                    </Button>
+                                    <div className="error-message">
+                                        Số điện thoại hoặc mật khẩu không chính
+                                        xác
+                                    </div>
                                 </Form.Item>
-                                {!isAuthenticated && loginError && (
-                                    <Form.Item>
-                                        <div className="error-message">
-                                            Số điện thoại hoặc mật khẩu không
-                                            chính xác
-                                        </div>
-                                    </Form.Item>
-                                )}
-                                <Form.Item>
-                                    <Link to={RoutePath.SignUp}>
-                                        Chưa có tài khoản ?
-                                    </Link>
-                                </Form.Item>
-                            </Form>
-                        </Col>
-                    </Row>
-                </Spin>
+                            )}
+                            <Form.Item>
+                                <Link to={RoutePath.SignUp}>
+                                    Chưa có tài khoản ?
+                                </Link>
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                </Row>
             )}
         </div>
     );

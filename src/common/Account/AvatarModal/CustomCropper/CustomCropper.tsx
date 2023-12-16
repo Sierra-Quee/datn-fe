@@ -35,15 +35,11 @@ const CustomCropper = ({
         (state) => state.authentication.updateProfile
     );
 
-    const { account, loading } = useAppSelector(
-        (state) => state.authentication
-    );
+    const { account } = useAppSelector((state) => state.authentication);
 
-    const {
-        uploadSuccess,
-        loadingUploadImage,
-        image: imageCloud,
-    } = useAppSelector((state) => state.imageCloud);
+    const { uploadSuccess, image: imageCloud } = useAppSelector(
+        (state) => state.imageCloud
+    );
 
     useEffect(() => {
         setAccountProfile(account);
@@ -72,11 +68,7 @@ const CustomCropper = ({
 
     const buttonCancel = () => {
         return (
-            <Button
-                key={1}
-                disabled={loading || loadingUploadImage}
-                onClick={closeCropper}
-            >
+            <Button key={1} onClick={closeCropper}>
                 Hủy bỏ
             </Button>
         );
@@ -84,12 +76,7 @@ const CustomCropper = ({
 
     const buttonSelect = () => {
         return (
-            <Button
-                key={2}
-                type="primary"
-                onClick={getCropData}
-                loading={loading || loadingUploadImage}
-            >
+            <Button key={2} type="primary" onClick={getCropData}>
                 Lưu
             </Button>
         );

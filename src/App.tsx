@@ -4,10 +4,9 @@ import { useEffect } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
+import AdminRoutes from "./admin/AdminRoutes";
 import Account from "./common/Account/Account";
 import CommonRoutes from "./common/CommonRoutes";
-import Home from "./common/Home/Home";
-import Skill from "./common/Skill/Skill";
 import { PrivateRoute } from "./core/auth/private-route";
 import { Role } from "./core/auth/roles";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";
@@ -16,9 +15,6 @@ import { useAppDispatch, useAppSelector } from "./redux/hook";
 import { RoutePath } from "./routes";
 import { ACCESS_TOKEN } from "./utils/constants";
 import { getCookie } from "./utils/functions/cookies";
-import AdminServiceRoute from "./routes/adminServiceRoute";
-import { SystemCustomer } from "./components/SystemUsers/SystemCustomer/SystemCustomer";
-import SystemRepairment from "./components/SystemUsers/SystemRepairment/SystemRepairment";
 
 function App() {
     const { isAuthenticated } = useAppSelector((state) => state.authentication);
@@ -34,15 +30,7 @@ function App() {
             {(!access_token || (access_token && isAuthenticated)) && (
                 <BrowserRouter>
                     <ErrorBoundaryRoutes>
-                        <Route path="/*" element={<CommonRoutes />} />
-                        <Route
-                            path={RoutePath.Home}
-                            element={
-                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
-                                    <Home />
-                                </PrivateRoute>
-                            }
-                        />
+                        <Route path="*" element={<CommonRoutes />} />
                         <Route
                             path={RoutePath.Account}
                             element={
@@ -51,44 +39,15 @@ function App() {
                                         Role.ROLE_USER,
                                         Role.ROLE_ADMIN,
                                         Role.ROLE_REPAIRMAN,
+                                        Role.ROLE_STAFF,
                                     ]}
                                 >
                                     <Account />
                                 </PrivateRoute>
                             }
                         />
-                        <Route
-                            path={RoutePath.Skill}
-                            element={
-                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
-                                    <Skill />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path={`${RoutePath.Service}/*`}
-                            element={
-                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
-                                    <AdminServiceRoute />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path={`${RoutePath.Employee}/*`}
-                            element={
-                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
-                                    <SystemRepairment />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path={`${RoutePath.Customer}/*`}
-                            element={
-                                <PrivateRoute roles={[Role.ROLE_ADMIN]}>
-                                    <SystemCustomer />
-                                </PrivateRoute>
-                            }
-                        />
+
+                        <Route path="admin/*" element={<AdminRoutes />} />
                     </ErrorBoundaryRoutes>
                 </BrowserRouter>
             )}

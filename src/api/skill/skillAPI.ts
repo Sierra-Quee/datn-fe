@@ -20,3 +20,6 @@ export const updateSkillAPI = (skill: ISkill) => {
 export const updateStatusSkillAPI = (skillId: number) => {
     return fetchHandler.patch(`/skill/toggleSkillActive/${skillId}`);
 };
+export const createMultiSkillAPI = (body: ISkill[]) => {
+    return fetchHandler.post(`/skill/createMultiSkills`, body);
+};

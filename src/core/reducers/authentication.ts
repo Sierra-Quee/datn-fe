@@ -10,7 +10,6 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../utils/constants";
 import { clearCookie, setCookie } from "../../utils/functions/cookies";
 
 export interface AuthenticationState {
-    loading: boolean;
     isAuthenticated: boolean;
     loginSuccess: boolean;
     loginError: boolean; // Errors returned from server side
@@ -20,7 +19,6 @@ export interface AuthenticationState {
 }
 
 export const initialState: AuthenticationState = {
-    loading: false,
     isAuthenticated: false,
     loginSuccess: false,
     loginError: false, // Errors returned from server side
@@ -129,9 +127,7 @@ export const authenticationSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(login.pending, (state, action) => {
-                state.loading = true;
-            })
+            .addCase(login.pending, (state, action) => {})
             .addCase(
                 login.fulfilled,
                 (state, action: PayloadAction<ILoginResponseToken>) => {
@@ -157,45 +153,35 @@ export const authenticationSlice = createSlice({
             .addCase(logout.pending, (state, action) => {})
             .addCase(logout.fulfilled, (state, action) => {})
             .addCase(logout.rejected, (state, action) => {})
-            .addCase(changePassword.pending, (state, action) => {
-                state.loading = true;
-            })
+            .addCase(changePassword.pending, (state, action) => {})
             .addCase(changePassword.fulfilled, (state, action) => {
-                state.loading = false;
                 state.updatePassword = {
                     updatePassFailed: false,
                     updatePassSuccess: true,
                 };
             })
             .addCase(changePassword.rejected, (state, action) => {
-                state.loading = false;
                 state.updatePassword = {
                     updatePassFailed: true,
                     updatePassSuccess: false,
                 };
             })
-            .addCase(updateProfile.pending, (state, action) => {
-                state.loading = true;
-            })
+            .addCase(updateProfile.pending, (state, action) => {})
             .addCase(updateProfile.fulfilled, (state, action) => {
                 state.account = { ...action.payload };
-                state.loading = false;
                 state.updateProfile = {
                     updateProfileSuccess: true,
                     updateProfileFailed: false,
                 };
             })
             .addCase(updateProfile.rejected, (state, action) => {
-                state.loading = false;
                 state.updateProfile = {
                     updateProfileSuccess: false,
                     updateProfileFailed: true,
                 };
             })
 
-            .addCase(getAccount.pending, (state, action) => {
-                state.loading = true;
-            })
+            .addCase(getAccount.pending, (state, action) => {})
             .addCase(
                 getAccount.fulfilled,
                 (state, action: PayloadAction<IAccount>) => {

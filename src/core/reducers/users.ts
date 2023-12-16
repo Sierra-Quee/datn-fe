@@ -1,41 +1,48 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+    createListUserAPI,
     createUserAPI,
     getAllUsersRole,
     getDetailUserAPI,
-    updateStatusUserAPI,
+    updateStatusCustomerAPI,
     updateUserAPI,
 } from "../../api/users/userAPI";
 import { IUser, defaultUser } from "../../utils/model";
 import { Role } from "../auth/roles";
 
+export enum UserStatus {
+    ACTIVE,
+    BUSY,
+    INACTIVE,
+}
+
 interface IUserSlice {
     repairList: IUser[];
     customerList: IUser[];
-    loadingUser: boolean;
-    loadingDetailUser: boolean;
+    adminList: IUser[];
     updateUser: {
-        loadingUpdateUser: boolean;
         updateUserStatus: "success" | "failed" | "none";
     };
     updateStatusUser: {
-        loadingUpdateUserStatus: boolean;
         updateStatusUserStatus: "success" | "failed" | "none";
+    };
+    updateListUser: {
+        updateListUserStatus: "success" | "failed" | "none";
     };
     user: IUser;
 }
 const initialState: IUserSlice = {
     repairList: [],
     customerList: [],
-    loadingUser: false,
-    loadingDetailUser: false,
+    adminList: [],
     updateUser: {
-        loadingUpdateUser: false,
         updateUserStatus: "none",
     },
     updateStatusUser: {
-        loadingUpdateUserStatus: false,
         updateStatusUserStatus: "none",
+    },
+    updateListUser: {
+        updateListUserStatus: "none",
     },
     user: defaultUser,
 };
@@ -54,6 +61,7 @@ export const getDetailUserAsync = createAsyncThunk(
         return res.data;
     }
 );
+
 export const createUserAsync = createAsyncThunk(
     "createUser",
     async (user: IUser) => {
@@ -61,6 +69,14 @@ export const createUserAsync = createAsyncThunk(
         return res.data;
     }
 );
+
+export const createMultiUserAsync = createAsyncThunk(
+    "createMultiUser",
+    async (users: IUser[]) => {
+        return (await createListUserAPI(users)).data;
+    }
+);
+
 export const updateUserAsync = createAsyncThunk(
     "updateUser",
     async (user: IUser) => {
@@ -72,7 +88,7 @@ export const updateUserAsync = createAsyncThunk(
 export const updateStatusUserAsync = createAsyncThunk(
     "updateStatusUser",
     async (userId: string) => {
-        const res = await updateStatusUserAPI(userId);
+        const res = await updateStatusCustomerAPI(userId);
         return res.data;
     }
 );
@@ -93,8 +109,14 @@ export const userSlice = createSlice({
         clearListCustomer: (state) => {
             state.customerList = [];
         },
+        clearListAdmin: (state) => {
+            state.adminList = [];
+        },
         clearUpdateUser: (state) => {
             return { ...state, updateUser: initialState.updateUser };
+        },
+        clearUpdateListUser: (state) => {
+            return { ...state, updateListUser: initialState.updateListUser };
         },
         clearUpdateStatusUser: (state) => {
             return {
@@ -105,61 +127,48 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getAllUserRoleAsync.pending, (state, action) => {
-                state.loadingUser = true;
-            })
+            .addCase(getAllUserRoleAsync.pending, (state, action) => {})
             .addCase(getAllUserRoleAsync.fulfilled, (state, action) => {
-                state.loadingUser = false;
                 if (action.payload.role === Role.ROLE_USER) {
                     state.customerList = action.payload.data;
-                } else {
+                } else if (action.payload.role === Role.ROLE_REPAIRMAN) {
                     state.repairList = action.payload.data;
+                } else {
+                    state.adminList = action.payload.data;
                 }
             })
-            .addCase(getAllUserRoleAsync.rejected, (state, action) => {
-                state.loadingUser = false;
-            })
-            .addCase(getDetailUserAsync.pending, (state, action) => {
-                state.loadingDetailUser = true;
-            })
+            .addCase(getAllUserRoleAsync.rejected, (state, action) => {})
+            .addCase(getDetailUserAsync.pending, (state, action) => {})
             .addCase(getDetailUserAsync.fulfilled, (state, action) => {
-                state.loadingDetailUser = false;
                 state.user = action.payload;
             })
-            .addCase(getDetailUserAsync.rejected, (state, action) => {
-                state.loadingDetailUser = false;
-            })
-            .addCase(createUserAsync.pending, (state, action) => {
-                state.updateUser.loadingUpdateUser = true;
-            })
+            .addCase(getDetailUserAsync.rejected, (state, action) => {})
+            .addCase(createUserAsync.pending, (state, action) => {})
             .addCase(createUserAsync.fulfilled, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "success";
             })
             .addCase(createUserAsync.rejected, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "failed";
             })
-            .addCase(updateUserAsync.pending, (state, action) => {
-                state.updateUser.loadingUpdateUser = true;
+            .addCase(createMultiUserAsync.pending, (state, action) => {})
+            .addCase(createMultiUserAsync.fulfilled, (state, action) => {
+                state.updateListUser.updateListUserStatus = "success";
             })
+            .addCase(createMultiUserAsync.rejected, (state, action) => {
+                state.updateListUser.updateListUserStatus = "failed";
+            })
+            .addCase(updateUserAsync.pending, (state, action) => {})
             .addCase(updateUserAsync.fulfilled, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "success";
             })
             .addCase(updateUserAsync.rejected, (state, action) => {
-                state.updateUser.loadingUpdateUser = false;
                 state.updateUser.updateUserStatus = "failed";
             })
-            .addCase(updateStatusUserAsync.pending, (state, action) => {
-                state.updateStatusUser.loadingUpdateUserStatus = true;
-            })
+            .addCase(updateStatusUserAsync.pending, (state, action) => {})
             .addCase(updateStatusUserAsync.fulfilled, (state, action) => {
-                state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "success";
             })
             .addCase(updateStatusUserAsync.rejected, (state, action) => {
-                state.updateStatusUser.loadingUpdateUserStatus = false;
                 state.updateStatusUser.updateStatusUserStatus = "failed";
             });
     },
@@ -170,6 +179,8 @@ export const {
     setUser,
     clearListRepair,
     clearListCustomer,
+    clearListAdmin,
     clearUpdateUser,
+    clearUpdateListUser,
     clearUpdateStatusUser,
 } = userSlice.actions;

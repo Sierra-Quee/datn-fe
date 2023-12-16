@@ -1,4 +1,5 @@
 import { ReactElement, ReactNode } from "react";
+import { UserStatus } from "../core/reducers/users";
 
 export interface IChildRoutePath {
     children: ReactNode;
@@ -74,14 +75,14 @@ export interface IUser {
     dob: string;
     phone: string;
     email: string;
-    imageUrl: string;
+    imageUrl?: string;
     role: number;
-    gender: boolean;
+    gender: boolean | string;
     createdAt: string;
     updatedAt: string;
-    status: number;
+    status: UserStatus;
     // address: IAddress[];
-    skills: string[] | { skillId: number }[];
+    skills?: string[] | { skillId: number }[];
 }
 export const defaultUser = {
     userId: "",
@@ -99,20 +100,6 @@ export const defaultUser = {
     status: -1,
     skills: [],
     address: [],
-};
-export interface IMalfunction {
-    malFuncId: number;
-    name: string;
-    price: number;
-    serviceId: number;
-    service?: any;
-}
-export const defaultMalfunction = {
-    malFuncId: -1,
-    name: "",
-    price: -1,
-    serviceId: -1,
-    service: {},
 };
 export interface IAddress {
     addressId?: number;
@@ -195,3 +182,18 @@ export interface INotification {
     notificationId: string;
     createdAt: string;
 }
+
+export interface IMalfunction {
+    malFuncId: number;
+    name: string;
+    price: number;
+    serviceId: number;
+    service?: any;
+}
+export const defaultMalfunction = {
+    malFuncId: -1,
+    name: "",
+    price: -1,
+    serviceId: -1,
+    service: {},
+};

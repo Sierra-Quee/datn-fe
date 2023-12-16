@@ -101,13 +101,6 @@ export const defaultUser = {
     skills: [],
     address: [],
 };
-export const defaultMalfunction = {
-    malFuncId: -1,
-    name: "",
-    price: -1,
-    serviceId: -1,
-    service: {},
-};
 export interface IAddress {
     addressId?: number;
     userId: string;

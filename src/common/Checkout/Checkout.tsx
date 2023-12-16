@@ -45,7 +45,7 @@ const Checkout = (props: Props) => {
     const { account } = useAppSelector((state) => state.authentication);
     const {
         uploadSuccess,
-        loadingUploadImage,
+        // loadingUploadImage,
         image: imageCloud,
     } = useAppSelector((state) => state.imageCloud);
     const [addedInfoList, setAddedInfoList] = useState<IAddedInfo[]>([]);

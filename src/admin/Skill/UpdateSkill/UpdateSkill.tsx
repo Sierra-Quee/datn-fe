@@ -200,7 +200,7 @@ const UpdateSkill = ({
                             },
                         ]}
                         initialValue={skill?.name}
-                        style={{ width: "100%" }}
+                        style={{ width: "100%", marginBottom: 0 }}
                     >
                         <Input
                             value={nameSkill}

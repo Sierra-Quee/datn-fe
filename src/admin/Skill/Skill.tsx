@@ -1,10 +1,11 @@
 import "./Skill.scss";
 
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Spin, Switch } from "antd";
+import { Button, Input, Switch } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { read, utils, writeFile } from "xlsx";
 
 import {
     clearListSkill,
@@ -14,12 +15,11 @@ import {
 } from "../../core/reducers/skill";
 import useDebounce from "../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { FORMAT_DATETIME, XLSX_TYPE, XLS_TYPE } from "../../utils/constants";
+import { FORMAT_DATETIME, XLS_TYPE, XLSX_TYPE } from "../../utils/constants";
 import { formatDate } from "../../utils/functions/utils";
 import { ISkill } from "../../utils/model";
-import UpdateSkill from "./UpdateSkill/UpdateSkill";
 import AddListSkills from "./AddListSkill/AddListSkill";
-import { read, utils, writeFile } from "xlsx";
+import UpdateSkill from "./UpdateSkill/UpdateSkill";
 
 const Skill = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -27,7 +27,7 @@ const Skill = () => {
     const [searchInput, setSearchInput] = useState<string>("");
     const [skills, setSkills] = useState<ISkill[]>([]);
     const [fileName, setFileName] = useState<string>("");
-    const [listSkillExport, setListSkillExport] = useState<any>(null);
+    const [listSkillExport, setListSkillExport] = useState<any[]>([]);
     const [listSkillAdd, setListSkillAdd] = useState<any[] | null>(null);
     const dispatch = useAppDispatch();
 
@@ -79,6 +79,31 @@ const Skill = () => {
                         .toLowerCase()
                         .includes((debounce as string).toLowerCase())
                 )
+            );
+
+            setListSkillExport(
+                listSkill
+                    .filter((s) =>
+                        s.name
+                            .toLowerCase()
+                            .includes((debounce as string).toLowerCase())
+                    )
+                    .map((skill) => {
+                        return {
+                            id: skill.skillId,
+                            name: skill.name,
+                            image: skill.image,
+                            createdDate: formatDate(
+                                skill.createdAt,
+                                FORMAT_DATETIME
+                            ),
+                            updatedDate: formatDate(
+                                skill.updatedAt,
+                                FORMAT_DATETIME
+                            ),
+                            isActive: skill.isActive,
+                        };
+                    })
             );
         }
     }, [debounce]);
@@ -216,35 +241,40 @@ const Skill = () => {
         <div className="skill">
             <h2>Danh sách loại dịch vụ</h2>
             <div className="header-table-skill">
-                <Button
-                    type="primary"
-                    onClick={() => setIsOpenModal(!isOpenModal)}
-                >
-                    Thêm loại dịch vụ
-                </Button>
-                <div className="button-upload">
-                    <input
-                        type="file"
-                        name="file"
-                        className="custom-file-input"
-                        id="inputGroupFile"
-                        required
-                        hidden
-                        onClick={(e: any) => (e.target.value = null)}
-                        onChange={handleAddByImport}
-                    />
-                    <label
-                        className="custom-file-label"
-                        htmlFor="inputGroupFile"
+                <div className="header-table-skill-left">
+                    <Button
+                        type="primary"
+                        onClick={() => setIsOpenModal(!isOpenModal)}
                     >
-                        Thêm bằng file excel
-                    </label>
+                        Thêm loại dịch vụ
+                    </Button>
+                    <div className="button-upload">
+                        <input
+                            type="file"
+                            name="file"
+                            className="custom-file-input"
+                            id="inputGroupFile"
+                            required
+                            hidden
+                            onClick={(e: any) => (e.target.value = null)}
+                            onChange={handleAddByImport}
+                        />
+                        <label
+                            className="custom-file-label"
+                            htmlFor="inputGroupFile"
+                        >
+                            Thêm bằng file excel
+                        </label>
+                    </div>
                 </div>
-                <div className="header-table-customer-wrap">
+                <div className="header-table-skill-right">
                     <Button
                         type="primary"
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
+                        disabled={
+                            !listSkillExport || listSkillExport.length === 0
+                        }
                     >
                         Xuất file excel
                     </Button>

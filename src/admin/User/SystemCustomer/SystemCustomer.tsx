@@ -32,7 +32,7 @@ import UpdateUser from "../UpdateUser/UpdateUser";
 
 const SystemCustomer = () => {
     const [fileName, setFileName] = useState<string>("");
-    const [listCusExport, setListCusExport] = useState<any>(null);
+    const [listCusExport, setListCusExport] = useState<any[]>([]);
     const [listCusAdd, setListCusAdd] = useState<any[] | null>(null);
     const [searchInput, setSearchInput] = useState<string>("");
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
@@ -99,6 +99,29 @@ const SystemCustomer = () => {
                     .includes((debounce as string)?.toLowerCase())
             ),
         ]);
+        setListCusExport(
+            customerList
+                .filter((r) =>
+                    r.firstName
+                        .toLowerCase()
+                        .includes((debounce as string)?.toLowerCase())
+                )
+                .map((cus) => {
+                    return {
+                        id: cus.userId,
+                        accountName: cus.accountName,
+                        firstName: cus.firstName,
+                        lastName: cus.lastName,
+                        gender: cus.gender ? "Nam" : "Nữ",
+                        phone: cus.phone,
+                        email: cus.email,
+                        dob: formatDate(cus.dob, FORMAT_DATE),
+                        createdDate: formatDate(cus.createdAt, FORMAT_DATETIME),
+                        updatedDate: formatDate(cus.updatedAt, FORMAT_DATETIME),
+                        status: getStatusUser(cus.status),
+                    };
+                })
+        );
     }, [debounce]);
 
     const handleConfirmPanel = () => {
@@ -342,6 +365,7 @@ const SystemCustomer = () => {
                         type="primary"
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
+                        disabled={!listCusExport || listCusExport.length === 0}
                     >
                         Xuất file excel
                     </Button>

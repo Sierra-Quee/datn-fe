@@ -32,7 +32,7 @@ import UpdateUser from "../UpdateUser/UpdateUser";
 
 const SystemAdmin = () => {
     const [fileName, setFileName] = useState<string>("");
-    const [listAdExport, setListAdExport] = useState<any>(null);
+    const [listAdExport, setListAdExport] = useState<any[]>([]);
     const [listAdAdd, setListAdAdd] = useState<any[] | null>(null);
     const [searchInput, setSearchInput] = useState<string>("");
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
@@ -89,6 +89,29 @@ const SystemAdmin = () => {
                     .includes((debounce as string)?.toLowerCase())
             ),
         ]);
+        setListAdExport(
+            adminList
+                .filter((r) =>
+                    r.firstName
+                        .toLowerCase()
+                        .includes((debounce as string)?.toLowerCase())
+                )
+                .map((cus) => {
+                    return {
+                        id: cus.userId,
+                        accountName: cus.accountName,
+                        firstName: cus.firstName,
+                        lastName: cus.lastName,
+                        gender: cus.gender ? "Nam" : "Nữ",
+                        phone: cus.phone,
+                        email: cus.email,
+                        dob: formatDate(cus.dob, FORMAT_DATE),
+                        createdDate: formatDate(cus.createdAt, FORMAT_DATETIME),
+                        updatedDate: formatDate(cus.updatedAt, FORMAT_DATETIME),
+                        status: getStatusUser(cus.status),
+                    };
+                })
+        );
     }, [debounce]);
 
     useEffect(() => {
@@ -340,6 +363,7 @@ const SystemAdmin = () => {
                         type="primary"
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
+                        disabled={!listAdExport || listAdExport.length === 0}
                     >
                         Xuất file excel
                     </Button>

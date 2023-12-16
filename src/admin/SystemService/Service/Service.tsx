@@ -6,8 +6,8 @@ import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { read, utils, writeFile } from "xlsx";
+
 import {
     clearListService,
     clearUpdateStatusService,
@@ -18,12 +18,12 @@ import {
 import { clearSkill, getSkillByIdAsync } from "../../../core/reducers/skill";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { FORMAT_DATETIME, XLSX_TYPE, XLS_TYPE } from "../../../utils/constants";
+import { FORMAT_DATETIME, XLS_TYPE, XLSX_TYPE } from "../../../utils/constants";
 import { convertServiceType, formatDate } from "../../../utils/functions/utils";
 import { IService, ITypeService } from "../../../utils/model";
+import AddListServices from "./AddListServices/AddListServices";
 import DetailService from "./DetailService/DetailService";
 import UpdateService from "./UpdateService/UpdateService";
-import AddListServices from "./AddListServices/AddListServices";
 
 const Service = () => {
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -335,31 +335,33 @@ const Service = () => {
         <div className="service">
             <h2>Danh sách các dịch vụ của {skill?.name}</h2>
             <div className="header-table-service">
-                <Button
-                    type="primary"
-                    onClick={() => setIsOpenModal(!isOpenModal)}
-                >
-                    Thêm dịch vụ
-                </Button>
-                <div className="button-upload">
-                    <input
-                        type="file"
-                        name="file"
-                        className="custom-file-input"
-                        id="inputGroupFile"
-                        required
-                        hidden
-                        onClick={(e: any) => (e.target.value = null)}
-                        onChange={handleAddByImport}
-                    />
-                    <label
-                        className="custom-file-label"
-                        htmlFor="inputGroupFile"
+                <div className="header-table-service-left">
+                    <Button
+                        type="primary"
+                        onClick={() => setIsOpenModal(!isOpenModal)}
                     >
-                        Thêm bằng file excel
-                    </label>
+                        Thêm dịch vụ
+                    </Button>
+                    <div className="button-upload">
+                        <input
+                            type="file"
+                            name="file"
+                            className="custom-file-input"
+                            id="inputGroupFile"
+                            required
+                            hidden
+                            onClick={(e: any) => (e.target.value = null)}
+                            onChange={handleAddByImport}
+                        />
+                        <label
+                            className="custom-file-label"
+                            htmlFor="inputGroupFile"
+                        >
+                            Thêm bằng file excel
+                        </label>
+                    </div>
                 </div>
-                <div className="header-table-customer-wrap">
+                <div className="header-table-service-right">
                     <Button
                         type="primary"
                         onClick={handleExport}

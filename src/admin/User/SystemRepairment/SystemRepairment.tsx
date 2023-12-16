@@ -5,25 +5,25 @@ import { Button, Input, Switch, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
 import { read, utils, writeFile } from "xlsx";
+
 import { Role } from "../../../core/auth/roles";
 import { clearListSkill, getAllSkillAsync } from "../../../core/reducers/skill";
 import {
-    UserStatus,
     clearListRepair,
     clearUpdateStatusUser,
     getAllUserRoleAsync,
     getDetailUserAsync,
     updateStatusUserAsync,
+    UserStatus,
 } from "../../../core/reducers/users";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import {
     FORMAT_DATE,
     FORMAT_DATETIME,
-    XLSX_TYPE,
     XLS_TYPE,
+    XLSX_TYPE,
 } from "../../../utils/constants";
 import { formatDate, getStatusUser } from "../../../utils/functions/utils";
 import { IUser } from "../../../utils/model";
@@ -38,7 +38,7 @@ const SystemRepairment = () => {
     >();
     const [fileName, setFileName] = useState<string>("");
     const [employees, setEmployees] = useState<IUser[]>([]);
-    const [listRepExport, setListRepExport] = useState<any>(null);
+    const [listRepExport, setListRepExport] = useState<any[]>([]);
     const [listRepAdd, setListRepAdd] = useState<any[] | null>(null);
     const [isOpenPanelUser, setIsOpenPanelUser] = useState<boolean>(false);
     const [isOpenPanelUpdate, setIsOpenPanelUpdate] = useState<boolean>(false);
@@ -107,6 +107,30 @@ const SystemRepairment = () => {
                     .includes((debounce as string)?.toLowerCase())
             ),
         ]);
+
+        setListRepExport(
+            repairList
+                .filter((r) =>
+                    r.firstName
+                        .toLowerCase()
+                        .includes((debounce as string)?.toLowerCase())
+                )
+                .map((rep) => {
+                    return {
+                        id: rep.userId,
+                        accountName: rep.accountName,
+                        firstName: rep.firstName,
+                        lastName: rep.lastName,
+                        gender: rep.gender ? "Nam" : "Nữ",
+                        phone: rep.phone,
+                        email: rep.email,
+                        dob: formatDate(rep.dob, FORMAT_DATE),
+                        createdDate: formatDate(rep.createdAt, FORMAT_DATETIME),
+                        updatedDate: formatDate(rep.updatedAt, FORMAT_DATETIME),
+                        status: getStatusUser(rep.status),
+                    };
+                })
+        );
     }, [debounce]);
 
     const openUpdateModal = (data: IUser) => {
@@ -326,7 +350,7 @@ const SystemRepairment = () => {
                             dob: item["Ngày tháng năm sinh"],
                             phone: item["Số điện thoại"],
                             email: item["Email"],
-                            role: Role.ROLE_USER,
+                            role: Role.ROLE_REPAIRMAN,
                             gender: item["Giới tính"],
                             password: item["Mật khẩu"],
                             imageUrl: null,
@@ -344,35 +368,38 @@ const SystemRepairment = () => {
         <div className="system-repair">
             <h2>Danh sách thợ</h2>
             <div className="header-table-repair">
-                <Button
-                    type="primary"
-                    onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
-                >
-                    Thêm nhân viên
-                </Button>
-                <div className="button-upload">
-                    <input
-                        type="file"
-                        name="file"
-                        className="custom-file-input"
-                        id="inputGroupFile"
-                        required
-                        hidden
-                        onClick={(e: any) => (e.target.value = null)}
-                        onChange={handleAddByImport}
-                    />
-                    <label
-                        className="custom-file-label"
-                        htmlFor="inputGroupFile"
+                <div className="header-table-repair-left">
+                    <Button
+                        type="primary"
+                        onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
                     >
-                        Thêm bằng file excel
-                    </label>
+                        Thêm nhân viên
+                    </Button>
+                    <div className="button-upload">
+                        <input
+                            type="file"
+                            name="file"
+                            className="custom-file-input"
+                            id="inputGroupFile"
+                            required
+                            hidden
+                            onClick={(e: any) => (e.target.value = null)}
+                            onChange={handleAddByImport}
+                        />
+                        <label
+                            className="custom-file-label"
+                            htmlFor="inputGroupFile"
+                        >
+                            Thêm bằng file excel
+                        </label>
+                    </div>
                 </div>
-                <div className="header-table-customer-wrap">
+                <div className="header-table-repair-right">
                     <Button
                         type="primary"
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
+                        disabled={!listRepExport || listRepExport.length === 0}
                     >
                         Xuất file excel
                     </Button>

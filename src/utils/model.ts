@@ -166,6 +166,7 @@ export interface IOrder {
     updatedAt?: string;
     address?: IAddress;
     components?: IComponent;
+    repairman?: IUser;
 }
 
 export interface IDiagnosis {
@@ -186,4 +187,11 @@ export interface IComponent {
     model: string;
     supplier: string;
     orderId: string;
+}
+export interface INotification {
+    userId: string;
+    isSeen: boolean;
+    content: string;
+    notificationId: string;
+    createdAt: string;
 }

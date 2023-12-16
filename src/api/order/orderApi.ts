@@ -28,3 +28,7 @@ export const getOrderByIdApi = (orderId: number | string) => {
 export const getOrderQrTokenApi = (orderId: number | string) => {
     return fetchHandler.get(`/order/generateQrInfo/${orderId}`);
 };
+
+export const cancelOrderApi = (canceledOrder: any) => {
+    return fetchHandler.patch("/order/cancelOrder", canceledOrder);
+};

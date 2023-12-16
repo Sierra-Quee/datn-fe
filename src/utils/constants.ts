@@ -47,5 +47,6 @@ export enum OrderStatus {
     FINDING,
     ACCEPTED,
     CHECKEDIN,
+    UNPAID,
     COMPLETE,
 }

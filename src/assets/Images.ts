@@ -7,6 +7,7 @@ import cold_machine from "./images/install-cold-machine.jpg";
 import fridge from "./images/install-fridge.jpg";
 import sun_battery from "./images/install-sun-battery.jpg";
 import washing_machine from "./images/install-washing-machine.png";
+import logo_final from "./images/logo.jpg";
 
 const Images = {
     logo,
@@ -18,6 +19,7 @@ const Images = {
     fridge,
     sun_battery,
     washing_machine,
+    logo_final,
 };
 
 export default Images;

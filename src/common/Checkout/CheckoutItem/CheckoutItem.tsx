@@ -12,11 +12,7 @@ import {
     Image,
 } from "antd";
 import "./CheckoutItem.scss";
-import {
-    CommentOutlined,
-    PlusOutlined,
-    UploadOutlined,
-} from "@ant-design/icons";
+import { CommentOutlined, PlusOutlined } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { isEmpty } from "lodash";
 const { Text, Title } = Typography;
@@ -118,6 +114,25 @@ const CheckoutItem = ({
                         <Text className="checkoutItemServiceInfo__price">
                             {service?.price}
                         </Text>
+                        <Text className="checkoutItemServiceInfo__describe">
+                            {!isEmpty(Object(addedInfoList[index])) &&
+                                addedInfoList[index].describedMalfunction}
+                        </Text>
+                        <Flex
+                            className="checkoutItemServiceInfo__image"
+                            justify="center"
+                        >
+                            {!isEmpty(Object(addedInfoList[index])) &&
+                                addedInfoList[index].uploadedImage.map(
+                                    (image) => (
+                                        <Image
+                                            src={image.thumbUrl}
+                                            width={50}
+                                            previewPrefixCls={image.preview}
+                                        />
+                                    )
+                                )}
+                        </Flex>
                     </Flex>
                     <Flex
                         className="checkoutItemService__btn"
@@ -130,16 +145,6 @@ const CheckoutItem = ({
                             />
                         </Tooltip>
                     </Flex>
-                </Flex>
-                <Flex>
-                    {!isEmpty(Object(addedInfoList[index])) &&
-                        addedInfoList[index].uploadedImage.map((image) => (
-                            <Image
-                                src={image.thumbUrl}
-                                width={50}
-                                previewPrefixCls={image.preview}
-                            />
-                        ))}
                 </Flex>
             </Flex>
 

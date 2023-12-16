@@ -9,9 +9,11 @@ import addressReducer from "../core/reducers/address";
 import cartReducer from "../core/reducers/cart";
 import reviewReducer from "../core/reducers/review";
 import orderReducer from "../core/reducers/order";
+import notificationReducer from "../core/reducers/notification";
 
 export const store = configureStore({
     reducer: {
+        notification: notificationReducer,
         order: orderReducer,
         review: reviewReducer,
         cart: cartReducer,

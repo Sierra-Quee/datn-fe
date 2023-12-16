@@ -3,16 +3,19 @@ import "./Public.scss";
 import {
     Avatar,
     Badge,
+    Button,
+    Divider,
     Dropdown,
     Input,
     Layout,
     Menu,
     MenuProps,
     QRCode,
+    theme,
 } from "antd";
 import { Content, Header, Footer } from "antd/es/layout/layout";
 import { ItemType } from "antd/es/menu/hooks/useItems";
-import { useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { getAllSkillAsync } from "../../core/reducers/skill";
@@ -31,8 +34,11 @@ import {
 import { clearCookie } from "../../utils/functions/cookies";
 import { resetAuth } from "../../core/reducers/authentication";
 import { getCartAsync } from "../../core/reducers/cart";
-
+import { getAllNotificationsAsync } from "../../core/reducers/notification";
+const { useToken } = theme;
+const { Search } = Input;
 const Public = ({ children }: IChildRoutePath) => {
+    const { token } = useToken();
     const { account } = useAppSelector((state) => state.authentication);
     const [skills, setSkills] = useState<ISkill[]>([]);
     const [itemMenu, setItemMenu] = useState<MenuProps["items"]>([]);
@@ -70,6 +76,7 @@ const Public = ({ children }: IChildRoutePath) => {
     const dispatch = useAppDispatch();
 
     const { listSkill } = useAppSelector((state) => state.skill);
+    const { notificationList } = useAppSelector((state) => state.notification);
 
     useEffect(() => {
         handleGetAllSkillAsync();
@@ -82,8 +89,15 @@ const Public = ({ children }: IChildRoutePath) => {
     useEffect(() => {
         handleGetCartAsync();
     }, []);
-
-    console.log({ cartItemList });
+    const handleGetNotificationList = async () => {
+        await dispatch(getAllNotificationsAsync());
+    };
+    useEffect(() => {
+        const getNotificationInterval = setInterval(() => {
+            handleGetNotificationList();
+        }, 5000);
+        return () => clearInterval(getNotificationInterval);
+    }, []);
 
     useEffect(() => {
         if (skills && skills.length > 0) {
@@ -136,6 +150,17 @@ const Public = ({ children }: IChildRoutePath) => {
         },
     ];
 
+    const notificationItems: MenuProps["items"] = notificationList.map(
+        (notification) => {
+            return {
+                key: notification.notificationId,
+                label: <div>{notification.content}</div>,
+            };
+        }
+    );
+    const menuStyle: React.CSSProperties = {
+        boxShadow: "none",
+    };
     return (
         <div className="public">
             <Layout>
@@ -156,14 +181,20 @@ const Public = ({ children }: IChildRoutePath) => {
                         </a>
                     </div>
 
-                    <Input
+                    {/* <Input
                         addonAfter={
                             <SearchOutlined style={{ fontSize: "20px" }} />
                         }
                         placeholder="Tìm kiếm dịch vụ"
                         // onChange={handleFindSkill}
                         style={{ width: "30%", background: "#f3f3f3" }}
-                    />
+                    /> */}
+                    <div className="searchInput">
+                        <Search
+                            placeholder="input search text"
+                            style={{ width: 400, padding: 0, margin: 0 }}
+                        />
+                    </div>
 
                     <Menu
                         style={{
@@ -183,11 +214,41 @@ const Public = ({ children }: IChildRoutePath) => {
                     </Link>
 
                     <Link to={RoutePath.Contact}>
-                        <Badge count={6} size="small">
-                            <BellOutlined
-                                style={{ color: "white", fontSize: "20px" }}
-                            />
-                        </Badge>
+                        <Dropdown
+                            menu={{ items: notificationItems }}
+                            placement="bottomLeft"
+                            dropdownRender={(menu) => (
+                                <div
+                                    style={{
+                                        background: "#fff",
+                                        padding: "10px",
+                                    }}
+                                >
+                                    {React.cloneElement(menu as ReactElement, {
+                                        style: menuStyle,
+                                    })}
+                                    <Divider
+                                        style={{ padding: 0, margin: 0 }}
+                                    />
+                                    <Button
+                                        style={{
+                                            margin: 0,
+                                            background: "#435585",
+                                        }}
+                                        type="primary"
+                                        size="small"
+                                    >
+                                        Xem tất cả
+                                    </Button>
+                                </div>
+                            )}
+                        >
+                            <Badge count={notificationList.length} size="small">
+                                <BellOutlined
+                                    style={{ color: "white", fontSize: "20px" }}
+                                />
+                            </Badge>
+                        </Dropdown>
                     </Link>
                     {!Object.keys(account).length ? (
                         <div>

@@ -27,7 +27,6 @@ import {
 import "./Checkout.scss";
 import CheckoutItem, { IAddedInfo } from "./CheckoutItem/CheckoutItem";
 import { Dayjs } from "dayjs";
-import { uploadImageCloud } from "../../core/reducers/image_cloud";
 import axios from "axios";
 import { createOrderAsync } from "../../core/reducers/order";
 import { toast } from "react-toastify";
@@ -179,8 +178,8 @@ const Checkout = (props: Props) => {
                     style={{
                         padding: "24px 0",
                         background: colorBgContainer,
-                        width: "60%",
-                        margin: "auto",
+                        width: "80%",
+                        margin: "30px auto",
                         borderRadius: "5px",
                         minHeight: "80vh",
                     }}
@@ -197,12 +196,12 @@ const Checkout = (props: Props) => {
                             ) : (
                                 <Flex gap={20}>
                                     <Text>{address?.address}</Text>
-                                    {address?.isMainAddress && (
-                                        <Button danger>Mặc định</Button>
-                                    )}
                                     <Button
                                         size="small"
-                                        style={{ maxWidth: "100px" }}
+                                        style={{
+                                            maxWidth: "100px",
+                                            background: "#435585",
+                                        }}
                                         type="primary"
                                         onClick={handleOpenAddressModal}
                                     >
@@ -216,7 +215,7 @@ const Checkout = (props: Props) => {
                             <Flex style={{ padding: "10px" }}>
                                 <Title
                                     style={{
-                                        width: "10%",
+                                        width: "5%",
                                         margin: 0,
                                         textAlign: "center",
                                     }}
@@ -226,7 +225,7 @@ const Checkout = (props: Props) => {
                                 </Title>
                                 <Title
                                     style={{
-                                        width: "50%",
+                                        width: "30%",
                                         margin: 0,
                                         textAlign: "center",
                                     }}
@@ -236,13 +235,33 @@ const Checkout = (props: Props) => {
                                 </Title>
                                 <Title
                                     style={{
-                                        width: "20%",
+                                        width: "10%",
                                         margin: 0,
                                         textAlign: "center",
                                     }}
                                     level={5}
                                 >
                                     Giá từ
+                                </Title>
+                                <Title
+                                    style={{
+                                        width: "20%",
+                                        margin: 0,
+                                        textAlign: "center",
+                                    }}
+                                    level={5}
+                                >
+                                    Miêu tả lỗi
+                                </Title>
+                                <Title
+                                    style={{
+                                        width: "35%",
+                                        margin: 0,
+                                        textAlign: "center",
+                                    }}
+                                    level={5}
+                                >
+                                    Hình ảnh
                                 </Title>
                             </Flex>
                             <Flex vertical gap={20}>
@@ -301,6 +320,7 @@ const Checkout = (props: Props) => {
                                         style={{
                                             maxWidth: "150px",
                                             padding: "10px 5px",
+                                            background: "#435585",
                                         }}
                                         onClick={handleSubmitOrder}
                                     >

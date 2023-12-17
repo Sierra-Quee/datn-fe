@@ -17,7 +17,7 @@ import {
     verifyOtp,
 } from "../../core/reducers/register";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { RoutePath } from "../../routes";
+import { RoutePath } from "../../utils/constants";
 import { FORMAT_DATE } from "../../utils/constants";
 import { formatDate } from "../../utils/functions/utils";
 

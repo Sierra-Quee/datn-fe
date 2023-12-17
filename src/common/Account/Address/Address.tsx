@@ -28,7 +28,7 @@ type Props = {};
 
 const Address = (props: Props) => {
     const dispatch = useAppDispatch();
-    const [isOpenModal, setIsOpenModal] = useState<boolean>(true);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const { addressList, loadingAddress } = useAppSelector(
         (state) => state.address
     );

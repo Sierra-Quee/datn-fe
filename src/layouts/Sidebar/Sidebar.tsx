@@ -17,7 +17,7 @@ import { Link, useLocation } from "react-router-dom";
 import Images from "../../assets/Images";
 import { Role } from "../../core/auth/roles";
 import { useAppSelector } from "../../redux/hook";
-import { RoutePath } from "../../routes";
+import { RoutePath } from "../../utils/constants";
 
 export type MenuItem = Required<MenuProps>["items"][number];
 

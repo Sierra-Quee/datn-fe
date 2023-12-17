@@ -32,7 +32,7 @@ import { getAllNotificationsAsync } from "../../core/reducers/notification";
 import { getAllSkillAsync } from "../../core/reducers/skill";
 import useDebounce from "../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { RoutePath } from "../../routes";
+import { RoutePath } from "../../utils/constants";
 import { clearCookie } from "../../utils/functions/cookies";
 import { IChildRoutePath, ISkill } from "../../utils/model";
 const { useToken } = theme;

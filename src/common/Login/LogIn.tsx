@@ -9,7 +9,7 @@ import {
 } from "../../core/reducers/authentication";
 import "./Login.scss";
 import Images from "../../assets/Images";
-import { RoutePath } from "../../routes";
+import { RoutePath } from "../../utils/constants";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { checkNullObj } from "../../utils/functions/utils";
 import { Role } from "../../core/auth/roles";

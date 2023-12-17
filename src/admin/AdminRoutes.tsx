@@ -1,6 +1,7 @@
 import { Route } from "react-router-dom";
 import ErrorBoundaryRoutes from "../core/errors/error-boundary-routes";
-import { AdminAccessRoutes, RoutePath } from "../routes";
+import { AdminAccessRoutes } from "../routes";
+import { RoutePath } from "../utils/constants";
 import { IRoutePath } from "../utils/model";
 import { PrivateRoute } from "../core/auth/private-route";
 import { Role } from "../core/auth/roles";

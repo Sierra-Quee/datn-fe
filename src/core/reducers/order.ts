@@ -7,7 +7,7 @@ import {
     getAllOrderByUserIdApi,
     getOrderByIdApi,
     getOrderQrTokenApi,
-} from "../../api/order/orderAPI";
+} from "../../api/order/orderApi";
 
 interface IOrderSlice {
     orderList: IOrder[];

@@ -12,7 +12,7 @@ import { Role } from "./core/auth/roles";
 import ErrorBoundaryRoutes from "./core/errors/error-boundary-routes";
 import { getAccount } from "./core/reducers/authentication";
 import { useAppDispatch, useAppSelector } from "./redux/hook";
-import { RoutePath } from "./routes";
+import { RoutePath } from "./utils/constants";
 import { ACCESS_TOKEN } from "./utils/constants";
 import { getCookie } from "./utils/functions/cookies";
 

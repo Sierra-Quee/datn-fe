@@ -22,30 +22,30 @@ import CustomerProfileLayout from "../layouts/CustomerLayout/CustomerProfileLayo
 import Public from "../layouts/Public/Public";
 import { IRoutePath } from "../utils/model";
 import AdminServiceRoute from "./adminServiceRoute";
-
-export enum RoutePath {
-    Home = "/home",
-    IntroduceServices = "/introduce-services",
-    Contact = "/contact",
-    Introduce = "/introduction",
-    Order = "/list-order",
-    Comment = "/list-order-comment",
-    Skill = "/skill",
-    Service = "/services",
-    Malfunction = "/malfunction",
-    Employee = "/list-employee",
-    Customer = "/list-customer",
-    Admin = "/list-admin",
-    Login = "/login",
-    SignUp = "/sign-up",
-    Account = "/account",
-    CustomerAccount = "/user/my-profile",
-    CustomerPassword = "/user/password",
-    CustomerAddress = "/user/address",
-    CustomerCart = "/user/cart",
-    Checkout = "/checkout",
-    CustomerOrder = "/user/order",
-}
+import { RoutePath } from "../utils/constants";
+// export enum RoutePath {
+//     Home = "/home",
+//     IntroduceServices = "/introduce-services",
+//     Contact = "/contact",
+//     Introduce = "/introduction",
+//     Order = "/list-order",
+//     Comment = "/list-order-comment",
+//     Skill = "/skill",
+//     Service = "/services",
+//     Malfunction = "/malfunction",
+//     Employee = "/list-employee",
+//     Customer = "/list-customer",
+//     Admin = "/list-admin",
+//     Login = "/login",
+//     SignUp = "/sign-up",
+//     Account = "/account",
+//     CustomerAccount = "/user/my-profile",
+//     CustomerPassword = "/user/password",
+//     CustomerAddress = "/user/address",
+//     CustomerCart = "/user/cart",
+//     Checkout = "/checkout",
+//     CustomerOrder = "/user/order",
+// }
 
 export const PublicRoutes: IRoutePath[] = [
     {

@@ -43,11 +43,6 @@ const Checkout = (props: Props) => {
     const { cartItemForCheckout } = useAppSelector((state) => state.cart);
     const { addressList } = useAppSelector((state) => state.address);
     const { account } = useAppSelector((state) => state.authentication);
-    const {
-        uploadSuccess,
-        // loadingUploadImage,
-        image: imageCloud,
-    } = useAppSelector((state) => state.imageCloud);
     const [addedInfoList, setAddedInfoList] = useState<IAddedInfo[]>([]);
     const [isOpenAddressModal, setIsOpenAddressModal] =
         useState<boolean>(false);
@@ -302,11 +297,13 @@ const Checkout = (props: Props) => {
                                 <Flex justify="space-between">
                                     <Title level={5}>Tổng tiền dự kiến</Title>
                                     <Title level={4}>
-                                        {cartItemForCheckout
+                                        {Array.isArray(cartItemForCheckout) &&
+                                        cartItemForCheckout.length > 0
                                             ? cartItemForCheckout.reduce(
                                                   (total, item) =>
                                                       (total += parseInt(
-                                                          item.service.price
+                                                          item?.service
+                                                              ?.price || "0"
                                                       )),
                                                   0
                                               )

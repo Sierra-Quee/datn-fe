@@ -40,3 +40,14 @@ export const formatOrderStatusProgress = (
         return "finish";
     return "wait";
 };
+export const formatCurrency = (amount: number) => {
+    console.log({ amount });
+    return amount.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+    });
+};
+
+export const formatDate = (dateTime: string) => {
+    return new Date(dateTime).toLocaleString();
+};

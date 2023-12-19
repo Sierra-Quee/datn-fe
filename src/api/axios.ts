@@ -19,7 +19,7 @@ fetchHandler.interceptors.request.use(
     (config) => {
         // spinning start to show
         // UPDATE: Add this code to show global loading indicator
-        document.body.classList.add("loading-indicator");
+        // document.body.classList.add("loading-indicator");
 
         config.headers.Authorization = getAuthorizationHeader();
 

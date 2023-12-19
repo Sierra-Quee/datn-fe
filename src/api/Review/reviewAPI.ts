@@ -14,5 +14,5 @@ export const updateReviewApi = async (review: IReview) => {
 };
 
 export const deleteReviewApi = async (reviewId: number) => {
-    return fetchHandler.delete(`/review/deleteReview/${reviewId}`);
+    return fetchHandler.delete(`/review/delete/${reviewId}`);
 };

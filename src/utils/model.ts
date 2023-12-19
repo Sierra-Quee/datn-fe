@@ -33,6 +33,7 @@ export interface IService {
     skill?: ISkill[];
     image?: string;
     isActive: boolean;
+    malfunctions?: IMalfunction;
 }
 
 export enum ITypeService {

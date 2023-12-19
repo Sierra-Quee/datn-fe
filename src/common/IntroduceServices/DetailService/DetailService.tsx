@@ -1,5 +1,10 @@
 import "./DetailService.scss";
-import { IReview, IService, ITypeService } from "../../../utils/model";
+import {
+    ICartItem,
+    IReview,
+    IService,
+    ITypeService,
+} from "../../../utils/model";
 import {
     Avatar,
     Button,
@@ -22,13 +27,19 @@ import {
 import { CaretRightOutlined, SendOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getDetailServiceAsync } from "../../../core/reducers/service";
 import {
     createReviewAsync,
     getAllReviewAsync,
 } from "../../../core/reducers/review";
 import Review from "../../Review/Review";
+import { formatCurrency } from "../../../utils/functions/formation";
+import {
+    createCartItemAsync,
+    getCartAsync,
+    setItemsForCheckout,
+} from "../../../core/reducers/cart";
 const { Title, Text } = Typography;
 
 type Props = {};
@@ -42,25 +53,25 @@ const dataSource = [
         key: "1",
         index: "1",
         name: "Thay ống đồng",
-        price: 100000,
+        price: formatCurrency(100000),
     },
     {
         key: "2",
         index: "2",
         name: "Thay van xả",
-        price: 100000,
+        price: formatCurrency(100000),
     },
     {
         key: "3",
         index: "3",
         name: "Thay tụ",
-        price: 150000,
+        price: formatCurrency(100000),
     },
     {
         key: "4",
         index: "4",
         name: "Thay cửa lạnh",
-        price: 180000,
+        price: formatCurrency(100000),
     },
 ];
 
@@ -81,40 +92,11 @@ const columns = [
         key: "price",
     },
 ];
-const items: CollapseProps["items"] = [
-    {
-        key: "1",
-        label: "Xem chi tiết",
-        children: (
-            <Flex vertical>
-                <Flex>
-                    <Rate disabled defaultValue={5} />
-                    <Text>5 đánh giá</Text>
-                </Flex>
-                <Flex>
-                    <Rate disabled defaultValue={4} />
-                    <Text>5 đánh giá</Text>
-                </Flex>
-                <Flex>
-                    <Rate disabled defaultValue={3} />
-                    <Text>5 đánh giá</Text>
-                </Flex>
-                <Flex>
-                    <Rate disabled defaultValue={2} />
-                    <Text>5 đánh giá</Text>
-                </Flex>
-                <Flex>
-                    <Rate disabled defaultValue={1} />
-                    <Text>5 đánh giá</Text>
-                </Flex>
-            </Flex>
-        ),
-    },
-];
 
 const rateDesc = ["Rất tệ", "Tệ", "Khá", "Tốt", "Rất tốt"];
 
 const DetailService = (props: Props) => {
+    const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
     const {
         token: { colorBgContainer },
@@ -126,9 +108,10 @@ const DetailService = (props: Props) => {
     const { reviewList, isLoadingReviewList } = useAppSelector(
         (state) => state.review
     );
+    const { cartItemList, cartId } = useAppSelector((state) => state.cart);
     const [rate, setRate] = useState<number>(1);
     const [reviewContent, setReviewContent] = useState<string>("");
-
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const handleGetDetailService = async (serviceId: number) => {
         await dispatch(getDetailServiceAsync(serviceId));
     };
@@ -145,10 +128,11 @@ const DetailService = (props: Props) => {
                 userId: account.userId,
                 serviceId: parseInt(serviceId),
             };
-            console.log({ review });
             try {
                 await dispatch(createReviewAsync(review));
                 dispatch(getAllReviewAsync(parseInt(serviceId)));
+                serviceId &&
+                    dispatch(getDetailServiceAsync(parseInt(serviceId)));
                 message.success("Gửi đánh giá thành công");
                 setRate(1);
                 setReviewContent("");
@@ -168,8 +152,94 @@ const DetailService = (props: Props) => {
         }
     }, [serviceId]);
 
-    console.log({ reviewList });
+    const handleChangePage = (pageNum: number, pageSize: number) => {
+        setCurrentPage(pageNum);
+    };
 
+    const handleAddToCart = () => {
+        if (
+            cartItemList.some(
+                (item) =>
+                    item.service.serviceId === service.detailService.serviceId
+            )
+        ) {
+            messageApi.warning("Dịch vụ đã có trong giỏ hàng");
+            return;
+        }
+        const cartItem: ICartItem = {
+            cartId,
+            serviceId: service.detailService.serviceId,
+            isChoosen: false,
+        };
+        dispatch(createCartItemAsync(cartItem));
+        dispatch(getCartAsync());
+        messageApi.success("Thêm dịch vụ vào giỏ hàng thành công");
+    };
+
+    const handleAddToCheckout = () => {
+        const cartItem: ICartItem = {
+            cartId,
+            serviceId: service.detailService.serviceId,
+            isChoosen: false,
+        };
+        dispatch(setItemsForCheckout([cartItem]));
+        navigate("/checkout");
+    };
+    const items: CollapseProps["items"] = [
+        {
+            key: "1",
+            label: "Xem chi tiết",
+            children: (
+                <Flex vertical>
+                    <Flex>
+                        <Rate disabled defaultValue={5} />
+                        <Text>
+                            {Array.isArray(reviewList) &&
+                                reviewList.filter((review) => review.rate === 5)
+                                    .length}{" "}
+                            đánh giá
+                        </Text>
+                    </Flex>
+                    <Flex>
+                        <Rate disabled defaultValue={4} />
+                        <Text>
+                            {Array.isArray(reviewList) &&
+                                reviewList.filter((review) => review.rate === 4)
+                                    .length}{" "}
+                            đánh giá
+                        </Text>
+                    </Flex>
+                    <Flex>
+                        <Rate disabled defaultValue={3} />
+                        <Text>
+                            {Array.isArray(reviewList) &&
+                                reviewList.filter((review) => review.rate === 3)
+                                    .length}{" "}
+                            đánh giá
+                        </Text>
+                    </Flex>
+                    <Flex>
+                        <Rate disabled defaultValue={2} />
+                        <Text>
+                            {Array.isArray(reviewList) &&
+                                reviewList.filter((review) => review.rate === 2)
+                                    .length}{" "}
+                            đánh giá
+                        </Text>
+                    </Flex>
+                    <Flex>
+                        <Rate disabled defaultValue={1} />
+                        <Text>
+                            {Array.isArray(reviewList) &&
+                                reviewList.filter((review) => review.rate === 1)
+                                    .length}{" "}
+                            đánh giá
+                        </Text>
+                    </Flex>
+                </Flex>
+            ),
+        },
+    ];
     return (
         <>
             {" "}
@@ -203,11 +273,21 @@ const DetailService = (props: Props) => {
                                         {service.detailService.name}
                                     </Title>
                                     <Title level={3}>
-                                        Giá từ {service.detailService.price}
+                                        Giá từ{" "}
+                                        {formatCurrency(
+                                            parseInt(
+                                                service.detailService.price.toString()
+                                            )
+                                        )}
                                     </Title>
                                     <Space>
                                         <Text>Đánh giá:</Text>
-                                        <Rate disabled defaultValue={3} />
+                                        <Rate
+                                            disabled
+                                            value={
+                                                service.detailService.rate || 0
+                                            }
+                                        />
                                     </Space>
                                     <List
                                         bordered
@@ -223,8 +303,18 @@ const DetailService = (props: Props) => {
                                     />
                                 </Flex>
                                 <Flex gap={10}>
-                                    <Button shape="round">Chọn</Button>
-                                    <Button shape="round" type="primary">
+                                    <Button
+                                        shape="round"
+                                        onClick={handleAddToCart}
+                                    >
+                                        Chọn
+                                    </Button>
+                                    <Button
+                                        shape="round"
+                                        type="primary"
+                                        style={{ background: "#435585" }}
+                                        onClick={handleAddToCheckout}
+                                    >
                                         Đặt dịch vụ
                                     </Button>
                                 </Flex>
@@ -239,7 +329,13 @@ const DetailService = (props: Props) => {
                                 Bảng giá {service.detailService.name}
                             </Title>
                             <Table
-                                dataSource={dataSource}
+                                dataSource={
+                                    Array.isArray(
+                                        service.detailService.malfunctions
+                                    )
+                                        ? service.detailService.malfunctions
+                                        : dataSource
+                                }
                                 columns={columns}
                                 bordered
                                 pagination={false}
@@ -263,8 +359,15 @@ const DetailService = (props: Props) => {
 
                                 <Flex vertical style={{ padding: "5px 0" }}>
                                     <Space>
-                                        <Rate disabled defaultValue={3} />
-                                        <Text>12 đánh giá</Text>
+                                        <Rate
+                                            disabled
+                                            value={
+                                                service.detailService.rate || 0
+                                            }
+                                        />
+                                        <Text>
+                                            {reviewList?.length} đánh giá
+                                        </Text>
                                     </Space>
                                     <Space style={{ paddingLeft: 0 }}>
                                         <Collapse items={items} ghost />
@@ -342,15 +445,27 @@ const DetailService = (props: Props) => {
                                     </Flex>
                                 )}
 
-                                {reviewList?.map((review) => (
-                                    <Review
-                                        review={review}
-                                        key={review.reviewId}
-                                    />
-                                ))}
+                                {Array.isArray(reviewList) &&
+                                    reviewList
+                                        ?.slice(
+                                            currentPage * 3 - 3,
+                                            currentPage * 3
+                                        )
+                                        .map((review) => (
+                                            <Review
+                                                review={review}
+                                                key={review.reviewId}
+                                            />
+                                        ))}
                             </Flex>
                             <Flex justify="flex-end">
-                                <Pagination defaultCurrent={1} total={50} />
+                                <Pagination
+                                    defaultCurrent={1}
+                                    current={currentPage}
+                                    pageSize={3}
+                                    total={reviewList.length}
+                                    onChange={handleChangePage}
+                                />
                             </Flex>
                         </Flex>
                     </Flex>

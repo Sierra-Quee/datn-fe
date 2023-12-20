@@ -52,10 +52,8 @@ const Cart = (props: Props) => {
         (state) => state.cart
     );
     const [cartData, setCartData] = useState<DataType[]>([]);
-    console.log({ cartData });
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log("selectedRowKeys changed: ", newSelectedRowKeys);
         const selectedItem = newSelectedRowKeys.map(
             (val) => cartData[parseInt(val.toString())]
         );
@@ -74,7 +72,6 @@ const Cart = (props: Props) => {
             dispatch(getCartAsync());
         } catch (error) {}
     };
-    console.log({ cartItemForCheckout });
     const rowSelection: TableRowSelection<DataType> = {
         selectedRowKeys,
         onChange: onSelectChange,

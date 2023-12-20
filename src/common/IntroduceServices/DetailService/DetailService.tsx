@@ -28,7 +28,10 @@ import { CaretRightOutlined, SendOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getDetailServiceAsync } from "../../../core/reducers/service";
+import {
+    getDetailServiceAsync,
+    getServiceBySkillIdAsync,
+} from "../../../core/reducers/service";
 import {
     createReviewAsync,
     getAllReviewAsync,
@@ -40,6 +43,7 @@ import {
     getCartAsync,
     setItemsForCheckout,
 } from "../../../core/reducers/cart";
+import ServiceSubCard from "../ServiceSubCard/ServiceSubCard";
 const { Title, Text } = Typography;
 
 type Props = {};
@@ -103,19 +107,22 @@ const DetailService = (props: Props) => {
     } = theme.useToken();
     const dispatch = useAppDispatch();
     const { account } = useAppSelector((state) => state.authentication);
-    const { serviceId } = useParams();
+    const { serviceId, skillId } = useParams();
     const { service } = useAppSelector((state) => state.service);
     const { reviewList, isLoadingReviewList } = useAppSelector(
         (state) => state.review
     );
     const { cartItemList, cartId } = useAppSelector((state) => state.cart);
+    const { listService } = useAppSelector((state) => state.service);
     const [rate, setRate] = useState<number>(1);
     const [reviewContent, setReviewContent] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const handleGetDetailService = async (serviceId: number) => {
         await dispatch(getDetailServiceAsync(serviceId));
     };
-
+    const handleGetAllServiceAsync = async () => {
+        await dispatch(getServiceBySkillIdAsync(+(skillId as string)));
+    };
     const handleGetReviewList = async (serviceId: number) => {
         await dispatch(getAllReviewAsync(serviceId));
     };
@@ -141,16 +148,16 @@ const DetailService = (props: Props) => {
             }
         }
     };
-
-    useEffect(() => {
-        console.log({ rate });
-    }, [rate]);
     useEffect(() => {
         if (serviceId) {
             handleGetDetailService(parseInt(serviceId));
             handleGetReviewList(parseInt(serviceId));
         }
-    }, [serviceId]);
+
+        if (skillId) {
+            handleGetAllServiceAsync();
+        }
+    }, [serviceId, skillId]);
 
     const handleChangePage = (pageNum: number, pageSize: number) => {
         setCurrentPage(pageNum);
@@ -240,6 +247,8 @@ const DetailService = (props: Props) => {
             ),
         },
     ];
+
+    console.log({ listService });
     return (
         <>
             {" "}
@@ -255,217 +264,237 @@ const DetailService = (props: Props) => {
                 className="detailService"
             >
                 <Spin spinning={isLoadingReviewList}>
-                    <Flex
-                        className="detailService-mainInfo"
-                        vertical
-                        style={{ background: "#fff" }}
-                    >
-                        <Flex className="detailService-top" gap={20}>
-                            <Space className="detailService-image">
-                                <Image
-                                    src={service.detailService.image}
-                                    width={""}
-                                />
-                            </Space>
-                            <Flex vertical justify="space-between">
-                                <Flex vertical gap={10}>
-                                    <Title level={2}>
-                                        {service.detailService.name}
-                                    </Title>
-                                    <Title level={3}>
-                                        Giá từ{" "}
-                                        {formatCurrency(
-                                            parseInt(
-                                                service.detailService.price.toString()
-                                            )
-                                        )}
-                                    </Title>
-                                    <Space>
-                                        <Text>Đánh giá:</Text>
-                                        <Rate
-                                            disabled
-                                            value={
-                                                service.detailService.rate || 0
-                                            }
-                                        />
-                                    </Space>
-                                    <List
-                                        bordered
-                                        dataSource={data}
-                                        renderItem={(item) => (
-                                            <List.Item>
-                                                <Typography.Text mark>
-                                                    <CaretRightOutlined />
-                                                </Typography.Text>{" "}
-                                                {item}
-                                            </List.Item>
-                                        )}
+                    <Flex gap={20}>
+                        <Flex
+                            className="detailService-mainInfo"
+                            vertical
+                            style={{ background: "#fff" }}
+                        >
+                            <Flex className="detailService-top" gap={20}>
+                                <Space className="detailService-image">
+                                    <Image
+                                        src={service.detailService.image}
+                                        width={""}
                                     />
-                                </Flex>
-                                <Flex gap={10}>
-                                    <Button
-                                        shape="round"
-                                        onClick={handleAddToCart}
-                                    >
-                                        Chọn
-                                    </Button>
-                                    <Button
-                                        shape="round"
-                                        type="primary"
-                                        style={{ background: "#435585" }}
-                                        onClick={handleAddToCheckout}
-                                    >
-                                        Đặt dịch vụ
-                                    </Button>
-                                </Flex>
-                            </Flex>
-                        </Flex>
-                        <Flex
-                            vertical
-                            className="detailService-content"
-                            gap={10}
-                        >
-                            <Title level={3}>
-                                Bảng giá {service.detailService.name}
-                            </Title>
-                            <Table
-                                dataSource={
-                                    Array.isArray(
-                                        service.detailService.malfunctions
-                                    )
-                                        ? service.detailService.malfunctions
-                                        : dataSource
-                                }
-                                columns={columns}
-                                bordered
-                                pagination={false}
-                                size="small"
-                            />
-                            <Text strong>
-                                * Đơn giá chỉ gồm phí sửa chữa, không bao gồm
-                                phí linh kiện sửa chữa. Khách hàng có thể chọn
-                                tự mua linh kiện cần thay thế, lắp đặt hoặc yêu
-                                cầu nhân viên sửa chữa mua, giá linh kiện sẽ
-                                được tính vào hóa đơn cuối cùng.
-                            </Text>
-                        </Flex>
-                        <Flex
-                            vertical
-                            className="detailService-reviews"
-                            gap={20}
-                        >
-                            <Flex align="start" gap={20}>
-                                <Title level={3}>Đánh giá</Title>
-
-                                <Flex vertical style={{ padding: "5px 0" }}>
-                                    <Space>
-                                        <Rate
-                                            disabled
-                                            value={
-                                                service.detailService.rate || 0
-                                            }
-                                        />
-                                        <Text>
-                                            {reviewList?.length} đánh giá
-                                        </Text>
-                                    </Space>
-                                    <Space style={{ paddingLeft: 0 }}>
-                                        <Collapse items={items} ghost />
-                                    </Space>
-                                </Flex>
-                            </Flex>
-                            <Flex vertical gap={20}>
-                                {account && (
-                                    <Flex
-                                        gap={10}
-                                        style={{ padding: "10px" }}
-                                        align="start"
-                                    >
-                                        <Space>
-                                            {account.imageUrl ? (
-                                                <Avatar
-                                                    src={account.imageUrl}
-                                                />
-                                            ) : (
-                                                <Avatar
-                                                    style={{
-                                                        backgroundColor:
-                                                            "#f56a00",
-                                                    }}
-                                                    size="large"
-                                                >
-                                                    <span
-                                                        style={{
-                                                            fontSize: "20px",
-                                                            fontWeight: "600",
-                                                        }}
-                                                    >
-                                                        {(
-                                                            account
-                                                                ?.accountName[0] ||
-                                                            ""
-                                                        ).toUpperCase()}
-                                                    </span>
-                                                </Avatar>
+                                </Space>
+                                <Flex vertical justify="space-between">
+                                    <Flex vertical gap={10}>
+                                        <Title level={2}>
+                                            {service.detailService.name}
+                                        </Title>
+                                        <Title level={3}>
+                                            Giá từ{" "}
+                                            {formatCurrency(
+                                                parseInt(
+                                                    service.detailService.price.toString()
+                                                )
                                             )}
+                                        </Title>
+                                        <Space>
+                                            <Text>Đánh giá:</Text>
+                                            <Rate
+                                                disabled
+                                                value={
+                                                    service.detailService
+                                                        .rate || 0
+                                                }
+                                            />
                                         </Space>
+                                        <List
+                                            bordered
+                                            dataSource={data}
+                                            renderItem={(item) => (
+                                                <List.Item>
+                                                    <Typography.Text mark>
+                                                        <CaretRightOutlined />
+                                                    </Typography.Text>{" "}
+                                                    {item}
+                                                </List.Item>
+                                            )}
+                                        />
+                                    </Flex>
+                                    <Flex gap={10}>
+                                        <Button
+                                            shape="round"
+                                            onClick={handleAddToCart}
+                                        >
+                                            Chọn
+                                        </Button>
+                                        <Button
+                                            shape="round"
+                                            type="primary"
+                                            style={{ background: "#435585" }}
+                                            onClick={handleAddToCheckout}
+                                        >
+                                            Đặt dịch vụ
+                                        </Button>
+                                    </Flex>
+                                </Flex>
+                            </Flex>
+                            <Flex
+                                vertical
+                                className="detailService-content"
+                                gap={10}
+                            >
+                                <Title level={3}>
+                                    Bảng giá {service.detailService.name}
+                                </Title>
+                                <Table
+                                    dataSource={
+                                        Array.isArray(
+                                            service.detailService.malfunctions
+                                        )
+                                            ? service.detailService.malfunctions
+                                            : dataSource
+                                    }
+                                    columns={columns}
+                                    bordered
+                                    pagination={false}
+                                    size="small"
+                                />
+                                <Text strong>
+                                    * Đơn giá chỉ gồm phí sửa chữa, không bao
+                                    gồm phí linh kiện sửa chữa. Khách hàng có
+                                    thể chọn tự mua linh kiện cần thay thế, lắp
+                                    đặt hoặc yêu cầu nhân viên sửa chữa mua, giá
+                                    linh kiện sẽ được tính vào hóa đơn cuối
+                                    cùng.
+                                </Text>
+                            </Flex>
+                            <Flex
+                                vertical
+                                className="detailService-reviews"
+                                gap={20}
+                            >
+                                <Flex align="start" gap={20}>
+                                    <Title level={3}>Đánh giá</Title>
+
+                                    <Flex vertical style={{ padding: "5px 0" }}>
+                                        <Space>
+                                            <Rate
+                                                disabled
+                                                value={
+                                                    service.detailService
+                                                        .rate || 0
+                                                }
+                                            />
+                                            <Text>
+                                                {reviewList?.length} đánh giá
+                                            </Text>
+                                        </Space>
+                                        <Space style={{ paddingLeft: 0 }}>
+                                            <Collapse items={items} ghost />
+                                        </Space>
+                                    </Flex>
+                                </Flex>
+                                <Flex vertical gap={20}>
+                                    {account && (
                                         <Flex
-                                            vertical
                                             gap={10}
-                                            style={{ width: "100%" }}
+                                            style={{ padding: "10px" }}
+                                            align="start"
                                         >
                                             <Space>
-                                                <Rate
-                                                    defaultValue={1}
-                                                    value={rate}
-                                                    onChange={setRate}
-                                                    tooltips={rateDesc}
-                                                />
-                                            </Space>
-                                            <Input
-                                                addonAfter={
-                                                    <SendOutlined
-                                                        style={{
-                                                            cursor: "pointer",
-                                                        }}
+                                                {account.imageUrl ? (
+                                                    <Avatar
+                                                        src={account.imageUrl}
                                                     />
-                                                }
+                                                ) : (
+                                                    <Avatar
+                                                        style={{
+                                                            backgroundColor:
+                                                                "#f56a00",
+                                                        }}
+                                                        size="large"
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    "20px",
+                                                                fontWeight:
+                                                                    "600",
+                                                            }}
+                                                        >
+                                                            {(
+                                                                account
+                                                                    ?.accountName[0] ||
+                                                                ""
+                                                            ).toUpperCase()}
+                                                        </span>
+                                                    </Avatar>
+                                                )}
+                                            </Space>
+                                            <Flex
+                                                vertical
+                                                gap={10}
                                                 style={{ width: "100%" }}
-                                                value={reviewContent}
-                                                onChange={(e) =>
-                                                    setReviewContent(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                onPressEnter={
-                                                    handleSubmitReview
-                                                }
-                                            />
+                                            >
+                                                <Space>
+                                                    <Rate
+                                                        defaultValue={1}
+                                                        value={rate}
+                                                        onChange={setRate}
+                                                        tooltips={rateDesc}
+                                                    />
+                                                </Space>
+                                                <Input
+                                                    addonAfter={
+                                                        <SendOutlined
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                        />
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    value={reviewContent}
+                                                    onChange={(e) =>
+                                                        setReviewContent(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    onPressEnter={
+                                                        handleSubmitReview
+                                                    }
+                                                />
+                                            </Flex>
                                         </Flex>
-                                    </Flex>
-                                )}
+                                    )}
 
-                                {Array.isArray(reviewList) &&
-                                    reviewList
-                                        ?.slice(
-                                            currentPage * 3 - 3,
-                                            currentPage * 3
-                                        )
-                                        .map((review) => (
-                                            <Review
-                                                review={review}
-                                                key={review.reviewId}
-                                            />
-                                        ))}
+                                    {Array.isArray(reviewList) &&
+                                        reviewList
+                                            ?.slice(
+                                                currentPage * 3 - 3,
+                                                currentPage * 3
+                                            )
+                                            .map((review) => (
+                                                <Review
+                                                    review={review}
+                                                    key={review.reviewId}
+                                                />
+                                            ))}
+                                </Flex>
+                                <Flex justify="flex-end">
+                                    <Pagination
+                                        defaultCurrent={1}
+                                        current={currentPage}
+                                        pageSize={3}
+                                        total={reviewList.length}
+                                        onChange={handleChangePage}
+                                    />
+                                </Flex>
                             </Flex>
-                            <Flex justify="flex-end">
-                                <Pagination
-                                    defaultCurrent={1}
-                                    current={currentPage}
-                                    pageSize={3}
-                                    total={reviewList.length}
-                                    onChange={handleChangePage}
-                                />
+                        </Flex>
+                        <Flex vertical gap={10} style={{ width: "30%" }}>
+                            <Title level={2}>Dịch vụ liên quan</Title>
+                            <Flex vertical gap={10}>
+                                {Array.isArray(listService) &&
+                                    listService.length > 0 &&
+                                    listService.map((service) => (
+                                        <ServiceSubCard
+                                            service={service}
+                                            key={service.serviceId}
+                                        />
+                                    ))}
                             </Flex>
                         </Flex>
                     </Flex>

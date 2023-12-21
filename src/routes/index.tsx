@@ -23,6 +23,7 @@ import Public from "../layouts/Public/Public";
 import { IRoutePath } from "../utils/model";
 import AdminServiceRoute from "./adminServiceRoute";
 import { RoutePath } from "../utils/constants";
+import SystemConfig from "../admin/SystemConfig/SystemConfig";
 // export enum RoutePath {
 //     Home = "/home",
 //     IntroduceServices = "/introduce-services",
@@ -134,6 +135,10 @@ export const AdminAccessRoutes: IRoutePath[] = [
     {
         path: `${RoutePath.Malfunction}/:serviceId`,
         component: Malfunction,
+    },
+    {
+        path: RoutePath.SystemConfig,
+        component: SystemConfig,
     },
 ];
 

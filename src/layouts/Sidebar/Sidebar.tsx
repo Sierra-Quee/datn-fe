@@ -125,7 +125,14 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
                 : null,
         ]),
         getItem("Lịch sử thanh toán", "11", <WalletOutlined />),
-        getItem("Cấu hình hệ thống", "12", <SettingOutlined />),
+        // getItem("Cấu hình hệ thống", "12", <SettingOutlined />),
+        getItem(
+            <Link to={`/admin${RoutePath.SystemConfig}`}>
+                Cấu hình hệ thống
+            </Link>,
+            "system-config",
+            <SettingOutlined />
+        ),
     ];
 
     return (

@@ -198,3 +198,9 @@ export const defaultMalfunction = {
     serviceId: -1,
     service: {},
 };
+export interface ISystemConfig {
+    id: number;
+    assignOrderInterval: number;
+    distanceToAssignOrder: number;
+    switchRepairmanStatusPeriod: number;
+}

@@ -11,9 +11,11 @@ import cartReducer from "../core/reducers/cart";
 import reviewReducer from "../core/reducers/review";
 import orderReducer from "../core/reducers/order";
 import notificationReducer from "../core/reducers/notification";
+import systemConfigReducer from "../core/reducers/system-config";
 
 export const store = configureStore({
     reducer: {
+        systemConfig: systemConfigReducer,
         notification: notificationReducer,
         order: orderReducer,
         review: reviewReducer,

@@ -20,6 +20,7 @@ export enum RoutePath {
     CustomerCart = "/user/cart",
     Checkout = "/checkout",
     CustomerOrder = "/user/order",
+    SystemConfig = "/system-config",
 }
 
 export const ACCESS_TOKEN = "access_token";

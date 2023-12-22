@@ -114,7 +114,7 @@ const SystemAdmin = () => {
 
     const columns: ColumnsType<IUser> = [
         {
-            title: "Mã quản lý",
+            title: "Mã nhân viên",
             dataIndex: "userId",
             key: "userId",
             fixed: "left",
@@ -261,7 +261,7 @@ const SystemAdmin = () => {
             skipHeader: true,
         });
         utils.book_append_sheet(wb, ws, "Report");
-        writeFile(wb, "Danh sách quản lý.xlsx");
+        writeFile(wb, "Danh sách nhân viên.xlsx");
         toast.success("Xuất file thành công");
     };
 
@@ -307,14 +307,14 @@ const SystemAdmin = () => {
 
     return (
         <div className="system-admin">
-            <h2>Danh sách quản lý</h2>
+            <h2>Danh sách nhân viên</h2>
             <div className="header-table-admin">
                 <div className="header-table-admin-wrap">
                     <Button
                         type="primary"
                         onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
                     >
-                        Thêm quản lý
+                        Thêm nhân viên
                     </Button>
                     <div className="button-upload">
                         <input
@@ -347,7 +347,7 @@ const SystemAdmin = () => {
                         addonBefore={
                             <SearchOutlined style={{ fontSize: "20px" }} />
                         }
-                        placeholder="Nhập tên quản lý cần tìm kiếm"
+                        placeholder="Nhập tên nhân viên cần tìm kiếm"
                         onChange={handleFindAdmin}
                     />
                 </div>

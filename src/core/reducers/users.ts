@@ -72,7 +72,7 @@ export const createUserAsync = createAsyncThunk(
 
 export const createMultiUserAsync = createAsyncThunk(
     "createMultiUser",
-    async (users: IUser[]) => {
+    async (users: any) => {
         return (await createListUserAPI(users)).data;
     }
 );

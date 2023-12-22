@@ -1,3 +1,6 @@
+import { Role } from "../../core/auth/roles";
+import { ISkill, IUser } from "../model";
+
 export const generateRandomPhoneNumber = () => {
     const randomPart = Math.floor(Math.random() * 1e9);
     const additionalPart = Math.floor(Math.random() * 9) + 1;
@@ -56,15 +59,38 @@ export const firstNameArr = [
     "Quang",
 ];
 
-export const generateRandomName = () => {
+export const generateRandomLastName = () => {
     const ranLastName = Math.floor(Math.random() * lastNameArr.length);
     const ranSubName = Math.floor(Math.random() * subNameArr.length);
-    const ranFirstName = Math.floor(Math.random() * firstNameArr.length);
 
-    return `${lastNameArr[ranLastName]} ${subNameArr[ranSubName]} ${firstNameArr[ranFirstName]}`;
+    return `${lastNameArr[ranLastName]} ${subNameArr[ranSubName]}`;
 };
 
-export const generateRandomEmail = () => {};
+export const generateRandomFirstName = () => {
+    const ranFirstName = Math.floor(Math.random() * firstNameArr.length);
+    return firstNameArr[ranFirstName];
+};
+
+const generateRandomString = (length: number) => {
+    const characters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let randomString = "";
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomString += characters.charAt(randomIndex);
+    }
+
+    return randomString;
+};
+
+export const generateRandomEmail = () => {
+    const username = generateRandomString(8);
+    const domain = "gmail.com";
+
+    const email = `${username}@${domain}`;
+    return email;
+};
 
 export const generateRandomPassword = () => {
     const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -76,19 +102,13 @@ export const generateRandomPassword = () => {
         uppercaseChars + lowercaseChars + numberChars + specialChars;
 
     let password = "";
-
-    // Bảo đảm mật khẩu có ít nhất một ký tự từ mỗi loại
     password += getRandomChar(uppercaseChars);
     password += getRandomChar(lowercaseChars);
     password += getRandomChar(numberChars);
     password += getRandomChar(specialChars);
-
-    // Bổ sung các ký tự ngẫu nhiên cho đủ độ dài mật khẩu
     for (let i = 4; i < 8; i++) {
         password += getRandomChar(allChars);
     }
-
-    // Trộn ngẫu nhiên các ký tự trong mật khẩu
     password = shuffleString(password);
 
     return password;
@@ -106,4 +126,32 @@ const shuffleString = (string: string) => {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array.join("");
+};
+
+export const generateRandomAccountList = (
+    role: Role,
+    amount: number,
+    skillList: ISkill[] = []
+) => {
+    const accList = [];
+    for (let i = 0; i < amount; ++i) {
+        const lastName = generateRandomLastName();
+        const email = generateRandomEmail();
+        const phone = generateRandomPhoneNumber();
+        const password = generateRandomPassword();
+        const firstName = generateRandomFirstName();
+        const user = {
+            lastName: lastName,
+            firstName: firstName,
+            phone: phone.toString(),
+            password: password,
+            dob: new Date().toLocaleDateString(),
+            gender: Math.random() > 0.5 ? true : false,
+            role: role,
+            email: email,
+        };
+        accList.push(user);
+    }
+
+    return accList;
 };

@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from "react";
 import "./SystemConfig.scss";
-import { Button, Flex, Form, Input, Spin, Typography } from "antd";
+import { Button, Flex, Form, Input, Select, Spin, Typography } from "antd";
 import { ISystemConfig } from "../../utils/model";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import {
     getSystemConfigAsync,
     updateSystemConfigAsync,
 } from "../../core/reducers/system-config";
+import { Role } from "../../core/auth/roles";
+import { generateRandomAccountList } from "../../utils/functions/randomAccount";
+import { createMultiUserAsync } from "../../core/reducers/users";
 const { Title } = Typography;
+const { Option } = Select;
 type Props = {};
+type RandomAccConfig = {
+    amount: number;
+    role: Role;
+};
 
 const SystemConfig = (props: Props) => {
     const formItemLayout = { labelCol: { span: 10 }, wrapperCol: { span: 14 } };
     const buttonItemLayout = { wrapperCol: { span: 14, offset: 14 } };
     const [configValue, setConfigValue] = useState<ISystemConfig>();
+    const [accAmount, setAccAmount] = useState<number>(5);
+    const [selectedRole, setSelectedRole] = useState<Role>(Role.ROLE_USER);
     const dispatch = useAppDispatch();
     const { config, isLoadingSystemConfig, updateSystemConfig } =
         useAppSelector((state) => state.systemConfig);
@@ -31,6 +41,19 @@ const SystemConfig = (props: Props) => {
     }, [config]);
     const handleValueChange = (value: ISystemConfig) => {
         setConfigValue({ ...configValue, ...value });
+    };
+
+    const handleRandomAccChange = (value: RandomAccConfig) => {
+        const val = value.amount ? parseInt(value.amount.toString()) : 0;
+        if (val > 0 && val <= 50) {
+            setAccAmount(val);
+        }
+    };
+
+    const handleSubmitAccList = async () => {
+        const list = generateRandomAccountList(selectedRole, accAmount);
+        console.log({ list });
+        await dispatch(createMultiUserAsync(list));
     };
 
     const handleSubmit = async () => {
@@ -112,6 +135,45 @@ const SystemConfig = (props: Props) => {
                             Cập nhật
                         </Button>
                     </Form.Item>
+                </Form>
+                <Form onValuesChange={handleRandomAccChange}>
+                    <Form.Item<RandomAccConfig>
+                        label="Số tài khoản"
+                        name="amount"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Nhập số tài khoản",
+                            },
+                        ]}
+                    >
+                        <Input type="number" />
+                    </Form.Item>
+                    <Form.Item
+                        name="role"
+                        label="Vai trò"
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                                message: "Hãy chọn vai trò!",
+                            },
+                        ]}
+                    >
+                        <Select
+                            placeholder="Chọn vai trò"
+                            value={selectedRole}
+                            onChange={(e) => setSelectedRole(e)}
+                        >
+                            <Option value={Role.ROLE_USER}>Khách hàng</Option>
+                            <Option value={Role.ROLE_REPAIRMAN}>
+                                Thợ sửa chưaX
+                            </Option>
+                        </Select>
+                    </Form.Item>
+                    <Button onClick={handleSubmitAccList}>
+                        Tạo ngẫu nhiên
+                    </Button>
                 </Form>
             </Flex>
         </Spin>

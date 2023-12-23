@@ -45,6 +45,7 @@ const initialState: IOrderSlice = {
 export const getAllOrderAsync = createAsyncThunk(
     "getAllOrder",
     async (query: IGetAllOrderQuery) => {
+        console.log({ query });
         const response = await getAllOrderApi(query);
         return response.data;
     }

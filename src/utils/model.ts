@@ -155,6 +155,7 @@ export interface IOrder {
     address?: IAddress;
     components?: IComponent;
     repairman?: IUser;
+    user?: IUser;
 }
 
 export interface IDiagnosis {

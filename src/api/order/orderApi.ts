@@ -1,3 +1,4 @@
+import { OrderStatus } from "../../utils/constants";
 import { IOrder, IDetailOrder, IOrderMedia } from "../../utils/model";
 import fetchHandler from "../axios";
 
@@ -10,7 +11,21 @@ export interface IGetAllOrderQuery {
     from?: string;
 }
 export const getAllOrderApi = (query: IGetAllOrderQuery) => {
-    return fetchHandler.get(`/order/getAll${query}`);
+    return fetchHandler.get(
+        `/order/getAll?${
+            query.status && query.status in OrderStatus
+                ? `status=${query.status}`
+                : ""
+        }${
+            query.from && query.from.length > 0
+                ? `&from=${new Date(query.from).toISOString()}`
+                : ""
+        }${
+            query.to && query.to.length > 0
+                ? `&to=${new Date(query.to).toISOString()}`
+                : ""
+        }`
+    );
 };
 
 export const getAllOrderByUserIdApi = (userId: string, status?: number) => {

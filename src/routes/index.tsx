@@ -140,6 +140,10 @@ export const AdminAccessRoutes: IRoutePath[] = [
         path: RoutePath.SystemConfig,
         component: SystemConfig,
     },
+    {
+        path: `${RoutePath.Order}/:orderId`,
+        component: OrderDetail,
+    },
 ];
 
 export const EmployeeRoutes = [];

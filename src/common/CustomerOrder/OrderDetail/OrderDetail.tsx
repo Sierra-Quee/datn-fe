@@ -13,17 +13,20 @@ import {
     theme,
     Typography,
     Input,
+    Select,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IComponent, IOrder } from "../../../utils/model";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import {
+    assignOrderAsync,
     clearOrder,
     getOrderByIdAsync,
     getQrTokenAsync,
 } from "../../../core/reducers/order";
 import {
+    formatDate,
     formatOrderStatusName,
     formatOrderStatusProgress,
 } from "../../../utils/functions/formation";
@@ -40,6 +43,8 @@ import {
 import { toast } from "react-toastify";
 import { OrderStatus } from "../../../utils/constants";
 import { ColumnsType } from "antd/es/table";
+import { Role } from "../../../core/auth/roles";
+import { getAllUserRoleAsync } from "../../../core/reducers/users";
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 type Props = {};
@@ -141,21 +146,41 @@ const OrderDetail = (props: Props) => {
     const [progressItems, setProgressItems] = useState<ProgressItem[]>(
         new Array(5).fill("wait")
     );
+    const [selectedRepairman, setSelectedRepairman] = useState<string | null>(
+        null
+    );
     const { order, loadingOrder, qrToken, isGettingQrToken } = useAppSelector(
         (state) => state.order
     );
+    const { repairList, user } = useAppSelector((state) => state.users);
+    const { account } = useAppSelector((state) => state.authentication);
     const handleGetOrder = async () => {
         if (orderId) await dispatch(getOrderByIdAsync(parseInt(orderId)));
     };
+    const handleGetAllRepairList = useCallback(async () => {
+        await dispatch(getAllUserRoleAsync(Role.ROLE_REPAIRMAN));
+    }, []);
+
+    useEffect(() => {
+        if (
+            account.role === Role.ROLE_ADMIN ||
+            account.role === Role.ROLE_REPAIRMAN
+        ) {
+            handleGetAllRepairList();
+        }
+    }, [account]);
+
     useEffect(() => {
         const getOrderInterval = setInterval(() => {
             handleGetOrder();
-        }, 1000);
+        }, 10000);
         return () => {
             dispatch(clearOrder);
             clearInterval(getOrderInterval);
         };
     }, [orderId]);
+
+    console.log({ selectedRepairman });
 
     useEffect(() => {
         if (order) {
@@ -190,7 +215,7 @@ const OrderDetail = (props: Props) => {
             ]);
         }
     }, [order]);
-    console.log({ orderData });
+
     const handleOpenQrModal = async () => {
         setOpenQrModal(true);
         try {
@@ -238,6 +263,19 @@ const OrderDetail = (props: Props) => {
         setCancelOrderReason(e.target.value);
     };
 
+    const handleAssignOrder = async () => {
+        if (orderData?.orderId && selectedRepairman !== null) {
+            console.log("assign");
+            await dispatch(
+                assignOrderAsync({
+                    orderId: orderData.orderId.toString(),
+                    repairmanId: selectedRepairman,
+                })
+            );
+
+            handleGetAllRepairList();
+        }
+    };
     return (
         <Spin spinning={false}>
             <Layout
@@ -335,14 +373,39 @@ const OrderDetail = (props: Props) => {
                                           ]
                                 }
                             />
-                            <Flex justify="flex-end" style={{ width: "100%" }}>
+                            <Flex
+                                justify="space-between"
+                                style={{ width: "100%" }}
+                            >
+                                {account &&
+                                (account.role === Role.ROLE_ADMIN ||
+                                    account.role === Role.ROLE_STAFF) ? (
+                                    <Space direction="vertical">
+                                        <Text>
+                                            Khách hàng: {order.user?.lastName}{" "}
+                                            {order.user?.firstName}
+                                        </Text>
+                                        <Text>
+                                            Số điện thoại: {order.user?.phone}
+                                        </Text>
+                                        <Text>
+                                            Địa chỉ email: {order.user?.email}
+                                        </Text>
+                                        <Text>
+                                            Tài khoản: {order.user?.accountName}
+                                        </Text>
+                                        <Text>
+                                            Mã khách hàng: {order.user?.userId}
+                                        </Text>
+                                    </Space>
+                                ) : null}
                                 <Space
                                     direction="vertical"
                                     style={{ width: "30%" }}
                                 >
                                     <Text>
-                                        Ngày dự kiến thực hiện dịch vụ:{" "}
-                                        {order.expectedDate}
+                                        Ngày thực hiện:{" "}
+                                        {formatDate(order.expectedDate)}
                                     </Text>
                                     <Button
                                         onClick={handleOpenCancelOrderModal}
@@ -367,6 +430,43 @@ const OrderDetail = (props: Props) => {
                                     >
                                         Lấy mã QR
                                     </Button>
+                                    <Flex vertical>
+                                        <Select
+                                            showSearch
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? "").includes(
+                                                    input
+                                                )
+                                            }
+                                            options={
+                                                Array.isArray(repairList) &&
+                                                repairList.length > 0
+                                                    ? repairList.map((rp) => {
+                                                          return {
+                                                              value: rp.userId,
+                                                              label: rp.accountName,
+                                                          };
+                                                      })
+                                                    : []
+                                            }
+                                            onChange={(val) =>
+                                                setSelectedRepairman(val)
+                                            }
+                                            disabled={
+                                                orderData.repairman !== null
+                                            }
+                                        />
+                                        <Button
+                                            type="primary"
+                                            style={{ background: "#435585" }}
+                                            onClick={handleAssignOrder}
+                                            disabled={
+                                                orderData.repairman !== null
+                                            }
+                                        >
+                                            Giao thợ sửa chữa
+                                        </Button>
+                                    </Flex>
                                 </Space>
                             </Flex>
                         </Flex>
@@ -375,25 +475,28 @@ const OrderDetail = (props: Props) => {
                                 <Title level={5}>ĐỊA CHỈ ĐẶT DỊCH VỤ</Title>
                                 <Text>{orderData.address?.address}</Text>
                             </Flex>
-                            {orderData.status !== undefined &&
-                                orderData.status >= OrderStatus.ACCEPTED && (
-                                    <Flex vertical>
-                                        <Title level={5}>THỢ SỬA CHỮA</Title>
-                                        <Text>
-                                            Họ và tên thợ sửa chữa:{" "}
-                                            {orderData.repairman?.lastName}{" "}
-                                            {orderData.repairman?.firstName}
-                                        </Text>
-                                        <Text copyable>
-                                            Số điện thoại:{" "}
-                                            {orderData.repairman?.phone}
-                                        </Text>
-                                        <Text copyable>
-                                            Địa chỉ email:{" "}
-                                            {orderData.repairman?.email}
-                                        </Text>
-                                    </Flex>
-                                )}
+                            {((orderData.status !== undefined &&
+                                orderData.status >= OrderStatus.ACCEPTED) ||
+                                (order.repairman &&
+                                    account.role === Role.ROLE_ADMIN) ||
+                                account.role === Role.ROLE_STAFF) && (
+                                <Flex vertical>
+                                    <Title level={5}>THỢ SỬA CHỮA</Title>
+                                    <Text>
+                                        Họ và tên thợ sửa chữa:{" "}
+                                        {orderData.repairman?.lastName}{" "}
+                                        {orderData.repairman?.firstName}
+                                    </Text>
+                                    <Text copyable>
+                                        Số điện thoại:{" "}
+                                        {orderData.repairman?.phone}
+                                    </Text>
+                                    <Text copyable>
+                                        Địa chỉ email:{" "}
+                                        {orderData.repairman?.email}
+                                    </Text>
+                                </Flex>
+                            )}
 
                             <Flex vertical>
                                 <Title level={5}>DỊCH VỤ</Title>

@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IOrder } from "../../utils/model";
 import {
     IGetAllOrderQuery,
+    assignOrderApi,
     createOrderApi,
     getAllOrderApi,
     getAllOrderByUserIdApi,
@@ -83,6 +84,14 @@ export const getQrTokenAsync = createAsyncThunk(
     }
 );
 
+export const assignOrderAsync = createAsyncThunk(
+    "assignOrderAsync",
+    async (query: { orderId: string; repairmanId: string }) => {
+        const response = await assignOrderApi(query);
+        return response.data;
+    }
+);
+
 export const orderSlice = createSlice({
     name: "order",
     initialState,
@@ -152,6 +161,17 @@ export const orderSlice = createSlice({
             })
             .addCase(getQrTokenAsync.rejected, (state, action) => {
                 state.isGettingQrToken = false;
+            })
+            .addCase(assignOrderAsync.pending, (state, action) => {
+                state.createOrder.loadingcreateOrder = true;
+            })
+            .addCase(assignOrderAsync.fulfilled, (state, action) => {
+                state.createOrder.loadingcreateOrder = false;
+                state.createOrder.createOrderStatus = "success";
+            })
+            .addCase(assignOrderAsync.rejected, (state, action) => {
+                state.createOrder.loadingcreateOrder = false;
+                state.createOrder.createOrderStatus = "failed";
             });
     },
 });

@@ -47,3 +47,12 @@ export const getOrderQrTokenApi = (orderId: number | string) => {
 export const cancelOrderApi = (canceledOrder: any) => {
     return fetchHandler.patch("/order/cancelOrder", canceledOrder);
 };
+
+export const assignOrderApi = (query: {
+    orderId: string;
+    repairmanId: string;
+}) => {
+    return fetchHandler.patch(
+        `/order/assignOrder?orderId=${query.orderId}&repairmanId=${query.repairmanId}`
+    );
+};

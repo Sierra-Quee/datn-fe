@@ -16,3 +16,7 @@ export const updateAddress = (address: IAddress) => {
 export const deleteAddress = (addressId: number) => {
     return fetchHandler.patch(`address/deleteAddress/${addressId}`);
 };
+
+export const createMultiAddress = (addressList: IAddress[] = []) => {
+    return fetchHandler.post("address/createMultiAddress", addressList);
+};

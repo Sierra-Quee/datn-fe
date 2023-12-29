@@ -4,6 +4,7 @@ import {
     getAllAddress,
     createAddress,
     updateAddress,
+    createMultiAddress,
     deleteAddress,
 } from "../../api/address/addressApi";
 
@@ -15,6 +16,7 @@ interface IAddressSlice {
         loadingUpdateAddress: boolean;
         updateAddress: "success" | "failed" | "none";
     };
+    addressIdList: string[];
 }
 
 const initialState: IAddressSlice = {
@@ -25,6 +27,7 @@ const initialState: IAddressSlice = {
         loadingUpdateAddress: false,
         updateAddress: "none",
     },
+    addressIdList: [],
 };
 
 export const getAllAddressAsync = createAsyncThunk(
@@ -53,6 +56,14 @@ export const deleteAddressAsync = createAsyncThunk(
     "deleteAddress",
     async (addressId: number) => {
         return await deleteAddress(addressId);
+    }
+);
+
+export const createMultiAddressAsync = createAsyncThunk(
+    "createMultiAddress",
+    async (addressList: IAddress[] = []) => {
+        const response = await createMultiAddress(addressList);
+        return response.data;
     }
 );
 
@@ -120,6 +131,19 @@ export const addressSlice = createSlice({
             .addCase(deleteAddressAsync.rejected, (state, action) => {
                 state.updateAddress.loadingUpdateAddress = false;
                 state.updateAddress.updateAddress = "failed";
+            })
+            .addCase(createMultiAddressAsync.pending, (state, action) => {
+                state.updateAddress.loadingUpdateAddress = true;
+            })
+            .addCase(createMultiAddressAsync.fulfilled, (state, action) => {
+                state.updateAddress.loadingUpdateAddress = false;
+                state.addressIdList = action.payload;
+                state.updateAddress.updateAddress = "success";
+            })
+            .addCase(createMultiAddressAsync.rejected, (state, action) => {
+                state.updateAddress.loadingUpdateAddress = false;
+                state.updateAddress.updateAddress = "failed";
+                state.addressIdList = [];
             });
     },
 });

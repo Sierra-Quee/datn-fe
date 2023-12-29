@@ -1,4 +1,4 @@
-import { IUser, IUserAPI } from "../../utils/model";
+import { IAddress, IUser, IUserAPI } from "../../utils/model";
 import fetchHandler from "../axios";
 
 export const getAllUsersRole = (role: number) => {

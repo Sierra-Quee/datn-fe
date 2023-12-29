@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "./SystemConfig.scss";
 import { Button, Flex, Form, Input, Select, Spin, Typography } from "antd";
-import { ISystemConfig } from "../../utils/model";
+import { IAddress, ISystemConfig } from "../../utils/model";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import {
     getSystemConfigAsync,
     updateSystemConfigAsync,
 } from "../../core/reducers/system-config";
 import { Role } from "../../core/auth/roles";
-import { generateRandomAccountList } from "../../utils/functions/randomAccount";
+import {
+    generateRandomAccountList,
+    generateRandomOrders,
+    getRandomAddress,
+} from "../../utils/functions/randomAccount";
 import { createMultiUserAsync } from "../../core/reducers/users";
+import fetchHandler from "../../api/axios";
+import { toast } from "react-toastify";
 const { Title } = Typography;
 const { Option } = Select;
 type Props = {};
@@ -52,8 +58,46 @@ const SystemConfig = (props: Props) => {
 
     const handleSubmitAccList = async () => {
         const list = generateRandomAccountList(selectedRole, accAmount);
-        console.log({ list });
-        await dispatch(createMultiUserAsync(list));
+        try {
+            const response = await fetchHandler.post(
+                "user/createMultiUser",
+                list
+            );
+            const { userIdList } = response.data;
+            const addressList = getRandomAddress(userIdList);
+            if (selectedRole === Role.ROLE_USER) {
+                const res = await fetchHandler.post(
+                    "address/createMultiAddress",
+                    addressList
+                );
+                const { addressIdList } = res.data;
+                const servicesRes = await fetchHandler.get("service/getAll");
+                const serviceList = servicesRes.data;
+                if (!Array.isArray(serviceList) || serviceList.length === 0) {
+                    toast.warn("Không thể tạo đơn");
+                    return;
+                }
+                const serviceIdList = serviceList.map(
+                    (service) => service.serviceId
+                );
+                const orderList = generateRandomOrders(
+                    userIdList,
+                    addressIdList,
+                    serviceIdList
+                );
+
+                if (Array.isArray(orderList) && orderList.length > 0) {
+                    const orderIdList = await fetchHandler.post(
+                        "order/createMultiOrder",
+                        orderList
+                    );
+
+                    console.log({ orderIdList });
+                }
+            }
+        } catch (error) {
+            toast.error("Không thành công");
+        }
     };
 
     const handleSubmit = async () => {

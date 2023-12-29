@@ -133,7 +133,7 @@ export interface IOrderMedia {
 export interface IDetailOrder {
     orderDetailId?: number | string;
     orderId?: number | string;
-    serviceId: string;
+    serviceId: string | number;
     desc?: string;
     media?: IOrderMedia[];
     service?: IService;
@@ -156,6 +156,7 @@ export interface IOrder {
     components?: IComponent;
     repairman?: IUser;
     user?: IUser;
+    userId?: string;
 }
 
 export interface IDiagnosis {

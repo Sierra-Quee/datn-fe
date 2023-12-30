@@ -242,3 +242,25 @@ export const generateRandomOrders = (
 
     return orders;
 };
+
+export const generateRandomSkillForRepairman = (
+    repairmanIdList: string[],
+    skillIdList: number[]
+) => {
+    if (!Array.isArray(repairmanIdList) || repairmanIdList.length === 0)
+        return [];
+    if (!Array.isArray(skillIdList) || skillIdList.length === 0) return [];
+    const repairmanSkill = repairmanIdList.map((userId, index) => {
+        const randomSkillIdIndex = Math.floor(
+            Math.random() * skillIdList.length
+        );
+        const skillId = skillIdList[randomSkillIdIndex];
+
+        return {
+            repairmanId: userId,
+            skillIdList: [skillId],
+        };
+    });
+
+    return repairmanSkill;
+};

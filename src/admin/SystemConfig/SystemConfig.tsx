@@ -11,6 +11,7 @@ import { Role } from "../../core/auth/roles";
 import {
     generateRandomAccountList,
     generateRandomOrders,
+    generateRandomSkillForRepairman,
     getRandomAddress,
 } from "../../utils/functions/randomAccount";
 import { createMultiUserAsync } from "../../core/reducers/users";
@@ -65,12 +66,36 @@ const SystemConfig = (props: Props) => {
             );
             const { userIdList } = response.data;
             const addressList = getRandomAddress(userIdList);
-            if (selectedRole === Role.ROLE_USER) {
-                const res = await fetchHandler.post(
-                    "address/createMultiAddress",
-                    addressList
+            const res = await fetchHandler.post(
+                "address/createMultiAddress",
+                addressList
+            );
+            const { addressIdList } = res.data;
+            if (selectedRole === Role.ROLE_REPAIRMAN) {
+                const skillRes = await fetchHandler.get("skill/getAll");
+                const skillList = skillRes.data;
+                if (!Array.isArray(skillList) || skillList.length === 0) {
+                    toast.warn("Không thể tạo thợ");
+                    return;
+                }
+                const skillIdList = skillList.map((skill) => skill.skillId);
+                const repairmansSkillList = generateRandomSkillForRepairman(
+                    userIdList,
+                    skillIdList
                 );
-                const { addressIdList } = res.data;
+                try {
+                    await fetchHandler.post(
+                        "skill/updateRepairmanSkill",
+                        repairmansSkillList
+                    );
+                    toast.success(
+                        `Tạo ngẫu nhiên ${accAmount} tài khoản thợ sửa chữa thành công`
+                    );
+                } catch (error) {
+                    toast.error("Không thể thêm kỹ năng cho thợ");
+                }
+            }
+            if (selectedRole === Role.ROLE_USER) {
                 const servicesRes = await fetchHandler.get("service/getAll");
                 const serviceList = servicesRes.data;
                 if (!Array.isArray(serviceList) || serviceList.length === 0) {
@@ -94,6 +119,13 @@ const SystemConfig = (props: Props) => {
 
                     console.log({ orderIdList });
                 }
+
+                toast.success(
+                    `Tạo ngẫu nhiên ${accAmount} tài khoản khách hàng thành công`
+                );
+                toast.success(
+                    `Tạo ngẫu nhiên ${accAmount} đơn hàng hàng thành công`
+                );
             }
         } catch (error) {
             toast.error("Không thành công");

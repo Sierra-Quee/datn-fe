@@ -31,6 +31,7 @@ const SystemConfig = (props: Props) => {
     const [configValue, setConfigValue] = useState<ISystemConfig>();
     const [accAmount, setAccAmount] = useState<number>(5);
     const [selectedRole, setSelectedRole] = useState<Role>(Role.ROLE_USER);
+    const [creatingRandomAcc, setCreatingRandomAcc] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const { config, isLoadingSystemConfig, updateSystemConfig } =
         useAppSelector((state) => state.systemConfig);
@@ -60,6 +61,7 @@ const SystemConfig = (props: Props) => {
     const handleSubmitAccList = async () => {
         const list = generateRandomAccountList(selectedRole, accAmount);
         try {
+            setCreatingRandomAcc(true);
             const response = await fetchHandler.post(
                 "user/createMultiUser",
                 list
@@ -93,6 +95,7 @@ const SystemConfig = (props: Props) => {
                     );
                 } catch (error) {
                     toast.error("Không thể thêm kỹ năng cho thợ");
+                    setCreatingRandomAcc(false);
                 }
             }
             if (selectedRole === Role.ROLE_USER) {
@@ -112,12 +115,10 @@ const SystemConfig = (props: Props) => {
                 );
 
                 if (Array.isArray(orderList) && orderList.length > 0) {
-                    const orderIdList = await fetchHandler.post(
+                    await fetchHandler.post(
                         "order/createMultiOrder",
                         orderList
                     );
-
-                    console.log({ orderIdList });
                 }
 
                 toast.success(
@@ -127,7 +128,9 @@ const SystemConfig = (props: Props) => {
                     `Tạo ngẫu nhiên ${accAmount} đơn hàng hàng thành công`
                 );
             }
+            setCreatingRandomAcc(false);
         } catch (error) {
+            setCreatingRandomAcc(false);
             toast.error("Không thành công");
         }
     };
@@ -153,7 +156,9 @@ const SystemConfig = (props: Props) => {
     return (
         <Spin
             spinning={
-                isLoadingSystemConfig || updateSystemConfig.updatingSystemConfig
+                isLoadingSystemConfig ||
+                updateSystemConfig.updatingSystemConfig ||
+                creatingRandomAcc
             }
         >
             <Flex style={{ width: "100%" }} vertical align="center">
@@ -212,7 +217,11 @@ const SystemConfig = (props: Props) => {
                         </Button>
                     </Form.Item>
                 </Form>
-                <Form onValuesChange={handleRandomAccChange}>
+                <Form
+                    {...formItemLayout}
+                    style={{ width: "75%" }}
+                    onValuesChange={handleRandomAccChange}
+                >
                     <Form.Item<RandomAccConfig>
                         label="Số tài khoản"
                         name="amount"
@@ -247,9 +256,15 @@ const SystemConfig = (props: Props) => {
                             </Option>
                         </Select>
                     </Form.Item>
-                    <Button onClick={handleSubmitAccList}>
-                        Tạo ngẫu nhiên
-                    </Button>
+                    <Form.Item {...buttonItemLayout}>
+                        <Button
+                            type="primary"
+                            style={{ width: "200px" }}
+                            onClick={handleSubmitAccList}
+                        >
+                            Tạo ngẫu nhiên
+                        </Button>
+                    </Form.Item>
                 </Form>
             </Flex>
         </Spin>

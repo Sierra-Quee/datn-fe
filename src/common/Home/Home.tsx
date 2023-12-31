@@ -1,6 +1,8 @@
 import "./Home.scss";
 
 import {
+    ArrowDownOutlined,
+    ArrowUpOutlined,
     GlobalOutlined,
     UngroupOutlined,
     UsergroupAddOutlined,
@@ -8,7 +10,20 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import { DatePicker, DatePickerProps, Select, Typography } from "antd";
+import {
+    Card,
+    Col,
+    DatePicker,
+    DatePickerProps,
+    Flex,
+    Row,
+    Select,
+    Space,
+    Statistic,
+    Tabs,
+    TabsProps,
+    Typography,
+} from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -21,6 +36,9 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import LineChartHome from "./LineChartHome";
 import { getAllUserRoleAsync } from "../../core/reducers/users";
 import { Role } from "../../core/auth/roles";
+import OutcomeChart from "./OutcomeChart";
+import OrderChart from "./OrderChart";
+import ServiceChart from "./ServiceChart";
 
 const Home = () => {
     dayjs.extend(customParseFormat);
@@ -83,68 +101,103 @@ const Home = () => {
         setTimeRange(dateString);
     };
 
+    const onChange = (key: string) => {
+        console.log(key);
+    };
+
+    const items: TabsProps["items"] = [
+        {
+            key: "1",
+            label: "Doanh thu",
+            children: <OutcomeChart />,
+        },
+        {
+            key: "2",
+            label: "Đơn hàng",
+            children: <OrderChart />,
+        },
+        {
+            key: "3",
+            label: "Dịch vụ",
+            children: <ServiceChart />,
+        },
+    ];
+
     return (
         <div className="home">
-            <Title level={3}>ISmart</Title>
-            <div className="home-statistic">
-                <div className="home-statistic-item home-statistic-item-skill">
-                    <span className="home-statistic-item-title">
-                        <span>
-                            <UngroupOutlined /> Số loại dịch vụ
-                        </span>
-                        <div>{listSkill.length}</div>
-                    </span>
-                </div>
-                <div className="home-statistic-item home-statistic-item-service">
-                    <span className="home-statistic-item-title">
-                        <span>
-                            <GlobalOutlined /> Số dịch vụ
-                        </span>
-                        <div>{listService.length}</div>
-                    </span>
-                </div>
-                <div className="home-statistic-item home-statistic-item-customer">
-                    <span className="home-statistic-item-title">
-                        <span>
-                            <UsergroupAddOutlined /> Số khách hàng
-                        </span>
-                        <div>{customerList.length}</div>
-                    </span>
-                </div>
-                <div className="home-statistic-item home-statistic-item-employee">
-                    <span className="home-statistic-item-title">
-                        <span>
-                            <UsergroupDeleteOutlined /> Số thợ
-                        </span>
-                        <div>{repairList.length}</div>
-                    </span>
-                </div>
-            </div>
-            <div className="home-chart">
-                <Title level={3}>Thống kê hàng tháng</Title>
-                <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                    <Select
-                        defaultValue="Chọn biểu đồ"
-                        style={{ width: 200 }}
-                        onChange={handleChange}
-                        options={optionsChart}
-                    />
-                    <RangePicker
-                        defaultValue={[
-                            dayjs("2015/01/01", dateFormat),
-                            dayjs("2015/01/01", dateFormat),
-                        ]}
-                        format={dateFormat}
-                        style={{ width: 300 }}
-                        onChange={onChangeRangeDate}
-                    />
-                </div>
-                <div className="home-line-chart">
-                    <LineChartHome title={titleChart} date={timeRange} />
-                </div>
-            </div>
+            <Row gutter={16}>
+                <Col span={6}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Active"
+                            value={11.28}
+                            precision={2}
+                            valueStyle={{ color: "#3f8600" }}
+                            prefix={<ArrowUpOutlined />}
+                            suffix="%"
+                        />
+                    </Card>
+                </Col>
+                <Col span={6}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Idle"
+                            value={9.3}
+                            precision={2}
+                            valueStyle={{ color: "#cf1322" }}
+                            prefix={<ArrowDownOutlined />}
+                            suffix="%"
+                        />
+                    </Card>
+                </Col>
+                <Col span={6}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Idle"
+                            value={9.3}
+                            precision={2}
+                            valueStyle={{ color: "#cf1322" }}
+                            prefix={<ArrowDownOutlined />}
+                            suffix="%"
+                        />
+                    </Card>
+                </Col>
+                <Col span={6}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Idle"
+                            value={9.3}
+                            precision={2}
+                            valueStyle={{ color: "#cf1322" }}
+                            prefix={<ArrowDownOutlined />}
+                            suffix="%"
+                        />
+                    </Card>
+                </Col>
+            </Row>
+            {/* <Flex style={{ height: "100%" }}>
+                <Space style={{ background: "#fff" }}>
+                    <Flex>
+                        <Tabs
+                            defaultActiveKey="1"
+                            items={items}
+                            onChange={onChange}
+                        />
+                    </Flex>
+                </Space>
+            </Flex> */}
+            <Row gutter={16}>
+                <Col span={12} style={{ background: "#fff" }}>
+                    <Flex style={{ width: "100%" }}>
+                        <Tabs
+                            defaultActiveKey="1"
+                            items={items}
+                            onChange={onChange}
+                            style={{ width: "100%" }}
+                        />
+                    </Flex>
+                </Col>
+            </Row>
         </div>
     );
 };

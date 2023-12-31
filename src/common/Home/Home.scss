@@ -1,4 +1,8 @@
 .home {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
     &-statistic {
         display: flex;
         column-gap: 10px;
@@ -27,7 +31,6 @@
         }
 
         &-item-skill {
-
             border-bottom: 3px solid #76bb68;
         }
 

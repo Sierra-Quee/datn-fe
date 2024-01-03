@@ -45,6 +45,7 @@ import { OrderStatus } from "../../../utils/constants";
 import { ColumnsType } from "antd/es/table";
 import { Role } from "../../../core/auth/roles";
 import { getAllUserRoleAsync } from "../../../core/reducers/users";
+import fetchHandler from "../../../api/axios";
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 type Props = {};
@@ -171,16 +172,15 @@ const OrderDetail = (props: Props) => {
     }, [account]);
 
     useEffect(() => {
+        handleGetOrder();
         const getOrderInterval = setInterval(() => {
             handleGetOrder();
-        }, 10000);
+        }, 1000000);
         return () => {
             dispatch(clearOrder);
             clearInterval(getOrderInterval);
         };
     }, [orderId]);
-
-    console.log({ selectedRepairman });
 
     useEffect(() => {
         if (order) {
@@ -255,7 +255,29 @@ const OrderDetail = (props: Props) => {
         setOpenCancelModal(false);
     };
 
-    const handleCancelOrder = async () => {};
+    const handleCancelOrder = async () => {
+        try {
+            if (orderData && orderData.orderId) {
+                const prefix =
+                    account.role === Role.ROLE_USER
+                        ? "Hủy bởi khách hàng: "
+                        : "Hủy bởi nhân viên: ";
+                const body = {
+                    reason: prefix + cancelOrderReason,
+                    orderId: parseInt(orderData.orderId.toString()),
+                };
+                const response = await fetchHandler.patch(
+                    "order/cancelOrder",
+                    body
+                );
+                toast.success("Hủy đơn dịch vụ thành công");
+                setOpenCancelModal(false);
+                handleGetOrder();
+            }
+        } catch (error) {
+            toast.error("Hủy đơn không thành công");
+        }
+    };
 
     const handleChangeOrderReason = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -277,7 +299,7 @@ const OrderDetail = (props: Props) => {
         }
     };
     return (
-        <Spin spinning={false}>
+        <Spin spinning={loadingOrder}>
             <Layout
                 style={{
                     padding: "24px 0",
@@ -430,43 +452,50 @@ const OrderDetail = (props: Props) => {
                                     >
                                         Lấy mã QR
                                     </Button>
-                                    <Flex vertical>
-                                        <Select
-                                            showSearch
-                                            filterOption={(input, option) =>
-                                                (option?.label ?? "").includes(
-                                                    input
-                                                )
-                                            }
-                                            options={
-                                                Array.isArray(repairList) &&
-                                                repairList.length > 0
-                                                    ? repairList.map((rp) => {
-                                                          return {
-                                                              value: rp.userId,
-                                                              label: rp.accountName,
-                                                          };
-                                                      })
-                                                    : []
-                                            }
-                                            onChange={(val) =>
-                                                setSelectedRepairman(val)
-                                            }
-                                            disabled={
-                                                orderData.repairman !== null
-                                            }
-                                        />
-                                        <Button
-                                            type="primary"
-                                            style={{ background: "#435585" }}
-                                            onClick={handleAssignOrder}
-                                            disabled={
-                                                orderData.repairman !== null
-                                            }
-                                        >
-                                            Giao thợ sửa chữa
-                                        </Button>
-                                    </Flex>
+                                    {(account.role === Role.ROLE_ADMIN ||
+                                        account.role === Role.ROLE_STAFF) && (
+                                        <Flex vertical>
+                                            <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    (
+                                                        option?.label ?? ""
+                                                    ).includes(input)
+                                                }
+                                                options={
+                                                    Array.isArray(repairList) &&
+                                                    repairList.length > 0
+                                                        ? repairList.map(
+                                                              (rp) => {
+                                                                  return {
+                                                                      value: rp.userId,
+                                                                      label: rp.accountName,
+                                                                  };
+                                                              }
+                                                          )
+                                                        : []
+                                                }
+                                                onChange={(val) =>
+                                                    setSelectedRepairman(val)
+                                                }
+                                                disabled={
+                                                    orderData.repairman !== null
+                                                }
+                                            />
+                                            <Button
+                                                type="primary"
+                                                style={{
+                                                    background: "#435585",
+                                                }}
+                                                onClick={handleAssignOrder}
+                                                disabled={
+                                                    orderData.repairman !== null
+                                                }
+                                            >
+                                                Giao thợ sửa chữa
+                                            </Button>
+                                        </Flex>
+                                    )}
                                 </Space>
                             </Flex>
                         </Flex>

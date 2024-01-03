@@ -20,6 +20,7 @@
         "antd": "^5.10.0",
         "axios": "^1.5.1",
         "babel-plugin-relay": "^15.0.0",
+        "chart.js": "^4.4.1",
         "customize-cra": "^1.0.0",
         "dayjs": "^1.11.10",
         "js-cookie": "^3.0.5",
@@ -28,6 +29,7 @@
         "normalize.css": "^8.0.1",
         "react": "^18.2.0",
         "react-app-rewired": "^2.2.1",
+        "react-chartjs-2": "^5.2.0",
         "react-cropper": "^2.3.3",
         "react-dom": "^18.2.0",
         "react-otp-input": "^3.1.0",
@@ -68,6 +70,7 @@
     },
     "devDependencies": {
         "@babel/preset-env": "^7.22.20",
+        "@faker-js/faker": "^8.3.1",
         "@types/react-otp-input": "^2.0.5",
         "@types/recharts": "^1.8.28"
     }

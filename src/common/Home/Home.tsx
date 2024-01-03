@@ -186,9 +186,33 @@ const Home = () => {
                     </Flex>
                 </Space>
             </Flex> */}
-            <Row gutter={16}>
-                <Col span={12} style={{ background: "#fff" }}>
-                    <Flex style={{ width: "100%" }}>
+            <Row gutter={8} className="chart-container" justify="space-between">
+                <Col
+                    span={12}
+                    style={{
+                        padding: "0 8px",
+                        boxSizing: "border-box",
+                    }}
+                >
+                    <Flex
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            background: "#fff",
+                            padding: "8px",
+                            borderRadius: "10px",
+                        }}
+                    >
+                        <Tabs
+                            defaultActiveKey="1"
+                            items={items}
+                            onChange={onChange}
+                            style={{ width: "100%" }}
+                        />
+                    </Flex>
+                </Col>
+                <Col span={10} style={{ background: "#fff" }}>
+                    <Flex style={{ width: "100%", height: "100%" }}>
                         <Tabs
                             defaultActiveKey="1"
                             items={items}

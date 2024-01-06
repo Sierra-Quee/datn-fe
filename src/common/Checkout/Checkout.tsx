@@ -162,6 +162,7 @@ const Checkout = (props: Props) => {
             setLoading(false);
             navigate("/user/order");
         } catch (error) {
+            console.log({ error });
             toast.error("Đã có lỗi xảy ra, đặt dịch vụ không thành công");
             setLoading(false);
         }

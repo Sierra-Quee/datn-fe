@@ -82,7 +82,7 @@ export interface IUser {
     createdAt: string;
     updatedAt: string;
     status: UserStatus;
-    // address: IAddress[];
+    address?: IAddress[];
     skills?: string[] | { skillId: number }[];
 }
 export const defaultUser = {

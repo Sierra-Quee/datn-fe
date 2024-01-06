@@ -194,21 +194,81 @@ export const AddressList = [
     { latitude: 21.0817373450383, longitude: 105.76168898674709 },
 ];
 
-export const getRandomAddress = (userIdList: string[]) => {
-    console.log({ getRanADdd: userIdList });
-    if (Array.isArray(userIdList) && userIdList.length > 0) {
-        const addressList: IAddress[] = userIdList.map((id) => {
-            const randomIdx = Math.floor(Math.random() * AddressList.length);
-            return {
-                userId: id,
-                latitude: AddressList[randomIdx].latitude,
-                longitude: AddressList[randomIdx].longitude,
-                address: "",
-                isMainAddress: true,
-            };
-        });
+export const RepairmanAddressList = [
+    { latitude: 21.0076684763128, longitude: 105.83967042513997 },
+    { latitude: 21.006926713054458, longitude: 105.83767157273113 },
+    { latitude: 21.005213645543083, longitude: 105.85243774507471 },
+    { latitude: 20.99759679080461, longitude: 105.83946984431134 },
+    { latitude: 20.99289024718165, longitude: 105.8380934558671 },
+    { latitude: 20.989484103318997, longitude: 105.85061361581138 },
+    { latitude: 20.98824548633265, longitude: 105.84369850760382 },
+    { latitude: 20.993760330700386, longitude: 105.83411924848309 },
+    { latitude: 21.000804567830894, longitude: 105.84232783016856 },
+    { latitude: 21.00952038340317, longitude: 105.84715348121989 },
+    { latitude: 21.008374816826745, longitude: 105.85436708330694 },
+    { latitude: 21.01549576385252, longitude: 105.84231124717523 },
+    { latitude: 21.015867282196698, longitude: 105.83403633351669 },
+    { latitude: 21.014861084568903, longitude: 105.83057048791626 },
+    { latitude: 21.023663135006185, longitude: 105.83433901666031 },
+    { latitude: 20.999640394743963, longitude: 105.85853245836824 },
+    { latitude: 21.0223944250856, longitude: 105.8962271091192 },
+    { latitude: 21.0375336589946, longitude: 105.81694148554448 },
+    { latitude: 21.03812566482401, longitude: 105.82654637251468 },
+    { latitude: 21.006999884641026, longitude: 105.86469408397176 },
+];
 
-        return addressList;
+export const getRandomAddress = (userIdList: string[], role: Role) => {
+    if (Array.isArray(userIdList) && userIdList.length > 0) {
+        if (role === Role.ROLE_USER) {
+            const addressArr = [...AddressList];
+            const addressList: IAddress[] = userIdList.map((id) => {
+                // const randomIdx = Math.floor(
+                //     Math.random() * AddressList.length
+                // );
+                const address = addressArr.pop();
+                if (!address)
+                    return {
+                        userId: id,
+                        latitude: 0,
+                        longitude: 0,
+                        address: "",
+                        isMainAddress: true,
+                    };
+                return {
+                    userId: id,
+                    latitude: address.latitude,
+                    longitude: address.longitude,
+                    address: "",
+                    isMainAddress: true,
+                };
+            });
+
+            return addressList;
+        }
+
+        if (role === Role.ROLE_REPAIRMAN) {
+            const addressArr = [...RepairmanAddressList];
+            const addressList: IAddress[] = userIdList.map((id) => {
+                const address = addressArr.pop();
+                if (!address)
+                    return {
+                        userId: id,
+                        latitude: 0,
+                        longitude: 0,
+                        address: "",
+                        isMainAddress: true,
+                    };
+                return {
+                    userId: id,
+                    latitude: address.latitude,
+                    longitude: address.longitude,
+                    address: "",
+                    isMainAddress: true,
+                };
+            });
+
+            return addressList;
+        }
     }
 
     return [];

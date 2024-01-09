@@ -24,6 +24,7 @@ import { IRoutePath } from "../utils/model";
 import AdminServiceRoute from "./adminServiceRoute";
 import { RoutePath } from "../utils/constants";
 import SystemConfig from "../admin/SystemConfig/SystemConfig";
+import Notification from "../common/Notification/Notification";
 // export enum RoutePath {
 //     Home = "/home",
 //     IntroduceServices = "/introduce-services",
@@ -116,6 +117,11 @@ export const PublicRoutes: IRoutePath[] = [
         path: `${RoutePath.CustomerOrder}/:orderId`,
         component: OrderDetail,
         layout: Public,
+    },
+    {
+        path: "user/notifications",
+        component: Notification,
+        layout: CustomerProfileLayout,
     },
 ];
 

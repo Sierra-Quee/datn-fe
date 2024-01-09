@@ -184,6 +184,7 @@ export interface INotification {
     content: string;
     notificationId: string;
     createdAt: string;
+    title: string;
 }
 
 export interface IMalfunction {

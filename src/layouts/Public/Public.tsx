@@ -97,7 +97,7 @@ const Public = ({ children }: IChildRoutePath) => {
     useEffect(() => {
         const getNotificationInterval = setInterval(() => {
             handleGetNotificationList();
-        }, 5000);
+        }, 50000);
         return () => clearInterval(getNotificationInterval);
     }, []);
 

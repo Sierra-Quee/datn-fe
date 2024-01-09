@@ -42,6 +42,9 @@ export const formatOrderStatusProgress = (
 };
 export const formatCurrency = (amount: number) => {
     console.log({ amount });
+    if (typeof amount === "string") {
+        amount = parseInt(amount);
+    }
     return amount.toLocaleString("vi-VN", {
         style: "currency",
         currency: "VND",

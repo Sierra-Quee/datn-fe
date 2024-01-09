@@ -45,7 +45,7 @@ const menuItems: MenuItem[] = [
         <LaptopOutlined />
     ),
     getItem(
-        <Link to={"/"}>Thông báo</Link>,
+        <Link to={"/user/notifications"}>Thông báo</Link>,
         "notifications",
         <NotificationOutlined />
     ),

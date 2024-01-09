@@ -14,13 +14,14 @@ import { DeleteOutlined } from "@ant-design/icons";
 import "./Cart.scss";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { formatCurrency } from "../../utils/functions/formation";
 const { Text, Title } = Typography;
 type Props = {};
 interface DataType {
     key: React.Key;
     serviceId: number;
     name: string;
-    price: number;
+    price: number | string;
     isChoosen: boolean;
     delete: ReactNode;
 }
@@ -120,7 +121,7 @@ const Cart = (props: Props) => {
                     key: index,
                     serviceId: item.service.serviceId,
                     name: item.service.name,
-                    price: item.service.price,
+                    price: formatCurrency(item.service.price),
                     isChoosen: item.isChoosen,
                     delete: (
                         <DeleteOutlined

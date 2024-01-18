@@ -1,4 +1,4 @@
-import { ICart, ICartItem } from "../../utils/model";
+import { ICartItem } from "../../utils/model";
 import fetchHandler from "../axios";
 
 export const getCart = () => {

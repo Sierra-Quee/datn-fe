@@ -102,6 +102,9 @@ export const cartSlice = createSlice({
                 state.cartId = action.payload.cartId;
                 state.loadingCart = false;
                 state.cartItemQuantity = action.payload.cartItems.length;
+                state.cartItemForCheckout = action.payload.cartItems.filter(
+                    (item: ICartItem) => item.isChoosen
+                );
             })
             .addCase(getCartAsync.rejected, (state, action) => {
                 state.loadingCart = false;

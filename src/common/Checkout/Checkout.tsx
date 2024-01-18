@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import cart from "../../core/reducers/cart";
+import cart, { getCartAsync } from "../../core/reducers/cart";
 import {
     Button,
     DatePicker,
@@ -31,6 +31,8 @@ import axios from "axios";
 import { createOrderAsync } from "../../core/reducers/order";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import fetchHandler from "../../api/axios";
+import { formatCurrency } from "../../utils/functions/formation";
 const { Title, Text } = Typography;
 type Props = {};
 
@@ -54,6 +56,7 @@ const Checkout = (props: Props) => {
             await dispatch(getAllAddressAsync(account.userId));
         }
     };
+    console.log({ cartItemForCheckout });
     const handleOpenAddressModal = () => {
         setIsOpenAddressModal(true);
     };
@@ -160,6 +163,14 @@ const Checkout = (props: Props) => {
             await dispatch(createOrderAsync(order));
             toast.success("Đặt dịch vụ thành công");
             setLoading(false);
+            Promise.all(
+                cartItemForCheckout.map(async (item) => {
+                    await fetchHandler.delete(
+                        `/cart/deleteCartItem/${item.id}`
+                    );
+                })
+            );
+            await dispatch(getCartAsync());
             navigate("/user/order");
         } catch (error) {
             console.log({ error });
@@ -300,13 +311,15 @@ const Checkout = (props: Props) => {
                                     <Title level={4}>
                                         {Array.isArray(cartItemForCheckout) &&
                                         cartItemForCheckout.length > 0
-                                            ? cartItemForCheckout.reduce(
-                                                  (total, item) =>
-                                                      (total += parseInt(
-                                                          item?.service
-                                                              ?.price || "0"
-                                                      )),
-                                                  0
+                                            ? formatCurrency(
+                                                  cartItemForCheckout.reduce(
+                                                      (total, item) =>
+                                                          (total += parseInt(
+                                                              item?.service
+                                                                  ?.price || "0"
+                                                          )),
+                                                      0
+                                                  )
                                               )
                                             : 0}
                                     </Title>

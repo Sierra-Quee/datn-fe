@@ -15,6 +15,7 @@ import "./CheckoutItem.scss";
 import { CommentOutlined, PlusOutlined } from "@ant-design/icons";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { isEmpty } from "lodash";
+import { formatCurrency } from "../../../utils/functions/formation";
 const { Text, Title } = Typography;
 const { TextArea } = Input;
 
@@ -112,7 +113,7 @@ const CheckoutItem = ({
                             {service?.name}
                         </Text>
                         <Text className="checkoutItemServiceInfo__price">
-                            {service?.price}
+                            {service.price ? formatCurrency(service?.price) : 0}
                         </Text>
                         <Text className="checkoutItemServiceInfo__describe">
                             {!isEmpty(Object(addedInfoList[index])) &&

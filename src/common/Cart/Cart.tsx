@@ -1,6 +1,6 @@
 import { Button, Flex, Layout, Space, Table, theme, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { ICartItem } from "../../utils/model";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
@@ -15,6 +15,8 @@ import "./Cart.scss";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { formatCurrency } from "../../utils/functions/formation";
+import fetchHandler from "../../api/axios";
+import { getCart } from "../../api/cart/cart";
 const { Text, Title } = Typography;
 type Props = {};
 interface DataType {
@@ -54,23 +56,39 @@ const Cart = (props: Props) => {
     );
     const [cartData, setCartData] = useState<DataType[]>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    const onSelectChange = async (newSelectedRowKeys: React.Key[]) => {
         const selectedItem = newSelectedRowKeys.map(
             (val) => cartData[parseInt(val.toString())]
         );
         const selected = selectedItem.map(
             (val) => cartItemList[parseInt(val.key.toString())]
         );
+        const selectedId = selected.map((val) => val.id);
+        console.log({ selectedId });
+        await Promise.all(
+            cartItemList.map(async (val) => {
+                if (selectedId.includes(val.id) && val.isChoosen === false) {
+                    console.log(val.id);
+                    await handleChooseCartItem(val.id);
+                    return;
+                }
+                if (!selectedId.includes(val.id) && val.isChoosen === true) {
+                    await handleChooseCartItem(val.id);
+                }
+            })
+        );
         dispatch(setItemsForCheckout(selected));
         setSelectedRowKeys(newSelectedRowKeys);
+        await dispatch(getCartAsync());
     };
     const handleDeleteItem = async (cartItem: ICartItem) => {
         try {
             dispatch(removeItemToCheckout(cartItem));
             if (cartItem.id) {
                 await dispatch(deleteCartItemAsync(cartItem.id.toString()));
+                await dispatch(getCartAsync());
             }
-            dispatch(getCartAsync());
+            // dispatch(getCartAsync());
         } catch (error) {}
     };
     const rowSelection: TableRowSelection<DataType> = {
@@ -149,6 +167,16 @@ const Cart = (props: Props) => {
             toast.error("Bạn chưa chọn dịch vụ để đặt");
         }
     };
+    const handleChooseCartItem = async (cartItemId?: number) => {
+        if (!cartItemId) return;
+        try {
+            await fetchHandler.patch(`/cart/chooseCartItem/${cartItemId}`);
+        } catch (error) {
+            toast.error("Đã có lỗi xảy ra");
+            throw error;
+        }
+    };
+    console.log({ cartItemForCheckout });
     return (
         <Layout
             style={{
@@ -173,7 +201,15 @@ const Cart = (props: Props) => {
                 />
                 <Flex justify="space-between">
                     <Text className="priceLabel">
-                        Giá từ: <Text className="priceValue">{"1120000"}</Text>
+                        Giá từ:{" "}
+                        <Text className="priceValue">
+                            {Array.isArray(cartItemForCheckout) &&
+                                cartItemForCheckout.reduce(
+                                    (total, item) =>
+                                        (total += parseInt(item.service.price)),
+                                    0
+                                )}
+                        </Text>
                     </Text>
                     <Button
                         type="primary"

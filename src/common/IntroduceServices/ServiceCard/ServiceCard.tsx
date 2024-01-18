@@ -17,7 +17,7 @@ const ServiceCard = ({ service }: Props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const dispatch = useAppDispatch();
     const { cartId, cartItemList } = useAppSelector((state) => state.cart);
-    const handleAddServiceToCard = () => {
+    const handleAddServiceToCard = async () => {
         if (
             cartItemList.some(
                 (item) => item.service.serviceId === service.serviceId
@@ -31,8 +31,8 @@ const ServiceCard = ({ service }: Props) => {
             serviceId: service.serviceId,
             isChoosen: false,
         };
-        dispatch(createCartItemAsync(cartItem));
-        dispatch(getCartAsync());
+        await dispatch(createCartItemAsync(cartItem));
+        await dispatch(getCartAsync());
         messageApi.success("Thêm dịch vụ vào giỏ hàng thành công");
     };
     return (

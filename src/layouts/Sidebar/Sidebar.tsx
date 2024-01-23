@@ -1,6 +1,7 @@
 import "./Sidebar.scss";
 
 import {
+    CommentOutlined,
     GlobalOutlined,
     HomeOutlined,
     SettingOutlined,
@@ -126,6 +127,11 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
         ]),
         getItem("Lịch sử thanh toán", "11", <WalletOutlined />),
         // getItem("Cấu hình hệ thống", "12", <SettingOutlined />),
+        getItem(
+            <Link to={`/admin${RoutePath.Review}`}>Quản lý đánh giá</Link>,
+            "manage-review",
+            <CommentOutlined />
+        ),
         getItem(
             <Link to={`/admin${RoutePath.SystemConfig}`}>
                 Cấu hình hệ thống

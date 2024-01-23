@@ -64,11 +64,9 @@ const Cart = (props: Props) => {
             (val) => cartItemList[parseInt(val.key.toString())]
         );
         const selectedId = selected.map((val) => val.id);
-        console.log({ selectedId });
         await Promise.all(
             cartItemList.map(async (val) => {
                 if (selectedId.includes(val.id) && val.isChoosen === false) {
-                    console.log(val.id);
                     await handleChooseCartItem(val.id);
                     return;
                 }
@@ -176,7 +174,6 @@ const Cart = (props: Props) => {
             throw error;
         }
     };
-    console.log({ cartItemForCheckout });
     return (
         <Layout
             style={{

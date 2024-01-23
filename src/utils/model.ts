@@ -121,6 +121,9 @@ export interface IReview {
     createdAt?: string;
     updatedAt?: string;
     user?: IUser;
+    service?: {
+        name: string;
+    };
 }
 
 export interface IOrderMedia {

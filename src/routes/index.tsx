@@ -25,6 +25,7 @@ import AdminServiceRoute from "./adminServiceRoute";
 import { RoutePath } from "../utils/constants";
 import SystemConfig from "../admin/SystemConfig/SystemConfig";
 import Notification from "../common/Notification/Notification";
+import Review from "../admin/Review/Review";
 // export enum RoutePath {
 //     Home = "/home",
 //     IntroduceServices = "/introduce-services",
@@ -149,6 +150,10 @@ export const AdminAccessRoutes: IRoutePath[] = [
     {
         path: `${RoutePath.Order}/:orderId`,
         component: OrderDetail,
+    },
+    {
+        path: RoutePath.Review,
+        component: Review,
     },
 ];
 

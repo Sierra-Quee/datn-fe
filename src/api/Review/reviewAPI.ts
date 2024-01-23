@@ -16,3 +16,19 @@ export const updateReviewApi = async (review: IReview) => {
 export const deleteReviewApi = async (reviewId: number) => {
     return fetchHandler.delete(`/review/delete/${reviewId}`);
 };
+
+export const getAllReviewsApi = async (query: any) => {
+    return fetchHandler.get(
+        `/review/getAll${
+            query.serviceId ? `?serviceId=${query.serviceId}` : ""
+        }${
+            query.rate
+                ? `${
+                      query.serviceId
+                          ? `&rate=${query.rate}`
+                          : `?rate=${query.rate}`
+                  }`
+                : ""
+        }`
+    );
+};

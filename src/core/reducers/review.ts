@@ -5,6 +5,7 @@ import {
     getReviewsApi,
     updateReviewApi,
     deleteReviewApi,
+    getAllReviewsApi,
 } from "../../api/Review/reviewAPI";
 
 interface IReviewSlice {
@@ -53,6 +54,14 @@ export const deleteReviewAsync = createAsyncThunk(
     "deleteReview",
     async (reviewId: number) => {
         const response = await deleteReviewApi(reviewId);
+        return response.data;
+    }
+);
+
+export const getAllReviewsAsync = createAsyncThunk(
+    "getAllReviews",
+    async (query: any) => {
+        const response = await getAllReviewsApi(query);
         return response.data;
     }
 );
@@ -115,6 +124,16 @@ export const reviewSlice = createSlice({
             .addCase(deleteReviewAsync.rejected, (state, action) => {
                 state.updateReview.isUpdatingReview = false;
                 state.updateReview.updateReviewStatus = "failed";
+            })
+            .addCase(getAllReviewsAsync.pending, (state, action) => {
+                state.isLoadingReviewList = true;
+            })
+            .addCase(getAllReviewsAsync.fulfilled, (state, action) => {
+                state.isLoadingReviewList = false;
+                state.reviewList = action.payload;
+            })
+            .addCase(getAllReviewsAsync.rejected, (state, action) => {
+                state.isLoadingReviewList = false;
             });
     },
 });

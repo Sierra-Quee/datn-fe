@@ -285,7 +285,7 @@ const SystemConfig = (props: Props) => {
                             <Form.Item {...buttonItemLayout}>
                                 <Button
                                     type="primary"
-                                    style={{ width: "200px" }}
+                                    style={{ width: "200px", margin: 0 }}
                                     onClick={handleSubmit}
                                 >
                                     Cập nhật
@@ -336,17 +336,26 @@ const SystemConfig = (props: Props) => {
                             <Form.Item {...buttonItemLayout}>
                                 <Button
                                     type="primary"
-                                    style={{ width: "200px" }}
+                                    style={{ width: "200px", margin: 0 }}
                                     onClick={handleSubmitAccList}
                                 >
                                     Tạo ngẫu nhiên
                                 </Button>
                             </Form.Item>
+                            <Form.Item {...buttonItemLayout}>
+                                <Button
+                                    type="primary"
+                                    style={{ width: "200px", margin: 0 }}
+                                    onClick={() => setOpenMap(true)}
+                                >
+                                    Mô phỏng bản đồ
+                                </Button>
+                            </Form.Item>
                         </Form>
                     </Flex>
-                    <Button type="primary" onClick={() => setOpenMap(true)}>
+                    {/* <Button type="primary" onClick={() => setOpenMap(true)}>
                         Open Map
-                    </Button>
+                    </Button> */}
                 </Spin>
             )}
             {openMap && (
@@ -363,12 +372,6 @@ const SystemConfig = (props: Props) => {
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        {/* <Marker position={position}>
-                            <Popup>
-                                A pretty CSS3 popup. <br /> Easily customizable.
-                            </Popup>
-                        </Marker> */}
-                        {/* <RepairmanMarker color="#33cc33" /> */}
                         {Array.isArray(repairmanList) &&
                             repairmanList.length > 0 &&
                             repairmanList.map((repairman) => (
@@ -381,7 +384,7 @@ const SystemConfig = (props: Props) => {
                             ))}
                     </MapContainer>
                     <Button type="primary" onClick={() => setOpenMap(false)}>
-                        Close Map
+                        Tắt mô phỏng bản đồ
                     </Button>
                 </Flex>
             )}

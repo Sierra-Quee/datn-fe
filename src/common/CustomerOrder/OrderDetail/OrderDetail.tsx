@@ -14,7 +14,10 @@ import {
     Typography,
     Input,
     Select,
+    Result,
+    notification,
 } from "antd";
+import type { NotificationArgsProps } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IComponent, IOrder } from "../../../utils/model";
@@ -50,6 +53,7 @@ const { Title, Text } = Typography;
 const { TextArea } = Input;
 type Props = {};
 type ProgressItem = "wait" | "process" | "finish" | "error" | undefined;
+type NotificationPlacement = NotificationArgsProps["placement"];
 const columns: ColumnsType<IComponent> = [
     {
         title: "Tên linh kiện",
@@ -135,9 +139,14 @@ const components: IComponent[] = [
     },
 ];
 const OrderDetail = (props: Props) => {
-    const {
-        token: { colorBgContainer },
-    } = theme.useToken();
+    const [api, contextHolder] = notification.useNotification();
+    const openNotification = (placement: NotificationPlacement) => {
+        api.info({
+            message: `Notification ${placement}`,
+            description: "Thợ sửa chữa check in đơn thành công",
+            placement,
+        });
+    };
     const { orderId } = useParams();
     const dispatch = useAppDispatch();
     const [orderData, setOrderData] = useState<IOrder>();
@@ -175,15 +184,29 @@ const OrderDetail = (props: Props) => {
         handleGetOrder();
         const getOrderInterval = setInterval(() => {
             handleGetOrder();
-        }, 1000000);
+        }, 5000);
         return () => {
             dispatch(clearOrder);
             clearInterval(getOrderInterval);
         };
     }, [orderId]);
 
+    // useEffect(() => {
+    //     if (orderData?.status === OrderStatus.CHECKEDIN) {
+    //         openNotification("top");
+    //         setOpenQrModal(false);
+    //     }
+    // }, [orderData]);
+
     useEffect(() => {
         if (order) {
+            if (
+                order.status === OrderStatus.CHECKEDIN &&
+                order.status !== orderData?.status
+            ) {
+                openNotification("top");
+                setOpenQrModal(false);
+            }
             setOrderData(order);
             const pendingStatus = formatOrderStatusProgress(
                 order.status,
@@ -244,7 +267,6 @@ const OrderDetail = (props: Props) => {
             a.click();
             document.body.removeChild(a);
         }
-        // handleCloseQrModal();
     };
 
     const handleOpenCancelOrderModal = () => {
@@ -266,10 +288,7 @@ const OrderDetail = (props: Props) => {
                     reason: prefix + cancelOrderReason,
                     orderId: parseInt(orderData.orderId.toString()),
                 };
-                const response = await fetchHandler.patch(
-                    "order/cancelOrder",
-                    body
-                );
+                await fetchHandler.patch("order/cancelOrder", body);
                 toast.success("Hủy đơn dịch vụ thành công");
                 setOpenCancelModal(false);
                 handleGetOrder();
@@ -295,11 +314,12 @@ const OrderDetail = (props: Props) => {
                 })
             );
 
-            handleGetAllRepairList();
+            handleGetOrder();
         }
     };
     return (
-        <Spin spinning={loadingOrder}>
+        <Spin spinning={loadingOrder && orderData === undefined}>
+            {contextHolder}
             <Layout
                 style={{
                     padding: "24px 0",
@@ -440,18 +460,23 @@ const OrderDetail = (props: Props) => {
                                     >
                                         Hủy đơn
                                     </Button>
-                                    <Button
-                                        onClick={handleOpenQrModal}
-                                        disabled={
-                                            orderData.status !==
-                                            OrderStatus.ACCEPTED
-                                        }
-                                        icon={<QrcodeOutlined />}
-                                        type="primary"
-                                        style={{ background: "#435585" }}
-                                    >
-                                        Lấy mã QR
-                                    </Button>
+                                    {account &&
+                                        account.role === Role.ROLE_USER && (
+                                            <Button
+                                                onClick={handleOpenQrModal}
+                                                disabled={
+                                                    orderData.status !==
+                                                    OrderStatus.ACCEPTED
+                                                }
+                                                icon={<QrcodeOutlined />}
+                                                type="primary"
+                                                style={{
+                                                    background: "#435585",
+                                                }}
+                                            >
+                                                Lấy mã QR
+                                            </Button>
+                                        )}
                                     {(account.role === Role.ROLE_ADMIN ||
                                         account.role === Role.ROLE_STAFF) && (
                                         <Flex vertical>

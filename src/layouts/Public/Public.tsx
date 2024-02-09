@@ -330,23 +330,25 @@ const Public = ({ children }: IChildRoutePath) => {
                 </Content>
                 <Footer className="footer">
                     <div className="right-footer">
-                        <h2>ISmart</h2>
+                        <h2>HandyConnect</h2>
                         <div className="item-footer">
                             <HomeFilled />
                             <span className="contact-content-title">
-                                <b>Tổng Công ty Cổ phần Công trình ISmart</b>
+                                <b>
+                                    Hệ thống kết nối khách hàng và thợ sửa chữa
+                                </b>
                             </span>
                         </div>
                         <div className="item-footer">
                             <PhoneFilled />
                             <span className="contact-content-title">
-                                <b>Hotline:</b> 0123456789
+                                <b>Hotline:</b> (+84) 125-637-489
                             </span>
                         </div>
                         <div className="item-footer">
                             <MailFilled />
                             <span className="contact-content-title">
-                                <b>Email: congtrinhviettel@viettel.com.vn</b>
+                                <b>Email: hotro@handyconnect.com</b>
                             </span>
                         </div>
                     </div>

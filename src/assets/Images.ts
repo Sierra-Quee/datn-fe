@@ -12,6 +12,7 @@ import reason_water_machine from "./images/may-loc-nuoc.png";
 import no_image from "./images/no-avatar.png";
 import not_found from "./images/not-found.png";
 import user from "./images/user.png";
+import logoSvg from "./images/logo.svg";
 
 const Images = {
     logo,
@@ -28,6 +29,7 @@ const Images = {
     reason_water_machine,
     fix_water_machine,
     heater,
+    logoSvg,
 };
 
 export default Images;

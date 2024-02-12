@@ -35,6 +35,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { RoutePath } from "../../utils/constants";
 import { clearCookie } from "../../utils/functions/cookies";
 import { IChildRoutePath, ISkill } from "../../utils/model";
+import image from "../../assets/Images";
 const { useToken } = theme;
 const { Search } = Input;
 const Public = ({ children }: IChildRoutePath) => {
@@ -178,9 +179,10 @@ const Public = ({ children }: IChildRoutePath) => {
                     }}
                 >
                     <div style={{ width: "20%" }}>
-                        <a href="/" className="header-title">
+                        {/* <a href="/" className="header-title">
                             Ismart
-                        </a>
+                        </a> */}
+                        <img src={image.logoSvg} />
                     </div>
 
                     {/* <Input

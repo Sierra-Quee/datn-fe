@@ -57,13 +57,10 @@ const LogIn = () => {
                         className="wrap-logo"
                     >
                         <img
-                            style={{ width: "400px", height: "400px" }}
-                            src={Images.Ismart}
+                            style={{ width: "500px", height: "500px" }}
+                            src={Images.logoSvg}
                             alt="icon"
                         />
-                        <h2 style={{ textAlign: "center" }}>
-                            Hệ thống sửa chữa điện lạnh ISmart
-                        </h2>
                     </Col>
                     <Col
                         xxl={10}
@@ -101,7 +98,11 @@ const LogIn = () => {
                                 <Input.Password placeholder="Nhập số điện thoại của bạn" />
                             </Form.Item>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    style={{ background: "#435585" }}
+                                >
                                     Đăng nhập
                                 </Button>
                             </Form.Item>

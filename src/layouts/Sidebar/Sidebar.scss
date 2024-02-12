@@ -1,7 +1,19 @@
 .sidebar {
     height: 100%;
-    background-color: var(--sidebar-color);
+    background-color: #363062;
     transition: width 0.3s ease-out;
+
+    .ant-menu {
+        background: none;
+    }
+
+    .ant-menu-item-selected {
+        background-color: #818fb4;
+    }
+
+    .ant-menu-sub.ant-menu-inline {
+        background: none !important;
+    }
 
     .sidebar-logo {
         height: 150px;
@@ -14,6 +26,7 @@
         .sidebar-logo-image {
             height: 150px;
             transition: width 0.3s ease-out;
+            transform: translateY(-20%);
         }
     }
 }

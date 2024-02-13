@@ -339,6 +339,7 @@ const Service = () => {
                     <Button
                         type="primary"
                         onClick={() => setIsOpenModal(!isOpenModal)}
+                        style={{ background: "#435585" }}
                     >
                         Thêm dịch vụ
                     </Button>
@@ -356,6 +357,7 @@ const Service = () => {
                         <label
                             className="custom-file-label"
                             htmlFor="inputGroupFile"
+                            style={{ background: "435585" }}
                         >
                             Thêm bằng file excel
                         </label>
@@ -366,6 +368,7 @@ const Service = () => {
                         type="primary"
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
+                        style={{ background: "#435585" }}
                     >
                         Xuất file excel
                     </Button>

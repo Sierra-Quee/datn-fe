@@ -336,6 +336,7 @@ const SystemAdmin = () => {
                     <Button
                         type="primary"
                         onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
+                        style={{ background: "#435585" }}
                     >
                         Thêm quản lý
                     </Button>
@@ -364,6 +365,7 @@ const SystemAdmin = () => {
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
                         disabled={!listAdExport || listAdExport.length === 0}
+                        style={{ background: "#435585" }}
                     >
                         Xuất file excel
                     </Button>

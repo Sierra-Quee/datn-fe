@@ -338,6 +338,7 @@ const SystemCustomer = () => {
                     <Button
                         type="primary"
                         onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
+                        style={{ background: "#435585" }}
                     >
                         Thêm khách hàng
                     </Button>
@@ -366,6 +367,7 @@ const SystemCustomer = () => {
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
                         disabled={!listCusExport || listCusExport.length === 0}
+                        style={{ background: "#435585" }}
                     >
                         Xuất file excel
                     </Button>

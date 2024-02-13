@@ -42,6 +42,7 @@ const OrderListItem = ({ order }: IOrderListItem) => {
                         size="small"
                         type="primary"
                         onClick={() => navigate(`/user/order/${order.orderId}`)}
+                        style={{ background: "#435585" }}
                     >
                         Xem chi tiết
                     </Button>

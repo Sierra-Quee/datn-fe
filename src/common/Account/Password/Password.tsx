@@ -53,7 +53,7 @@ const Password = () => {
 
     return (
         <div className="account-password">
-            <h2 style={{ marginBottom: "20px" }}>Đổi mật khẩu</h2>
+            <h2 style={{ textAlign: "center" }}>Đổi mật khẩu</h2>
             <div className="account-password-content">
                 <Form
                     form={form}
@@ -102,7 +102,11 @@ const Password = () => {
                         />
                     </Form.Item>
                     <Form.Item style={{ float: "inline-end" }}>
-                        <Button type="primary" htmlType="submit">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{ background: "#435585" }}
+                        >
                             Lưu thay đổi
                         </Button>
                     </Form.Item>

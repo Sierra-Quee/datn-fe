@@ -58,10 +58,42 @@ const HomePage = () => {
     return (
         <div className="home-page">
             <Carousel autoplay className="carousel">
-                <img src={Images.cold_machine} height={600} alt="" />
-                <img src={Images.fridge} height={600} alt="" />
-                <img src={Images.sun_battery} height={600} alt="" />
-                <img src={Images.washing_machine} height={600} alt="" />
+                <div style={{ width: "100%", height: "200px" }}>
+                    <img
+                        src={Images.banner1}
+                        alt=""
+                        style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100vh",
+                            filter: "brightness(0.95)",
+                        }}
+                    />
+                </div>
+                <div style={{ width: "100%", height: "200px" }}>
+                    <img
+                        src={Images.banner2}
+                        alt=""
+                        style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100vh",
+                            filter: "brightness(0.95)",
+                        }}
+                    />
+                </div>
+                <div style={{ width: "100%", height: "200px" }}>
+                    <img
+                        src={Images.banner3}
+                        alt=""
+                        style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100vh",
+                            filter: "brightness(0.95)",
+                        }}
+                    />
+                </div>
             </Carousel>
             {/* <div className="home-page-content">
                 {skills.map((skill) => (
@@ -183,7 +215,7 @@ const HomePage = () => {
                                             boxSizing: "content-box",
                                             borderRadius: "50%",
                                             boxShadow:
-                                                "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+                                                "rgba(50, 50, 93, 0.25) 0px 20px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
                                         }}
                                     />
                                 </div>
@@ -230,7 +262,7 @@ const HomePage = () => {
                                             boxSizing: "content-box",
                                             borderRadius: "50%",
                                             boxShadow:
-                                                "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+                                                "rgba(50, 50, 93, 0.25) 0px 20px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
                                         }}
                                     />
                                 </div>
@@ -277,7 +309,7 @@ const HomePage = () => {
                                             boxSizing: "content-box",
                                             borderRadius: "50%",
                                             boxShadow:
-                                                "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+                                                "rgba(50, 50, 93, 0.25) 0px 20px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
                                         }}
                                     />
                                 </div>
@@ -324,7 +356,7 @@ const HomePage = () => {
                                             boxSizing: "content-box",
                                             borderRadius: "50%",
                                             boxShadow:
-                                                "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+                                                "rgba(50, 50, 93, 0.25) 0px 20px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
                                         }}
                                     />
                                 </div>
@@ -332,10 +364,16 @@ const HomePage = () => {
                             <Text>Các dịch vụ viễn thông</Text>
                         </Flex>
                     </Flex>
-                    <Flex>
-                        <Flex>
-                            <Space>
-                                <Title>
+                    <Flex vertical align="center">
+                        <Flex style={{ width: "80%", gap: "20px" }}>
+                            <Space
+                                direction="vertical"
+                                style={{ width: "50%" }}
+                            >
+                                <Title
+                                    level={2}
+                                    style={{ textAlign: "center" }}
+                                >
                                     15 năm dẫn đầu cung cấp dịch vụ sửa chữa
                                 </Title>
                                 <Paragraph>
@@ -348,10 +386,38 @@ const HomePage = () => {
                                     tháng.
                                 </Paragraph>
                             </Space>
+                            <div style={{ width: "50%" }}>
+                                <img
+                                    src={Images.banner1}
+                                    alt=""
+                                    style={{
+                                        width: "100%",
+                                        height: "200px",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            </div>
                         </Flex>
-                        <Flex>
-                            <Space>
-                                <Title>
+                        <Flex style={{ width: "80%", gap: "20px" }}>
+                            <div style={{ width: "50%" }}>
+                                <img
+                                    src={Images.banner1}
+                                    alt=""
+                                    style={{
+                                        width: "100%",
+                                        height: "200px",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            </div>
+                            <Space
+                                direction="vertical"
+                                style={{ width: "50%" }}
+                            >
+                                <Title
+                                    level={2}
+                                    style={{ textAlign: "center" }}
+                                >
                                     Đội ngũ nhân viên sửa chữa chuyên nghiệp
                                 </Title>
                                 <Paragraph>
@@ -363,19 +429,57 @@ const HomePage = () => {
                                 </Paragraph>
                             </Space>
                         </Flex>
-                        <Flex>
-                            <Space>
-                                <Title>Đa dạnh lĩnh vực dịch vụ</Title>
+                        <Flex style={{ width: "80%", gap: "20px" }}>
+                            <Space
+                                direction="vertical"
+                                style={{ width: "50%" }}
+                            >
+                                <Title
+                                    level={2}
+                                    style={{ textAlign: "center" }}
+                                >
+                                    Đa dạnh lĩnh vực dịch vụ
+                                </Title>
                                 <Paragraph>
                                     HandyConnect cung cấp đã dạnh lĩnh vực dịch
                                     vụ sửa chữa như điện tử, điện lạnh, điện
                                     nước, bảo dượng hệ thống, lắp đặt,...
                                 </Paragraph>
                             </Space>
+                            <div style={{ width: "50%" }}>
+                                <img
+                                    src={Images.banner1}
+                                    alt=""
+                                    style={{
+                                        width: "100%",
+                                        height: "200px",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            </div>
                         </Flex>
-                        <Flex>
-                            <Space>
-                                <Title>Dễ dàng đăng ký</Title>
+                        <Flex style={{ width: "80%", gap: "20px" }}>
+                            <div style={{ width: "50%" }}>
+                                <img
+                                    src={Images.banner1}
+                                    alt=""
+                                    style={{
+                                        width: "100%",
+                                        height: "200px",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            </div>
+                            <Space
+                                direction="vertical"
+                                style={{ width: "50%" }}
+                            >
+                                <Title
+                                    level={2}
+                                    style={{ textAlign: "center" }}
+                                >
+                                    Dễ dàng đăng ký
+                                </Title>
                                 <Paragraph>
                                     Chỉ với vài click đơn giản, khách hàng có
                                     thể nhanh chóng đăng ký tài khoản và trải
@@ -388,9 +492,17 @@ const HomePage = () => {
                                 </Paragraph>
                             </Space>
                         </Flex>
-                        <Flex>
-                            <Space>
-                                <Title>Cung cấp dịch vụ sửa chữa 24/7</Title>
+                        <Flex style={{ width: "80%", gap: "20px" }}>
+                            <Space
+                                direction="vertical"
+                                style={{ width: "50%" }}
+                            >
+                                <Title
+                                    level={2}
+                                    style={{ textAlign: "center" }}
+                                >
+                                    Cung cấp dịch vụ sửa chữa 24/7
+                                </Title>
                                 <Paragraph>
                                     HandyConnect cung cấp dịch vụ sửa chữa 24/7,
                                     nhanh chóng tìm được thợ sửa chữa phù hợp
@@ -400,6 +512,17 @@ const HomePage = () => {
                                     lễ, ngày mưa gió.
                                 </Paragraph>
                             </Space>
+                            <div style={{ width: "50%" }}>
+                                <img
+                                    src={Images.banner1}
+                                    alt=""
+                                    style={{
+                                        width: "100%",
+                                        height: "200px",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            </div>
                         </Flex>
                     </Flex>
                 </Flex>

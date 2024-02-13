@@ -317,16 +317,10 @@ const DetailService = (props: Props) => {
                                         <Button
                                             shape="round"
                                             onClick={handleAddToCart}
-                                        >
-                                            Chọn
-                                        </Button>
-                                        <Button
-                                            shape="round"
-                                            type="primary"
                                             style={{ background: "#435585" }}
-                                            onClick={handleAddToCheckout}
+                                            type="primary"
                                         >
-                                            Đặt dịch vụ
+                                            Thêm vào giỏ
                                         </Button>
                                     </Flex>
                                 </Flex>
@@ -484,8 +478,14 @@ const DetailService = (props: Props) => {
                                 </Flex>
                             </Flex>
                         </Flex>
-                        <Flex vertical gap={10} style={{ width: "30%" }}>
-                            <Title level={2}>Dịch vụ liên quan</Title>
+                        <Flex
+                            vertical
+                            gap={10}
+                            style={{ width: "30%", marginTop: "20px" }}
+                        >
+                            <Title level={2} style={{ textAlign: "center" }}>
+                                Dịch vụ liên quan
+                            </Title>
                             <Flex vertical gap={10}>
                                 {Array.isArray(listService) &&
                                     listService.length > 0 &&

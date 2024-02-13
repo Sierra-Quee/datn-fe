@@ -372,6 +372,7 @@ const SystemRepairment = () => {
                     <Button
                         type="primary"
                         onClick={() => setIsOpenPanelUpdate(!isOpenPanelUpdate)}
+                        style={{ background: "#435585" }}
                     >
                         Thêm nhân viên
                     </Button>
@@ -400,6 +401,7 @@ const SystemRepairment = () => {
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
                         disabled={!listRepExport || listRepExport.length === 0}
+                        style={{ background: "#435585" }}
                     >
                         Xuất file excel
                     </Button>

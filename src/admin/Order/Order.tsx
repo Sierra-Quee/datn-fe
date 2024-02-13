@@ -280,7 +280,11 @@ const Order = () => {
                         type="primary"
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
-                        style={{ width: "20%", margin: 0 }}
+                        style={{
+                            width: "20%",
+                            margin: 0,
+                            background: "#435585",
+                        }}
                     >
                         Xuất file excel
                     </Button>

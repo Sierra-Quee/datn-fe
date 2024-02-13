@@ -32,25 +32,25 @@ export const options = {
         },
         title: {
             display: true,
-            text: "Chart.js Bar Chart",
+            text: "Biểu đồ doanh thu",
         },
     },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
+const labels = ["08/02", "09/02", "10/02", "11/02", "12/02", "13/02", "14/02"];
 export const data = {
     labels,
     datasets: [
         {
             label: "Dataset 1",
-            data: labels.map(() => faker.number.int()),
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
+            data: labels.map(() => faker.number.int(100)),
+            backgroundColor: "#818FB4",
         },
-        {
-            label: "Dataset 2",
-            data: labels.map(() => faker.number.int()),
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
+        // {
+        //     label: "Dataset 2",
+        //     data: labels.map(() => faker.number.int(100)),
+        //     backgroundColor: "#F5E8C7",
+        // },
     ],
 };
 function OutcomeChart({}: Props) {
@@ -58,7 +58,6 @@ function OutcomeChart({}: Props) {
         <Flex vertical style={{ width: "100%", height: "100%" }}>
             <Flex style={{ width: "100%" }} justify="space-between" gap={20}>
                 <Select
-                    size="small"
                     showSearch
                     style={{ width: 200 }}
                     placeholder="Search to Select"
@@ -102,8 +101,7 @@ function OutcomeChart({}: Props) {
                 <Button
                     icon={<ExportOutlined />}
                     type="primary"
-                    style={{ margin: 0 }}
-                    size="small"
+                    style={{ margin: 0, background: "#435585" }}
                 >
                     Tải biểu đồ
                 </Button>

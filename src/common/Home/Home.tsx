@@ -39,7 +39,36 @@ import { Role } from "../../core/auth/roles";
 import OutcomeChart from "./OutcomeChart";
 import OrderChart from "./OrderChart";
 import ServiceChart from "./ServiceChart";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "react-chartjs-2";
 
+ChartJS.register(ArcElement, Tooltip, Legend);
+export const data = {
+    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    datasets: [
+        {
+            label: "# of Votes",
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(153, 102, 255, 0.2)",
+                "rgba(255, 159, 64, 0.2)",
+            ],
+            borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)",
+            ],
+            borderWidth: 1,
+        },
+    ],
+};
 const Home = () => {
     dayjs.extend(customParseFormat);
     const dispatch = useAppDispatch();
@@ -113,7 +142,7 @@ const Home = () => {
         },
         {
             key: "2",
-            label: "Đơn hàng",
+            label: "Đơn đặt dịch vụ",
             children: <OrderChart />,
         },
         {
@@ -129,48 +158,48 @@ const Home = () => {
                 <Col span={6}>
                     <Card bordered={false}>
                         <Statistic
-                            title="Active"
-                            value={11.28}
+                            title="Số đơn hàng"
+                            value={6}
                             precision={2}
                             valueStyle={{ color: "#3f8600" }}
                             prefix={<ArrowUpOutlined />}
-                            suffix="%"
+                            suffix="đơn"
                         />
                     </Card>
                 </Col>
                 <Col span={6}>
                     <Card bordered={false}>
                         <Statistic
-                            title="Idle"
+                            title="Số khách hàng mới"
                             value={9.3}
                             precision={2}
                             valueStyle={{ color: "#cf1322" }}
                             prefix={<ArrowDownOutlined />}
-                            suffix="%"
+                            suffix="khách hàng"
                         />
                     </Card>
                 </Col>
                 <Col span={6}>
                     <Card bordered={false}>
                         <Statistic
-                            title="Idle"
-                            value={9.3}
-                            precision={2}
+                            title="Số thợ mới"
+                            value={9}
+                            precision={0}
                             valueStyle={{ color: "#cf1322" }}
                             prefix={<ArrowDownOutlined />}
-                            suffix="%"
+                            suffix="thợ"
                         />
                     </Card>
                 </Col>
                 <Col span={6}>
                     <Card bordered={false}>
                         <Statistic
-                            title="Idle"
-                            value={9.3}
-                            precision={2}
+                            title="Số nhân viên mới"
+                            value={9}
+                            precision={0}
                             valueStyle={{ color: "#cf1322" }}
                             prefix={<ArrowDownOutlined />}
-                            suffix="%"
+                            suffix="nhân viên"
                         />
                     </Card>
                 </Col>
@@ -188,7 +217,7 @@ const Home = () => {
             </Flex> */}
             <Row gutter={8} className="chart-container" justify="space-between">
                 <Col
-                    span={12}
+                    span={16}
                     style={{
                         padding: "0 8px",
                         boxSizing: "border-box",
@@ -211,14 +240,25 @@ const Home = () => {
                         />
                     </Flex>
                 </Col>
-                <Col span={10} style={{ background: "#fff" }}>
-                    <Flex style={{ width: "100%", height: "100%" }}>
-                        <Tabs
-                            defaultActiveKey="1"
-                            items={items}
-                            onChange={onChange}
-                            style={{ width: "100%" }}
-                        />
+                <Col
+                    span={8}
+                    style={{
+                        padding: "0 8px",
+                        boxSizing: "border-box",
+                    }}
+                >
+                    <Flex
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            background: "#fff",
+                            padding: "8px",
+                            borderRadius: "10px",
+                        }}
+                    >
+                        <div>
+                            <Pie data={data} />
+                        </div>
                     </Flex>
                 </Col>
             </Row>

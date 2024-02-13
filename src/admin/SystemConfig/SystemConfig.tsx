@@ -285,7 +285,11 @@ const SystemConfig = (props: Props) => {
                             <Form.Item {...buttonItemLayout}>
                                 <Button
                                     type="primary"
-                                    style={{ width: "200px", margin: 0 }}
+                                    style={{
+                                        width: "200px",
+                                        margin: 0,
+                                        background: "#435585",
+                                    }}
                                     onClick={handleSubmit}
                                 >
                                     Cập nhật
@@ -336,7 +340,11 @@ const SystemConfig = (props: Props) => {
                             <Form.Item {...buttonItemLayout}>
                                 <Button
                                     type="primary"
-                                    style={{ width: "200px", margin: 0 }}
+                                    style={{
+                                        width: "200px",
+                                        margin: 0,
+                                        background: "#435585",
+                                    }}
                                     onClick={handleSubmitAccList}
                                 >
                                     Tạo ngẫu nhiên
@@ -345,7 +353,11 @@ const SystemConfig = (props: Props) => {
                             <Form.Item {...buttonItemLayout}>
                                 <Button
                                     type="primary"
-                                    style={{ width: "200px", margin: 0 }}
+                                    style={{
+                                        width: "200px",
+                                        margin: 0,
+                                        background: "#435585",
+                                    }}
                                     onClick={() => setOpenMap(true)}
                                 >
                                     Mô phỏng bản đồ

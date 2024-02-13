@@ -6,6 +6,7 @@ import {
     Button,
     Divider,
     Dropdown,
+    Flex,
     Input,
     Layout,
     Menu,
@@ -178,24 +179,15 @@ const Public = ({ children }: IChildRoutePath) => {
                         background: "#363062",
                     }}
                 >
-                    <div style={{ width: "20%" }}>
+                    <Link style={{ width: "20%" }} to="/">
                         {/* <a href="/" className="header-title">
                             Ismart
                         </a> */}
-                        <img src={image.logoSvg} />
-                    </div>
-
-                    {/* <Input
-                        addonAfter={
-                            <SearchOutlined style={{ fontSize: "20px" }} />
-                        }
-                        placeholder="Tìm kiếm dịch vụ"
-                        // onChange={handleFindSkill}
-                        style={{ width: "30%", background: "#f3f3f3" }}
-                    /> */}
+                        <img src={image.logoSvg} alt="logo" />
+                    </Link>
                     <div className="searchInput">
                         <Search
-                            placeholder="input search text"
+                            placeholder="Nhập tên dịch vụ dể tìm kiếm"
                             style={{ width: 400, padding: 0, margin: 0 }}
                         />
                     </div>
@@ -330,7 +322,7 @@ const Public = ({ children }: IChildRoutePath) => {
                         onChange={handleFind}
                     /> */}
                 </Content>
-                <Footer className="footer">
+                <Footer className="footer" style={{ padding: "50px 0" }}>
                     <div className="right-footer">
                         <h2>HandyConnect</h2>
                         <div className="item-footer">
@@ -437,15 +429,14 @@ const Public = ({ children }: IChildRoutePath) => {
                                 IOS
                             </Link>
                         </div>
-                        <div
-                            style={{
-                                backgroundColor: "white",
-                            }}
-                        >
-                            <QRCode value="http://localhost:4000/" />
-                        </div>
                     </div>
                 </Footer>
+                <Flex
+                    style={{ background: "#818FB4", padding: "10px" }}
+                    justify="center"
+                >
+                    <div>&copy;Copyright by HandyConnect since 2009</div>
+                </Flex>
             </Layout>
         </div>
     );

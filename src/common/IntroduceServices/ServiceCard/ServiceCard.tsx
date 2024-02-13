@@ -5,6 +5,7 @@ import Images from "../../../assets/Images";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { createCartItemAsync, getCartAsync } from "../../../core/reducers/cart";
 import { useNavigate, useParams } from "react-router-dom";
+import { formatCurrency } from "../../../utils/functions/formation";
 
 type Props = {
     service: IService;
@@ -77,7 +78,7 @@ const ServiceCard = ({ service }: Props) => {
                                 fontWeight: 600,
                             }}
                         >
-                            {service.price} đ
+                            {formatCurrency(service.price || 0)}
                         </span>
                     </div>
                     {service.rate ? (
@@ -87,11 +88,17 @@ const ServiceCard = ({ service }: Props) => {
                     )}
                 </div>
                 <Flex gap={10}>
-                    <Button shape="round" onClick={handleAddServiceToCard}>
-                        Chọn
-                    </Button>
-                    <Button shape="round" type="primary">
-                        Đặt dịch vụ
+                    <Button onClick={handleAddServiceToCard}>Thêm</Button>
+                    <Button
+                        type="primary"
+                        onClick={() =>
+                            navigate(
+                                `/introduce-services/${skillId}/${service.serviceId}`
+                            )
+                        }
+                        style={{ background: "#435585" }}
+                    >
+                        Xem
                     </Button>
                 </Flex>
             </Card>

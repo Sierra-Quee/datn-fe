@@ -215,7 +215,7 @@ const Profile = ({ account }: ProfileProps) => {
                             disabled={checkDisableButton()}
                             type="primary"
                             htmlType="submit"
-                            style={{ margin: 0 }}
+                            style={{ margin: 0, background: "#435585" }}
                         >
                             Lưu thay đổi
                         </Button>

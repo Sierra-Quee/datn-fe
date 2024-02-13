@@ -158,6 +158,11 @@ const AddAddressPopup = (props: Props) => {
         setSelectedProvince("");
         setSelectedWard("");
     };
+    useEffect(() => {
+        if (!props.isOpen) {
+            handleClearData();
+        }
+    }, [props.isOpen]);
     return (
         <Modal
             title="Thêm địa chỉ"

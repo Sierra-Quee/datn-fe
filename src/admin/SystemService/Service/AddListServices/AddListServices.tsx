@@ -68,7 +68,12 @@ const AddListServices = ({
 
     const buttonAdd = () => {
         return (
-            <Button key={2} type="primary" onClick={addList}>
+            <Button
+                key={2}
+                type="primary"
+                onClick={addList}
+                style={{ background: "#435585" }}
+            >
                 {" "}
                 Thêm mới{" "}
             </Button>

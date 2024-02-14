@@ -16,6 +16,9 @@ import logoSvg from "./images/logo.svg";
 import banner1 from "./images/banner1.jpg";
 import banner2 from "./images/banner2.jpg";
 import banner3 from "./images/banner3.jpg";
+import years from "./images/15years.png";
+import allday from "./images/allday.png";
+import services from "./images/meoxulimaylocnuoc.png";
 
 const Images = {
     logo,
@@ -36,6 +39,9 @@ const Images = {
     banner1,
     banner2,
     banner3,
+    years,
+    allday,
+    services,
 };
 
 export default Images;

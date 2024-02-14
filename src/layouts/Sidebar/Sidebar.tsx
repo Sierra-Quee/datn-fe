@@ -79,18 +79,25 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
             "home",
             <HomeOutlined />
         ),
-        getItem("Quản lý đơn hàng", "manage-order", <UnorderedListOutlined />, [
-            getItem(
-                <Link to={`/admin${RoutePath.Order}`}>Danh sách đơn hàng</Link>,
-                "manage-order-list-order"
-            ),
-            // getItem(
-            //     <Link to={`/admin${RoutePath.Comment}`}>
-            //         Các nhận xét về đơn hàng
-            //     </Link>,
-            //     "manage-order-list-order-comment"
-            // ),
-        ]),
+        getItem(
+            "Quản lý đơn dặt dịch vụ",
+            "manage-order",
+            <UnorderedListOutlined />,
+            [
+                getItem(
+                    <Link to={`/admin${RoutePath.Order}`}>
+                        Danh sách đơn hàng
+                    </Link>,
+                    "manage-order-list-order"
+                ),
+                // getItem(
+                //     <Link to={`/admin${RoutePath.Comment}`}>
+                //         Các nhận xét về đơn hàng
+                //     </Link>,
+                //     "manage-order-list-order-comment"
+                // ),
+            ]
+        ),
         getItem("Quản lý dịch vụ", "manage-service", <GlobalOutlined />, [
             getItem(
                 <Link to={`/admin${RoutePath.Skill}`}>
@@ -125,7 +132,6 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
                   )
                 : null,
         ]),
-        getItem("Lịch sử thanh toán", "11", <WalletOutlined />),
         // getItem("Cấu hình hệ thống", "12", <SettingOutlined />),
         getItem(
             <Link to={`/admin${RoutePath.Review}`}>Quản lý đánh giá</Link>,

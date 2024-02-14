@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 
 import {
+    Button,
     Card,
     Col,
     DatePicker,
@@ -39,31 +40,41 @@ import { Role } from "../../core/auth/roles";
 import OutcomeChart from "./OutcomeChart";
 import OrderChart from "./OrderChart";
 import ServiceChart from "./ServiceChart";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend,
+    plugins,
+} from "chart.js";
 import { Pie } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 export const data = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    labels: [
+        "Chờ xử lý",
+        "Đã giao thợ",
+        "Đang thực hiện",
+        "Thành công",
+        "Đơn hủy",
+    ],
     datasets: [
         {
             label: "# of Votes",
             data: [12, 19, 3, 5, 2, 3],
             backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
+                "#363062",
+                "#435585",
+                "#818FB4",
+                "#F5E8C7",
                 "rgba(153, 102, 255, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
             ],
             borderColor: [
-                "rgba(255, 99, 132, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
+                "#363062",
+                "#435585",
+                "#818FB4",
+                "#F5E8C7",
                 "rgba(153, 102, 255, 1)",
-                "rgba(255, 159, 64, 1)",
             ],
             borderWidth: 1,
         },
@@ -255,10 +266,28 @@ const Home = () => {
                             padding: "8px",
                             borderRadius: "10px",
                         }}
+                        vertical
+                        justify="space-between"
                     >
-                        <div>
-                            <Pie data={data} />
-                        </div>
+                        <Flex justify="center" style={{ width: "100%" }}>
+                            <Pie
+                                data={data}
+                                options={{
+                                    plugins: {
+                                        title: {
+                                            display: true,
+                                            text: "Biểu đồ thống kê ngày",
+                                        },
+                                    },
+                                }}
+                            />
+                        </Flex>
+                        <Button
+                            type="primary"
+                            style={{ background: "#435585" }}
+                        >
+                            Xuất file thống kê excel
+                        </Button>
                     </Flex>
                 </Col>
             </Row>

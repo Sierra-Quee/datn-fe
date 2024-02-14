@@ -170,6 +170,7 @@ const HomePage = () => {
                     style={{
                         background: "white",
                     }}
+                    gap={20}
                 >
                     <Title level={3} style={{ fontWeight: "bold" }}>
                         GIỚI THIỆU
@@ -388,12 +389,13 @@ const HomePage = () => {
                             </Space>
                             <div style={{ width: "50%" }}>
                                 <img
-                                    src={Images.banner1}
+                                    src={Images.years}
                                     alt=""
                                     style={{
                                         width: "100%",
                                         height: "200px",
                                         objectFit: "cover",
+                                        borderRadius: "10px",
                                     }}
                                 />
                             </div>
@@ -401,12 +403,13 @@ const HomePage = () => {
                         <Flex style={{ width: "80%", gap: "20px" }}>
                             <div style={{ width: "50%" }}>
                                 <img
-                                    src={Images.banner1}
+                                    src="https://img.freepik.com/free-photo/waist-up-shot-repairman-showing-digital-questionnaire-senior-client_1098-17858.jpg?w=996&t=st=1707884994~exp=1707885594~hmac=33406e9f845aa5698221f9302928a6e53691dc5924a31f240be5234302674beb"
                                     alt=""
                                     style={{
                                         width: "100%",
                                         height: "200px",
                                         objectFit: "cover",
+                                        borderRadius: "10px",
                                     }}
                                 />
                             </div>
@@ -448,12 +451,13 @@ const HomePage = () => {
                             </Space>
                             <div style={{ width: "50%" }}>
                                 <img
-                                    src={Images.banner1}
+                                    src={Images.services}
                                     alt=""
                                     style={{
                                         width: "100%",
                                         height: "200px",
                                         objectFit: "cover",
+                                        borderRadius: "10px",
                                     }}
                                 />
                             </div>
@@ -461,12 +465,13 @@ const HomePage = () => {
                         <Flex style={{ width: "80%", gap: "20px" }}>
                             <div style={{ width: "50%" }}>
                                 <img
-                                    src={Images.banner1}
+                                    src="https://img.freepik.com/free-photo/cropped-view-woman-filling-application-form_1262-2110.jpg?w=996&t=st=1707895322~exp=1707895922~hmac=f6f69f7cef79f8c52faf5be71f37462c0e015e94bddefe8e285c31524c1956d5"
                                     alt=""
                                     style={{
                                         width: "100%",
                                         height: "200px",
                                         objectFit: "cover",
+                                        borderRadius: "10px",
                                     }}
                                 />
                             </div>
@@ -514,12 +519,13 @@ const HomePage = () => {
                             </Space>
                             <div style={{ width: "50%" }}>
                                 <img
-                                    src={Images.banner1}
+                                    src={Images.allday}
                                     alt=""
                                     style={{
                                         width: "100%",
                                         height: "200px",
                                         objectFit: "cover",
+                                        borderRadius: "10px",
                                     }}
                                 />
                             </div>
@@ -529,7 +535,11 @@ const HomePage = () => {
             </div>
             <Flex
                 vertical
-                style={{ width: "100%", background: "white" }}
+                style={{
+                    width: "100%",
+                    background: "white",
+                    padding: "50px 0",
+                }}
                 align="center"
             >
                 <Title level={3} style={{ fontWeight: "bold" }}>
@@ -547,14 +557,26 @@ const HomePage = () => {
                     <Row gutter={[16, 24]}>
                         {logoImgs.map((val, idx) => (
                             <Col className="gutter-row" span={6} key={idx}>
-                                <img
-                                    src={val}
+                                <div
                                     style={{
                                         width: "100%",
-                                        objectFit: "cover",
+                                        height: "80px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        overflow: "hidden",
                                     }}
-                                    alt=""
-                                />
+                                >
+                                    <img
+                                        src={val}
+                                        style={{
+                                            width: "100%",
+                                            objectFit: "contain",
+                                            height: "100%",
+                                        }}
+                                        alt=""
+                                    />
+                                </div>
                             </Col>
                         ))}
                     </Row>

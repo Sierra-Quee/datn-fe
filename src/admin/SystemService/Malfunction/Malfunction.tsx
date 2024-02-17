@@ -1,5 +1,5 @@
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Input } from "antd";
+import { Button, Input, Switch } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import {
     clearListMalfunction,
     clearMalfunction,
     getAllMalfunctionAsync,
+    getAllMalfunctionByServiceIdAsync,
 } from "../../../core/reducers/malfunction";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
@@ -49,13 +50,51 @@ const Malfunction = () => {
             key: "price",
             dataIndex: "price",
         },
+        {
+            title: "Trạng thái",
+            key: "isActive",
+            dataIndex: "isActive",
+            fixed: "right",
+            width: 100,
+            render: (_: any, record: IMalfunction) => (
+                <Switch
+                    checked={true}
+                    onChange={
+                        (checked) => {}
+                        // onChangeStatus(checked, record.serviceId)
+                    }
+                />
+            ),
+        },
+        {
+            title: "",
+            key: "action",
+            dataIndex: "",
+            fixed: "right",
+            width: 100,
+            render: (_: any, record: IMalfunction) => (
+                <div>
+                    <a
+                        style={{ marginRight: "10px" }}
+                        // onClick={() => {
+                        //     openUpdateModal(record);
+                        // }}
+                    >
+                        Cập nhật
+                    </a>
+                </div>
+            ),
+        },
     ];
 
     const handleFindMalfunction = (e: any) => {
         setSearchInput(e.target.value);
     };
     useEffect(() => {
-        handleGetAllMalfunction();
+        const serviceId = searchParams.get("serviceId");
+        if (serviceId !== null && !isNaN(parseInt(serviceId))) {
+            handleGetAllMalfunction(parseInt(serviceId));
+        }
         return () => {
             dispatch(clearListMalfunction());
             dispatch(clearMalfunction());
@@ -74,8 +113,8 @@ const Malfunction = () => {
         );
     }, [malfunctionList]);
 
-    const handleGetAllMalfunction = async () => {
-        await dispatch(getAllMalfunctionAsync());
+    const handleGetAllMalfunction = async (serviceId: number) => {
+        await dispatch(getAllMalfunctionByServiceIdAsync(serviceId));
     };
     const handleExport = () => {
         const headings = [["Mã danh mục", "Tên danh mục", "Giá"]];
@@ -88,7 +127,7 @@ const Malfunction = () => {
             skipHeader: true,
         });
         utils.book_append_sheet(wb, ws, "Report");
-        writeFile(wb, "Danh sách danh mục chi tiết.xlsx");
+        writeFile(wb, "Danh sách phân loại lỗi.xlsx");
         toast.success("Xuất file thành công");
     };
     const handleAddByImport = ($event: any) => {
@@ -126,11 +165,12 @@ const Malfunction = () => {
 
     return (
         <div className="skill">
-            <h2>Danh mục chi tiết</h2>
+            <h2>Danh sách phân loại lỗi</h2>
             <div className="header-table-skill">
                 <Button
                     type="primary"
                     onClick={() => setIsOpenModal(!isOpenModal)}
+                    style={{ background: "#435585" }}
                 >
                     Thêm danh mục
                 </Button>
@@ -157,6 +197,7 @@ const Malfunction = () => {
                         type="primary"
                         onClick={handleExport}
                         icon={<DownloadOutlined />}
+                        style={{ background: "#435585" }}
                     >
                         Xuất file excel
                     </Button>
@@ -183,13 +224,21 @@ const Malfunction = () => {
                     }}
                     malfunctionUpdate={malfunctionUpdate}
                     isCreate={!malfunctionUpdate}
-                    handleGetAllMalfuntionAsync={handleGetAllMalfunction}
+                    handleGetAllMalfuntionAsync={() => {
+                        if (query !== null && !isNaN(parseInt(query))) {
+                            handleGetAllMalfunction(parseInt(query));
+                        }
+                    }}
                     serviceId={query ?? ""}
                 />
             )}
             {listMalAdd && listMalAdd.length && (
                 <AddListMalfunction
-                    handleGetAllMalfunction={handleGetAllMalfunction}
+                    handleGetAllMalfunction={() => {
+                        if (query !== null && !isNaN(parseInt(query))) {
+                            handleGetAllMalfunction(parseInt(query));
+                        }
+                    }}
                     listAdd={listMalAdd}
                     close={() => {
                         setListMalAdd(null);

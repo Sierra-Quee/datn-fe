@@ -239,14 +239,17 @@ const Skill = () => {
 
     return (
         <div className="skill">
-            <h2>Danh sách loại dịch vụ</h2>
+            <h2>Danh sách kỹ năng</h2>
             <div className="header-table-skill">
                 <div className="header-table-skill-left">
                     <Button
                         type="primary"
                         onClick={() => setIsOpenModal(!isOpenModal)}
+                        style={{
+                            background: "#435585",
+                        }}
                     >
-                        Thêm loại dịch vụ
+                        Thêm kỹ năng
                     </Button>
                     <div className="button-upload">
                         <input
@@ -275,6 +278,7 @@ const Skill = () => {
                         disabled={
                             !listSkillExport || listSkillExport.length === 0
                         }
+                        style={{ background: "#435585" }}
                     >
                         Xuất file excel
                     </Button>

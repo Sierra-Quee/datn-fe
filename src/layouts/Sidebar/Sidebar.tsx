@@ -101,7 +101,7 @@ const Sidebar = ({ collapsed, setCollapsed }: ISidebarProps) => {
         getItem("Quản lý dịch vụ", "manage-service", <GlobalOutlined />, [
             getItem(
                 <Link to={`/admin${RoutePath.Skill}`}>
-                    Danh sách loại dịch vụ
+                    Danh sách kỹ năng thợ
                 </Link>,
                 "manage-service-skill"
             ),

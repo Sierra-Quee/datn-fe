@@ -191,18 +191,20 @@ export interface INotification {
 }
 
 export interface IMalfunction {
-    malFuncId: number;
+    malfuncId: number;
     name: string;
     price: number;
     serviceId: number;
     service?: any;
+    isActive: boolean;
 }
 export const defaultMalfunction = {
-    malFuncId: -1,
+    malfuncId: -1,
     name: "",
     price: -1,
     serviceId: -1,
     service: {},
+    isActive: true,
 };
 export interface ISystemConfig {
     id: number;

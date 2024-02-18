@@ -4,6 +4,7 @@ import {
     createMultiMalfunctionAPI,
     getAllMalfunction,
     getMalfunctionByServiceId,
+    updateMalfunction,
 } from "../../api/malfunction/malfunctionAPI";
 import { IMalfunction, defaultMalfunction } from "../../utils/model";
 
@@ -43,6 +44,13 @@ export const getAllMalfunctionByServiceIdAsync = createAsyncThunk(
     }
 );
 
+export const updateMalfunctionAsync = createAsyncThunk(
+    "updateMalfunction",
+    async (body: IMalfunction) => {
+        const response = await updateMalfunction(body);
+        return response.data;
+    }
+);
 const initialState: IMalfunctionSlice = {
     malfunctionList: [],
     malfunction: defaultMalfunction,
@@ -85,6 +93,16 @@ export const malfunctionSlice = createSlice({
                 getAllMalfunctionByServiceIdAsync.fulfilled,
                 (state, action) => {
                     state.malfunctionList = action.payload;
+                }
+            )
+            .addCase(updateMalfunctionAsync.fulfilled, (state, action) => {
+                state.malfunction = action.payload;
+                state.updateMalfunctionStatus = "success";
+            })
+            .addCase(
+                updateMalfunctionAsync.rejected,
+                (state, action: PayloadAction<any>) => {
+                    state.updateMalfunctionStatus = "failed";
                 }
             );
     },

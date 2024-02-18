@@ -9,6 +9,7 @@ import {
     clearMalfunction,
     getAllMalfunctionAsync,
     getAllMalfunctionByServiceIdAsync,
+    updateMalfunctionAsync,
 } from "../../../core/reducers/malfunction";
 import useDebounce from "../../../hooks/useDebounce";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
@@ -58,9 +59,19 @@ const Malfunction = () => {
             width: 100,
             render: (_: any, record: IMalfunction) => (
                 <Switch
-                    checked={true}
+                    checked={record.isActive}
                     onChange={
-                        (checked) => {}
+                        (checked) => {
+                            handleUpdateMalfunction({
+                                ...record,
+                                isActive: checked,
+                                price: parseInt(record.price.toString()),
+                                malfuncId: record.malfuncId,
+                            });
+                            if (query !== null && !isNaN(parseInt(query))) {
+                                handleGetAllMalfunction(parseInt(query));
+                            }
+                        }
                         // onChangeStatus(checked, record.serviceId)
                     }
                 />
@@ -105,7 +116,7 @@ const Malfunction = () => {
         setListMalExport(
             malfunctionList.map((mal) => {
                 return {
-                    malFuncId: mal.malFuncId,
+                    malFuncId: mal.malfuncId,
                     name: mal.name,
                     price: mal.price,
                 };
@@ -161,6 +172,9 @@ const Malfunction = () => {
             };
             reader.readAsArrayBuffer(file);
         }
+    };
+    const handleUpdateMalfunction = async (data: IMalfunction) => {
+        await dispatch(updateMalfunctionAsync(data));
     };
 
     return (

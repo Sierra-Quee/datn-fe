@@ -7,8 +7,8 @@ export const getAllMalfunction = () => {
 export const createMalfunction = (body: IMalfunction) => {
     return fetchHandler.post(`/malfunction/createMalfunction`, body);
 };
-export const updateMalfunction = () => {
-    return fetchHandler.get(`/malfunction/updateMalfunction`);
+export const updateMalfunction = (body: IMalfunction) => {
+    return fetchHandler.patch(`/malfunction/updateMalfunction`, body);
 };
 export const createMultiMalfunctionAPI = (body: IMalfunction[]) => {
     return fetchHandler.post(`/malfunction/createMultiMalfunction`, body);

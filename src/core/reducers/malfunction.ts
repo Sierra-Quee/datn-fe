@@ -66,6 +66,7 @@ export const malfunctionSlice = createSlice({
         },
         clearMalfunction: (state) => {
             state.malfunction = defaultMalfunction;
+            state.updateMalfunctionStatus = "none";
         },
         setMalfunction: (state, action) => {
             state.malfunction = action.payload;

@@ -1,6 +1,7 @@
 import "./DetailService.scss";
 import {
     ICartItem,
+    IMalfunction,
     IReview,
     IService,
     ITypeService,
@@ -52,38 +53,17 @@ const data = [
     "Giá cả cạnh tranh",
     "Quy trình chuyên nghiệp, nhanh chóng",
 ];
-const dataSource = [
-    {
-        key: "1",
-        index: "1",
-        name: "Thay ống đồng",
-        price: formatCurrency(100000),
-    },
-    {
-        key: "2",
-        index: "2",
-        name: "Thay van xả",
-        price: formatCurrency(100000),
-    },
-    {
-        key: "3",
-        index: "3",
-        name: "Thay tụ",
-        price: formatCurrency(100000),
-    },
-    {
-        key: "4",
-        index: "4",
-        name: "Thay cửa lạnh",
-        price: formatCurrency(100000),
-    },
-];
-
+interface RenderMalfunction extends IMalfunction {
+    index: number;
+}
 const columns = [
     {
         title: "STT",
         dataIndex: "index",
         key: "index",
+        render: (_: any, record: RenderMalfunction) => (
+            <span>{record.index + 1}</span>
+        ),
     },
     {
         title: "Sửa chữa",
@@ -94,6 +74,9 @@ const columns = [
         title: "Giá (đồng)",
         dataIndex: "price",
         key: "price",
+        render: (_: any, record: RenderMalfunction) => (
+            <span>{formatCurrency(record.price)}</span>
+        ),
     },
 ];
 
@@ -338,8 +321,13 @@ const DetailService = (props: Props) => {
                                         Array.isArray(
                                             service.detailService.malfunctions
                                         )
-                                            ? service.detailService.malfunctions
-                                            : dataSource
+                                            ? service.detailService.malfunctions.map(
+                                                  (val, idx) => ({
+                                                      ...val,
+                                                      index: idx,
+                                                  })
+                                              )
+                                            : []
                                     }
                                     columns={columns}
                                     bordered

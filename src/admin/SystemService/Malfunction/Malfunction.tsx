@@ -61,15 +61,22 @@ const Malfunction = () => {
                 <Switch
                     checked={record.isActive}
                     onChange={
-                        (checked) => {
-                            handleUpdateMalfunction({
-                                ...record,
-                                isActive: checked,
-                                price: parseInt(record.price.toString()),
-                                malfuncId: record.malfuncId,
-                            });
+                        async (checked) => {
+                            await dispatch(
+                                updateMalfunctionAsync({
+                                    ...record,
+                                    isActive: checked,
+                                    price: parseInt(record.price.toString()),
+                                    malfuncId: record.malfuncId,
+                                })
+                            );
+                            dispatch(clearMalfunction());
                             if (query !== null && !isNaN(parseInt(query))) {
-                                handleGetAllMalfunction(parseInt(query));
+                                await dispatch(
+                                    getAllMalfunctionByServiceIdAsync(
+                                        parseInt(query)
+                                    )
+                                );
                             }
                         }
                         // onChangeStatus(checked, record.serviceId)
@@ -176,14 +183,14 @@ const Malfunction = () => {
     const handleUpdateMalfunction = async (data: IMalfunction) => {
         await dispatch(updateMalfunctionAsync(data));
     };
-
+    console.log(isOpenModal);
     return (
         <div className="skill">
             <h2>Danh sách phân loại lỗi</h2>
             <div className="header-table-skill">
                 <Button
                     type="primary"
-                    onClick={() => setIsOpenModal(!isOpenModal)}
+                    onClick={() => setIsOpenModal(true)}
                     style={{ background: "#435585" }}
                 >
                     Thêm danh mục

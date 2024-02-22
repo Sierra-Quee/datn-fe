@@ -26,6 +26,7 @@ import { RoutePath } from "../utils/constants";
 import SystemConfig from "../admin/SystemConfig/SystemConfig";
 import Notification from "../common/Notification/Notification";
 import Review from "../admin/Review/Review";
+import SearchService from "../common/IntroduceServices/SearchService/SearchService";
 // export enum RoutePath {
 //     Home = "/home",
 //     IntroduceServices = "/introduce-services",
@@ -123,6 +124,11 @@ export const PublicRoutes: IRoutePath[] = [
         path: "user/notifications",
         component: Notification,
         layout: CustomerProfileLayout,
+    },
+    {
+        path: RoutePath.SearchService,
+        component: SearchService,
+        layout: Public,
     },
 ];
 

@@ -26,3 +26,6 @@ export const getDetailServiceAPI = (serviceId: number) => {
 export const createMultiServiceAPI = (body: IService[]) => {
     return fetchHandler.post(`/service/createMultiServices`, body);
 };
+export const getServiceByNameAPI = (name: string) => {
+    return fetchHandler.get(`/service/getServiceByName/${name}`);
+};

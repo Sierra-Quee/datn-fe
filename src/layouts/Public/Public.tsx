@@ -17,7 +17,7 @@ import {
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import {
     BellOutlined,
@@ -37,10 +37,12 @@ import { RoutePath } from "../../utils/constants";
 import { clearCookie } from "../../utils/functions/cookies";
 import { IChildRoutePath, ISkill } from "../../utils/model";
 import image from "../../assets/Images";
+import { SearchProps } from "antd/es/input";
 const { useToken } = theme;
 const { Search } = Input;
 const Public = ({ children }: IChildRoutePath) => {
     const { token } = useToken();
+    const navigate = useNavigate();
     const { account } = useAppSelector((state) => state.authentication);
     const [skills, setSkills] = useState<ISkill[]>([]);
     const [searchInput, setSearchInput] = useState<string>("");
@@ -165,6 +167,9 @@ const Public = ({ children }: IChildRoutePath) => {
     const menuStyle: React.CSSProperties = {
         boxShadow: "none",
     };
+    const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
+        navigate(`/search-service?name=${value}`);
+    };
     return (
         <div className="public">
             <Layout>
@@ -189,6 +194,7 @@ const Public = ({ children }: IChildRoutePath) => {
                         <Search
                             placeholder="Nhập tên dịch vụ dể tìm kiếm"
                             style={{ width: 400, padding: 0, margin: 0 }}
+                            onSearch={onSearch}
                         />
                     </div>
 

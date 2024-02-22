@@ -6,6 +6,7 @@ import {
     deleteServiceAPI,
     getAllServiceAPI,
     getDetailServiceAPI,
+    getServiceByNameAPI,
     getServiceBySkillIdAPI,
     updateServiceAPI,
 } from "../../api/service/serviceAPI";
@@ -94,6 +95,14 @@ export const createMultiServiceAsync = createAsyncThunk(
     "createMulti",
     async (body: IService[]) => {
         return (await createMultiServiceAPI(body)).data;
+    }
+);
+
+export const getServiceByNameAsync = createAsyncThunk(
+    "getServiceByName",
+    async (name: string) => {
+        const response = await getServiceByNameAPI(name);
+        return response.data;
     }
 );
 
@@ -186,6 +195,14 @@ export const ServiceSlice = createSlice({
                 (state, action: PayloadAction<any>) => {
                     state.updateService.createListServiceStatus = "failed";
                 }
+            )
+            .addCase(getServiceByNameAsync.pending, (state, action) => {})
+            .addCase(getServiceByNameAsync.fulfilled, (state, action) => {
+                state.listService = action.payload;
+            })
+            .addCase(
+                getServiceByNameAsync.rejected,
+                (state, action: PayloadAction<any>) => {}
             );
     },
 });

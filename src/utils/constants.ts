@@ -22,6 +22,7 @@ export enum RoutePath {
     CustomerOrder = "/user/order",
     SystemConfig = "/system-config",
     Review = "/review",
+    SearchService = "/search-service",
 }
 
 export const ACCESS_TOKEN = "access_token";

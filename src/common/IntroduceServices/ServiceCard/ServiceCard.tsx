@@ -13,7 +13,6 @@ type Props = {
 
 const ServiceCard = ({ service }: Props) => {
     const { skillId } = useParams();
-    console.log({ skillId });
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
     const dispatch = useAppDispatch();
@@ -57,7 +56,7 @@ const ServiceCard = ({ service }: Props) => {
                     className="card-title"
                     onClick={() =>
                         navigate(
-                            `/introduce-services/${skillId}/${service.serviceId}`
+                            `/introduce-services/${service.skillId}/${service.serviceId}`
                         )
                     }
                 >
@@ -93,7 +92,7 @@ const ServiceCard = ({ service }: Props) => {
                         type="primary"
                         onClick={() =>
                             navigate(
-                                `/introduce-services/${skillId}/${service.serviceId}`
+                                `/introduce-services/${service.skillId}/${service.serviceId}`
                             )
                         }
                         style={{ background: "#435585" }}

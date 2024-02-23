@@ -156,7 +156,7 @@ export interface IOrder {
     createdAt?: string;
     updatedAt?: string;
     address?: IAddress;
-    components?: IComponent;
+    components?: IComponent[];
     repairman?: IUser;
     user?: IUser;
     userId?: string;

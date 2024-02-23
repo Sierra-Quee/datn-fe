@@ -6,8 +6,10 @@ import {
     createOrderApi,
     getAllOrderApi,
     getAllOrderByUserIdApi,
+    getDailyStatisticApi,
     getOrderByIdApi,
     getOrderQrTokenApi,
+    getStatisticApi,
 } from "../../api/order/orderApi";
 
 interface IOrderSlice {
@@ -21,6 +23,9 @@ interface IOrderSlice {
     loadingOrder: boolean;
     qrToken: string;
     isGettingQrToken: boolean;
+    statisticData: any;
+    getStatisticDataStatus: "none" | "success" | "failed";
+    dailyStatistic: any;
 }
 
 const initialState: IOrderSlice = {
@@ -41,6 +46,9 @@ const initialState: IOrderSlice = {
     loadingOrder: false,
     qrToken: "",
     isGettingQrToken: false,
+    statisticData: undefined,
+    getStatisticDataStatus: "none",
+    dailyStatistic: undefined,
 };
 
 export const getAllOrderAsync = createAsyncThunk(
@@ -88,6 +96,22 @@ export const assignOrderAsync = createAsyncThunk(
     "assignOrderAsync",
     async (query: { orderId: string; repairmanId: string }) => {
         const response = await assignOrderApi(query);
+        return response.data;
+    }
+);
+
+export const getStatisticAsync = createAsyncThunk(
+    "getStatistic",
+    async (query: { from: string; to: string; type: string }) => {
+        const response = await getStatisticApi(query);
+        return response.data;
+    }
+);
+
+export const getDailyStatisticAsync = createAsyncThunk(
+    "getDailyStatistic",
+    async () => {
+        const response = await getDailyStatisticApi();
         return response.data;
     }
 );
@@ -172,6 +196,19 @@ export const orderSlice = createSlice({
             .addCase(assignOrderAsync.rejected, (state, action) => {
                 state.createOrder.loadingcreateOrder = false;
                 state.createOrder.createOrderStatus = "failed";
+            })
+            .addCase(getStatisticAsync.pending, (state, action) => {
+                state.getStatisticDataStatus = "none";
+            })
+            .addCase(getStatisticAsync.fulfilled, (state, action) => {
+                state.statisticData = action.payload;
+                state.getStatisticDataStatus = "success";
+            })
+            .addCase(getStatisticAsync.rejected, (state, action) => {
+                state.getStatisticDataStatus = "failed";
+            })
+            .addCase(getDailyStatisticAsync.fulfilled, (state, action) => {
+                state.dailyStatistic = action.payload;
             });
     },
 });

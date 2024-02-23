@@ -48,6 +48,8 @@ import {
     plugins,
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import { getDailyStatisticAsync } from "../../core/reducers/order";
+import { OrderStatus } from "../../utils/constants";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 export const data = {
@@ -83,6 +85,7 @@ export const data = {
 const Home = () => {
     dayjs.extend(customParseFormat);
     const dispatch = useAppDispatch();
+    const { dailyStatistic } = useAppSelector((state) => state.order);
     const { Title } = Typography;
     const { RangePicker } = DatePicker;
 
@@ -91,6 +94,81 @@ const Home = () => {
     const { repairList, customerList } = useAppSelector((state) => state.users);
     const [titleChart, setTitleChart] = useState<string>("");
     const [timeRange, setTimeRange] = useState<[string, string] | string>("");
+    const [statistic, setStatistic] = useState({
+        customers: 0,
+        staffs: 0,
+        repairmans: 0,
+        orders: {
+            pending: 0,
+            accepted: 0,
+            checkedin: 0,
+            complete: 0,
+            rejected: 0,
+        },
+        now: {
+            pending: 0,
+            accepted: 0,
+            checkedin: 0,
+            complete: 0,
+            rejected: 0,
+        },
+    });
+
+    const handleGetDailyStatistic = async () => {
+        await dispatch(getDailyStatisticAsync());
+    };
+
+    useEffect(() => {
+        handleGetDailyStatistic();
+        const getDailyStatisticInterval = setInterval(() => {
+            console.log("call");
+            handleGetDailyStatistic();
+        }, 10000);
+
+        return () => clearInterval(getDailyStatisticInterval);
+    }, []);
+
+    useEffect(() => {
+        console.log({ dailyStatistic });
+        if (dailyStatistic) {
+            setStatistic({
+                customers:
+                    dailyStatistic.today.user.customers -
+                    dailyStatistic.yesterday.user.customers,
+                staffs:
+                    dailyStatistic.today.user.staffs -
+                    dailyStatistic.yesterday.user.staffs,
+                repairmans:
+                    dailyStatistic.today.user.repairmans -
+                    dailyStatistic.yesterday.user.repairmans,
+                orders: {
+                    pending:
+                        dailyStatistic.today.orders[OrderStatus.PENDING] -
+                        dailyStatistic.yesterday.orders[OrderStatus.PENDING],
+                    accepted:
+                        dailyStatistic.today.orders[OrderStatus.ACCEPTED] -
+                        dailyStatistic.yesterday.orders[OrderStatus.ACCEPTED],
+                    checkedin:
+                        dailyStatistic.today.orders[OrderStatus.CHECKEDIN] -
+                        dailyStatistic.yesterday.orders[OrderStatus.CHECKEDIN],
+                    complete:
+                        dailyStatistic.today.orders[OrderStatus.COMPLETE] -
+                        dailyStatistic.yesterday.orders[OrderStatus.COMPLETE],
+                    rejected:
+                        dailyStatistic.today.orders[OrderStatus.REJECTED] -
+                        dailyStatistic.yesterday.orders[OrderStatus.REJECTED],
+                },
+                now: {
+                    pending: dailyStatistic.today.orders[OrderStatus.PENDING],
+                    accepted: dailyStatistic.today.orders[OrderStatus.ACCEPTED],
+                    checkedin:
+                        dailyStatistic.today.orders[OrderStatus.CHECKEDIN],
+                    complete: dailyStatistic.today.orders[OrderStatus.COMPLETE],
+                    rejected: dailyStatistic.today.orders[OrderStatus.REJECTED],
+                },
+            });
+        }
+    }, [dailyStatistic]);
 
     useEffect(() => {
         handleGetAllSkillAsync();
@@ -170,10 +248,21 @@ const Home = () => {
                     <Card bordered={false}>
                         <Statistic
                             title="Số đơn hàng"
-                            value={6}
-                            precision={2}
-                            valueStyle={{ color: "#3f8600" }}
-                            prefix={<ArrowUpOutlined />}
+                            value={Math.abs(statistic.orders.pending)}
+                            precision={0}
+                            valueStyle={{
+                                color:
+                                    statistic.orders.pending >= 0
+                                        ? "#3f8600"
+                                        : "#cf1322",
+                            }}
+                            prefix={
+                                statistic.orders.pending >= 0 ? (
+                                    <ArrowUpOutlined />
+                                ) : (
+                                    <ArrowDownOutlined />
+                                )
+                            }
                             suffix="đơn"
                         />
                     </Card>
@@ -182,10 +271,21 @@ const Home = () => {
                     <Card bordered={false}>
                         <Statistic
                             title="Số khách hàng mới"
-                            value={9.3}
-                            precision={2}
-                            valueStyle={{ color: "#cf1322" }}
-                            prefix={<ArrowDownOutlined />}
+                            value={Math.abs(statistic.customers)}
+                            precision={0}
+                            valueStyle={{
+                                color:
+                                    statistic.customers >= 0
+                                        ? "#3f8600"
+                                        : "#cf1322",
+                            }}
+                            prefix={
+                                statistic.customers >= 0 ? (
+                                    <ArrowUpOutlined />
+                                ) : (
+                                    <ArrowDownOutlined />
+                                )
+                            }
                             suffix="khách hàng"
                         />
                     </Card>
@@ -194,10 +294,21 @@ const Home = () => {
                     <Card bordered={false}>
                         <Statistic
                             title="Số thợ mới"
-                            value={9}
+                            value={Math.abs(statistic.repairmans)}
                             precision={0}
-                            valueStyle={{ color: "#cf1322" }}
-                            prefix={<ArrowDownOutlined />}
+                            valueStyle={{
+                                color:
+                                    statistic.repairmans >= 0
+                                        ? "#3f8600"
+                                        : "#cf1322",
+                            }}
+                            prefix={
+                                statistic.repairmans >= 0 ? (
+                                    <ArrowUpOutlined />
+                                ) : (
+                                    <ArrowDownOutlined />
+                                )
+                            }
                             suffix="thợ"
                         />
                     </Card>
@@ -206,10 +317,21 @@ const Home = () => {
                     <Card bordered={false}>
                         <Statistic
                             title="Số nhân viên mới"
-                            value={9}
+                            value={Math.abs(statistic.staffs)}
                             precision={0}
-                            valueStyle={{ color: "#cf1322" }}
-                            prefix={<ArrowDownOutlined />}
+                            valueStyle={{
+                                color:
+                                    statistic.staffs >= 0
+                                        ? "#3f8600"
+                                        : "#cf1322",
+                            }}
+                            prefix={
+                                statistic.staffs >= 0 ? (
+                                    <ArrowUpOutlined />
+                                ) : (
+                                    <ArrowDownOutlined />
+                                )
+                            }
                             suffix="nhân viên"
                         />
                     </Card>
@@ -271,7 +393,42 @@ const Home = () => {
                     >
                         <Flex justify="center" style={{ width: "100%" }}>
                             <Pie
-                                data={data}
+                                data={{
+                                    labels: [
+                                        "Chờ xử lý",
+                                        "Đã giao thợ",
+                                        "Đang thực hiện",
+                                        "Thành công",
+                                        "Đơn hủy",
+                                    ],
+                                    datasets: [
+                                        {
+                                            label: "# of Votes",
+                                            data: [
+                                                statistic.now.pending,
+                                                statistic.now.accepted,
+                                                statistic.now.checkedin,
+                                                statistic.now.complete,
+                                                statistic.now.rejected,
+                                            ],
+                                            backgroundColor: [
+                                                "#363062",
+                                                "#435585",
+                                                "#818FB4",
+                                                "#F5E8C7",
+                                                "rgba(153, 102, 255, 0.2)",
+                                            ],
+                                            borderColor: [
+                                                "#363062",
+                                                "#435585",
+                                                "#818FB4",
+                                                "#F5E8C7",
+                                                "rgba(153, 102, 255, 1)",
+                                            ],
+                                            borderWidth: 1,
+                                        },
+                                    ],
+                                }}
                                 options={{
                                     plugins: {
                                         title: {

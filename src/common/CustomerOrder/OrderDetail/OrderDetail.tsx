@@ -18,9 +18,9 @@ import {
     notification,
 } from "antd";
 import type { NotificationArgsProps } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { IComponent, IOrder } from "../../../utils/model";
+import { IComponent, IOrder, ITypeService } from "../../../utils/model";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import {
     assignOrderAsync,
@@ -29,6 +29,7 @@ import {
     getQrTokenAsync,
 } from "../../../core/reducers/order";
 import {
+    formatCurrency,
     formatDate,
     formatOrderStatusName,
     formatOrderStatusProgress,
@@ -220,10 +221,6 @@ const OrderDetail = (props: Props) => {
                 order.status,
                 OrderStatus.CHECKEDIN
             );
-            const unpaidStatus = formatOrderStatusProgress(
-                order.status,
-                OrderStatus.UNPAID
-            );
             const completeStatus = formatOrderStatusProgress(
                 order.status,
                 OrderStatus.COMPLETE
@@ -233,7 +230,6 @@ const OrderDetail = (props: Props) => {
                 pendingStatus,
                 acceptedStatus,
                 implementingStatus,
-                unpaidStatus,
                 completeStatus,
             ]);
         }
@@ -317,6 +313,41 @@ const OrderDetail = (props: Props) => {
             handleGetOrder();
         }
     };
+    const serviceTotal = useMemo(() => {
+        let total = 0;
+        if (orderData) {
+            orderData.orderDetails?.forEach((detail) => {
+                if (detail.service?.type === ITypeService.MainTain) {
+                    if (detail.service.price)
+                        total += parseInt(detail.service.price.toString());
+                }
+
+                if (detail.service?.type === ITypeService.Repair) {
+                    const sum = detail.diagnosis?.reduce((s, val) => {
+                        return (s += parseInt(
+                            val.malfunction.price.toString()
+                        ));
+                    }, 0);
+
+                    if (sum && Number.isInteger(sum)) total += sum;
+                }
+            });
+        }
+
+        return total;
+    }, [orderData]);
+    const componentsTotal = useMemo(() => {
+        let total = 0;
+        if (orderData) {
+            let sum = orderData.components?.reduce((s, cpn) => {
+                return s + cpn.pricePerUnit * cpn.quantity;
+            }, 0);
+
+            if (sum && Number.isInteger(sum)) total += sum;
+        }
+
+        return total;
+    }, [orderData]);
     return (
         <Spin spinning={loadingOrder && orderData === undefined}>
             {contextHolder}
@@ -394,17 +425,6 @@ const OrderDetail = (props: Props) => {
                                                           <LoadingOutlined />
                                                       ) : (
                                                           <ToolOutlined />
-                                                      ),
-                                              },
-                                              {
-                                                  title: "Chờ thanh toán",
-                                                  status: progressItems[3],
-                                                  icon:
-                                                      progressItems[3] ===
-                                                      "process" ? (
-                                                          <LoadingOutlined />
-                                                      ) : (
-                                                          <PoundOutlined />
                                                       ),
                                               },
                                               {
@@ -570,7 +590,7 @@ const OrderDetail = (props: Props) => {
                                                         }}
                                                     >
                                                         {
-                                                            orderDetail.service
+                                                            orderDetail?.service
                                                                 ?.name
                                                         }
                                                     </Text>
@@ -585,40 +605,41 @@ const OrderDetail = (props: Props) => {
                                                                 }}
                                                                 direction="vertical"
                                                             >
-                                                                <Flex
-                                                                    justify="space-between"
-                                                                    gap={200}
-                                                                >
-                                                                    <Text>
-                                                                        Sửa ống
-                                                                        đồng
-                                                                    </Text>
-                                                                    <Text
-                                                                        style={{
-                                                                            color: "red",
-                                                                        }}
-                                                                    >
-                                                                        Giá:
-                                                                        100.000đ
-                                                                    </Text>
-                                                                </Flex>
-                                                                <Flex
-                                                                    justify="space-between"
-                                                                    gap={200}
-                                                                >
-                                                                    <Text>
-                                                                        Sửa ống
-                                                                        đồng
-                                                                    </Text>
-                                                                    <Text
-                                                                        style={{
-                                                                            color: "red",
-                                                                        }}
-                                                                    >
-                                                                        Giá:
-                                                                        100.000đ
-                                                                    </Text>
-                                                                </Flex>
+                                                                {Array.isArray(
+                                                                    orderDetail.diagnosis
+                                                                ) &&
+                                                                    orderDetail.diagnosis.map(
+                                                                        (
+                                                                            dia
+                                                                        ) => (
+                                                                            <Flex
+                                                                                justify="space-between"
+                                                                                gap={
+                                                                                    200
+                                                                                }
+                                                                            >
+                                                                                <Text>
+                                                                                    {
+                                                                                        dia
+                                                                                            .malfunction
+                                                                                            .name
+                                                                                    }
+                                                                                </Text>
+                                                                                <Text
+                                                                                    style={{
+                                                                                        color: "red",
+                                                                                    }}
+                                                                                >
+                                                                                    Giá:
+                                                                                    {formatCurrency(
+                                                                                        parseInt(
+                                                                                            dia.malfunction.price.toString()
+                                                                                        )
+                                                                                    )}
+                                                                                </Text>
+                                                                            </Flex>
+                                                                        )
+                                                                    )}
                                                             </Space>
                                                         )}
                                                 </Flex>
@@ -633,22 +654,21 @@ const OrderDetail = (props: Props) => {
                                     )}
                                 </Flex>
                             </Flex>
-                            {orderData.status === OrderStatus.COMPLETE ||
-                                (orderData.status === OrderStatus.UNPAID && (
-                                    <Flex vertical>
-                                        <Title level={5}>
-                                            DANH SÁCH LINH KIỆN
-                                        </Title>
-                                        <Table
-                                            columns={columns}
-                                            dataSource={components}
-                                        />
-                                    </Flex>
-                                ))}
-                            {(orderData.status === OrderStatus.UNPAID ||
-                                orderData.status === OrderStatus.COMPLETE) && (
+                            {orderData.status === OrderStatus.COMPLETE && (
+                                <Flex vertical>
+                                    <Title level={5}>DANH SÁCH LINH KIỆN</Title>
+                                    <Table
+                                        columns={columns}
+                                        dataSource={orderData.components}
+                                    />
+                                </Flex>
+                            )}
+                            {orderData.status === OrderStatus.COMPLETE && (
                                 <Flex vertical align="end" gap={10}>
-                                    <Text>Phát xin chí phí: Kiểm tra máy</Text>
+                                    <Text>
+                                        Phát xin chí phí:{" "}
+                                        {orderData.inccuredCostReason}
+                                    </Text>
                                     <Flex
                                         style={{ width: "30%" }}
                                         justify="space-between"
@@ -656,7 +676,13 @@ const OrderDetail = (props: Props) => {
                                         <Title level={5} style={{ margin: 0 }}>
                                             CHI PHI PHÁT SINH:
                                         </Title>
-                                        <Text>100.000Đ</Text>
+                                        <Text>
+                                            {orderData.inccuredCost
+                                                ? formatCurrency(
+                                                      orderData.inccuredCost
+                                                  )
+                                                : formatCurrency(0)}
+                                        </Text>
                                     </Flex>
                                     <Flex
                                         style={{ width: "30%" }}
@@ -665,7 +691,9 @@ const OrderDetail = (props: Props) => {
                                         <Title level={5} style={{ margin: 0 }}>
                                             TỔNG PHÍ DỊCH VỤ:
                                         </Title>
-                                        <Text>1.000.000Đ</Text>
+                                        <Text>
+                                            {formatCurrency(serviceTotal)}
+                                        </Text>
                                     </Flex>
                                     <Flex
                                         style={{ width: "30%" }}
@@ -674,7 +702,9 @@ const OrderDetail = (props: Props) => {
                                         <Title level={5} style={{ margin: 0 }}>
                                             TỔNG PHÍ LINH KIỆN:
                                         </Title>
-                                        <Text>1.000.000Đ</Text>
+                                        <Text>
+                                            {formatCurrency(componentsTotal)}
+                                        </Text>
                                     </Flex>
                                     <Flex
                                         style={{ width: "30%" }}
@@ -683,22 +713,17 @@ const OrderDetail = (props: Props) => {
                                         <Title level={5} style={{ margin: 0 }}>
                                             TỔNG TIỀN:
                                         </Title>
-                                        <Text>2.000.000Đ</Text>
+                                        <Text>
+                                            {formatCurrency(
+                                                orderData.inccuredCost
+                                                    ? orderData.inccuredCost +
+                                                          serviceTotal +
+                                                          componentsTotal
+                                                    : serviceTotal +
+                                                          componentsTotal
+                                            )}
+                                        </Text>
                                     </Flex>
-                                    {orderData.status &&
-                                        orderData.status ===
-                                            OrderStatus.UNPAID && (
-                                            <div style={{ width: "30%" }}>
-                                                <Button
-                                                    type="primary"
-                                                    style={{
-                                                        background: "#435585",
-                                                    }}
-                                                >
-                                                    Thanh toán
-                                                </Button>
-                                            </div>
-                                        )}
                                 </Flex>
                             )}
                         </Flex>

@@ -13,7 +13,7 @@ export interface IGetAllOrderQuery {
 export const getAllOrderApi = (query: IGetAllOrderQuery) => {
     return fetchHandler.get(
         `/order/getAll?${
-            query.status && query.status in OrderStatus
+            query.status !== undefined && query.status in OrderStatus
                 ? `status=${query.status}`
                 : ""
         }${
@@ -55,4 +55,18 @@ export const assignOrderApi = (query: {
     return fetchHandler.patch(
         `/order/assignOrder?orderId=${query.orderId}&repairmanId=${query.repairmanId}`
     );
+};
+
+export const getStatisticApi = (query: {
+    from: string;
+    to: string;
+    type: string;
+}) => {
+    return fetchHandler.post(
+        `/order/statistic?from=${query.from}&to=${query.to}&type=${query.type}`
+    );
+};
+
+export const getDailyStatisticApi = () => {
+    return fetchHandler.post("/order/dailyStatistic");
 };

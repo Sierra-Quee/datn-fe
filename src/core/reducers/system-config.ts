@@ -6,7 +6,7 @@ import {
 import { ISystemConfig } from "../../utils/model";
 
 interface ISystemConfigSlice {
-    config: ISystemConfig;
+    config?: ISystemConfig;
     isLoadingSystemConfig: boolean;
     updateSystemConfig: {
         updatingSystemConfig: boolean;
@@ -15,12 +15,7 @@ interface ISystemConfigSlice {
 }
 
 const initialState: ISystemConfigSlice = {
-    config: {
-        id: 0,
-        distanceToAssignOrder: 5,
-        switchRepairmanStatusPeriod: 60,
-        assignOrderInterval: 5,
-    },
+    config: undefined,
     isLoadingSystemConfig: false,
     updateSystemConfig: {
         updateSystemConfigStatus: "none",

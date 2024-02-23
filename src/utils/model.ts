@@ -149,8 +149,8 @@ export interface IOrder {
     expectedDate: string;
     repairmanId?: string;
     addressId: number;
-    inccuredCost?: number;
-    inccuredCostReason?: string;
+    incurredCost?: number;
+    incurredCostReason?: string;
     orderDetails?: IDetailOrder[];
     orderDetail?: IDetailOrder[];
     createdAt?: string;

@@ -9,6 +9,7 @@ export interface IGetAllOrderQuery {
     status?: number;
     to?: string;
     from?: string;
+    type?: string;
 }
 export const getAllOrderApi = (query: IGetAllOrderQuery) => {
     return fetchHandler.get(
@@ -24,7 +25,7 @@ export const getAllOrderApi = (query: IGetAllOrderQuery) => {
             query.to && query.to.length > 0
                 ? `&to=${new Date(query.to).toISOString()}`
                 : ""
-        }`
+        }${query.type === "config" ? `&type=config` : ""}`
     );
 };
 

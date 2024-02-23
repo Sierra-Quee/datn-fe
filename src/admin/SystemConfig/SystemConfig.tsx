@@ -102,6 +102,7 @@ const SystemConfig = (props: Props) => {
     useEffect(() => {
         const query: IGetAllOrderQuery = {
             status: OrderStatus.PENDING,
+            type: "config",
         };
         handleGetAllOrder(query);
         const getOrderInterval = setInterval(() => {
@@ -238,64 +239,67 @@ const SystemConfig = (props: Props) => {
                 >
                     <Flex style={{ width: "100%" }} vertical align="center">
                         <Title level={3}>Cấu hình hệ thống</Title>
-                        <Form
-                            {...formItemLayout}
-                            style={{ width: "75%" }}
-                            initialValues={config}
-                            onValuesChange={handleValueChange}
-                        >
-                            <Form.Item<ISystemConfig>
-                                label="Thời gian tự động xếp đơn (phút)"
-                                name="assignOrderInterval"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            "Nhập khoảng thời gian tự động xếp đơn",
-                                    },
-                                ]}
+                        {config && (
+                            <Form
+                                {...formItemLayout}
+                                style={{ width: "75%" }}
+                                initialValues={config}
+                                onValuesChange={handleValueChange}
                             >
-                                <Input type="number" />
-                            </Form.Item>
-                            <Form.Item<ISystemConfig>
-                                label="Bán kính quét đơn (km)"
-                                name="distanceToAssignOrder"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Nhập  bán kính quét đơn",
-                                    },
-                                ]}
-                            >
-                                <Input type="number" />
-                            </Form.Item>
-                            <Form.Item<ISystemConfig>
-                                label="Khoảng thời gian thay đổi trạng thái thợ sửa chữa (phút)"
-                                name="switchRepairmanStatusPeriod"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message:
-                                            "Nhập khoảng thời gian thay đổi trạng thái thợ sửa chữa",
-                                    },
-                                ]}
-                            >
-                                <Input type="number" />
-                            </Form.Item>
-                            <Form.Item {...buttonItemLayout}>
-                                <Button
-                                    type="primary"
-                                    style={{
-                                        width: "200px",
-                                        margin: 0,
-                                        background: "#435585",
-                                    }}
-                                    onClick={handleSubmit}
+                                <Form.Item<ISystemConfig>
+                                    label="Thời gian tự động xếp đơn (phút)"
+                                    name="assignOrderInterval"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "Nhập khoảng thời gian tự động xếp đơn",
+                                        },
+                                    ]}
                                 >
-                                    Cập nhật
-                                </Button>
-                            </Form.Item>
-                        </Form>
+                                    <Input type="number" />
+                                </Form.Item>
+                                <Form.Item<ISystemConfig>
+                                    label="Bán kính quét đơn (km)"
+                                    name="distanceToAssignOrder"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Nhập  bán kính quét đơn",
+                                        },
+                                    ]}
+                                >
+                                    <Input type="number" />
+                                </Form.Item>
+                                <Form.Item<ISystemConfig>
+                                    label="Khoảng thời gian thay đổi trạng thái thợ sửa chữa (phút)"
+                                    name="switchRepairmanStatusPeriod"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "Nhập khoảng thời gian thay đổi trạng thái thợ sửa chữa",
+                                        },
+                                    ]}
+                                >
+                                    <Input type="number" />
+                                </Form.Item>
+                                <Form.Item {...buttonItemLayout}>
+                                    <Button
+                                        type="primary"
+                                        style={{
+                                            width: "200px",
+                                            margin: 0,
+                                            background: "#435585",
+                                        }}
+                                        onClick={handleSubmit}
+                                    >
+                                        Cập nhật
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        )}
+
                         <Form
                             {...formItemLayout}
                             style={{ width: "75%" }}

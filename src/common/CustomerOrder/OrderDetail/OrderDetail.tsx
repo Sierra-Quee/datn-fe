@@ -667,7 +667,7 @@ const OrderDetail = (props: Props) => {
                                 <Flex vertical align="end" gap={10}>
                                     <Text>
                                         Phát xin chí phí:{" "}
-                                        {orderData.inccuredCostReason}
+                                        {orderData.incurredCostReason}
                                     </Text>
                                     <Flex
                                         style={{ width: "30%" }}
@@ -677,9 +677,9 @@ const OrderDetail = (props: Props) => {
                                             CHI PHI PHÁT SINH:
                                         </Title>
                                         <Text>
-                                            {orderData.inccuredCost
+                                            {orderData.incurredCost
                                                 ? formatCurrency(
-                                                      orderData.inccuredCost
+                                                      orderData.incurredCost
                                                   )
                                                 : formatCurrency(0)}
                                         </Text>
@@ -715,8 +715,10 @@ const OrderDetail = (props: Props) => {
                                         </Title>
                                         <Text>
                                             {formatCurrency(
-                                                orderData.inccuredCost
-                                                    ? orderData.inccuredCost +
+                                                orderData.incurredCost
+                                                    ? parseInt(
+                                                          orderData.incurredCost.toString()
+                                                      ) +
                                                           serviceTotal +
                                                           componentsTotal
                                                     : serviceTotal +
